@@ -2,10 +2,19 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>HTML大乱闘スマッシュ風デモ（全画面対応）</title>
+<title>HTML大乱闘スマッシュ風デモ</title>
 <style>
-  body { margin: 0; background: #222; overflow: hidden; }
-  canvas { display: block; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: #222;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+  }
+  canvas {
+    display: block;
+  }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/pixi.js@7.2.4/dist/pixi.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/matter-js@0.19.0/build/matter.min.js"></script>
@@ -14,72 +23,70 @@
 <script>
 const { Engine, Runner, Bodies, Body, Composite } = Matter;
 
-// --- ステージ設定 ---
-const stageWidth = 1200;
-const stageHeight = 450;
+const WIDTH = window.innerWidth;
+const HEIGHT = window.innerHeight;
 
-// Pixiアプリ作成（ウィンドウいっぱい）
+// Pixiアプリ
 const app = new PIXI.Application({
-    width: window.innerWidth,
-    height: window.innerHeight,
+    width: WIDTH,
+    height: HEIGHT,
     backgroundColor: 0x222222
 });
 document.body.appendChild(app.view);
 
-// リサイズ対応
-window.addEventListener("resize", () => {
-    app.renderer.resize(window.innerWidth, window.innerHeight);
-});
-
-// Matter.jsエンジン
+// Matterエンジン
 const engine = Engine.create();
 const world = engine.world;
 const runner = Runner.create();
 Runner.run(runner, engine);
 
-// --- ステージ（終点風＋崖） ---
-const ground = Bodies.rectangle(stageWidth / 2, 420, stageWidth, 60, { isStatic: true });
+// === ステージ設定 ===
+const stageWidth = 1600;
+const stageHeight = 60;
+const stageY = HEIGHT - 100;
+
+// 地面
+const ground = Bodies.rectangle(WIDTH / 2, stageY + stageHeight / 2, stageWidth, stageHeight, { isStatic: true });
 Composite.add(world, ground);
 
-// Pixi描画
-const stageContainer = new PIXI.Container();
-app.stage.addChild(stageContainer);
+// 崖部分（左右10pxの側面）
+const ledgeLeftX = WIDTH / 2 - stageWidth / 2;
+const ledgeRightX = WIDTH / 2 + stageWidth / 2;
 
+// Pixi ステージ描画
 const groundSprite = new PIXI.Graphics();
 groundSprite.beginFill(0x4444ff);
-groundSprite.drawRect(0, 0, stageWidth, 60);
+groundSprite.drawRect(WIDTH / 2 - stageWidth / 2, stageY, stageWidth, stageHeight);
 groundSprite.endFill();
-groundSprite.x = 0;
-groundSprite.y = 390;
-stageContainer.addChild(groundSprite);
+app.stage.addChild(groundSprite);
 
-// --- プレイヤー生成 ---
+// --- プレイヤー生成関数 ---
 function createPlayer(x, color) {
-    const body = Bodies.rectangle(x, 300, 40, 60, { friction: 0.001, restitution: 0.2 });
+    const body = Bodies.rectangle(x, stageY - 200, 40, 60, { friction: 0.001, restitution: 0.2 });
     const sprite = new PIXI.Graphics();
     sprite.beginFill(color);
     sprite.drawRect(-20, -30, 40, 60);
     sprite.endFill();
-    stageContainer.addChild(sprite);
-    return { 
-        body, 
-        sprite, 
-        attacking: false, 
-        canAttack: true, 
-        dir: 1, 
-        spawnX: x, 
-        spawnY: 300,
-        hanging: false 
+    app.stage.addChild(sprite);
+    return {
+        body, sprite,
+        attacking: false,
+        canAttack: true,
+        dir: 1,
+        spawnX: x,
+        spawnY: stageY - 200,
+        hanging: false // 崖掴まり状態
     };
 }
 
-const player1 = createPlayer(300, 0xff4444);
-const player2 = createPlayer(900, 0x44ff44);
+// プレイヤー作成
+const player1 = createPlayer(WIDTH / 2 - 200, 0xff4444);
+const player2 = createPlayer(WIDTH / 2 + 200, 0x44ff44);
 Composite.add(world, [player1.body, player2.body]);
 
 // --- 攻撃処理 ---
 function attack(player, target) {
-    if (!player.canAttack || player.hanging) return;
+    if (!player.canAttack) return;
     player.attacking = true;
     player.canAttack = false;
 
@@ -93,18 +100,17 @@ function attack(player, target) {
     fx.endFill();
     fx.x = player.sprite.x + dir * attackRange;
     fx.y = player.sprite.y;
-    stageContainer.addChild(fx);
-
-    setTimeout(() => stageContainer.removeChild(fx), 100);
+    app.stage.addChild(fx);
+    setTimeout(() => app.stage.removeChild(fx), 100);
 
     const dx = target.body.position.x - player.body.position.x;
     const dy = target.body.position.y - player.body.position.y;
     const dist = Math.sqrt(dx * dx + dy * dy);
     if (dist < attackRange) {
-        Body.applyForce(target.body, target.body.position, {
-            x: dir * power,
-            y: -power
-        });
+        // 吹っ飛び
+        Body.applyForce(target.body, target.body.position, { x: dir * power, y: -power });
+        // 掴まり解除
+        target.hanging = false;
     }
 
     setTimeout(() => { player.attacking = false; }, 200);
@@ -116,93 +122,73 @@ const keys = {};
 window.addEventListener('keydown', e => keys[e.code] = true);
 window.addEventListener('keyup', e => keys[e.code] = false);
 
-// --- 崖つかまり処理 ---
+// --- 崖掴まり判定 ---
 function checkLedgeGrab(player) {
-    if (player.hanging) return;
-
     const x = player.body.position.x;
     const y = player.body.position.y;
-    const ledgeLeft = 60;
-    const ledgeRight = stageWidth - 60;
+    const grabZone = 10; // 10px以内で掴まる
 
-    if (y > 350 && y < 430 && Math.abs(player.body.velocity.y) > 0.1) {
-        if (x < ledgeLeft) {
-            hangLedge(player, ledgeLeft + 10);
-        } else if (x > ledgeRight) {
-            hangLedge(player, ledgeRight - 10);
-        }
+    // 左崖
+    if (Math.abs(x - ledgeLeftX) < grabZone && y > stageY - 80 && y < stageY + 30) {
+        Body.setVelocity(player.body, { x: 0, y: 0 });
+        Body.setPosition(player.body, { x: ledgeLeftX + 25, y: stageY - 50 });
+        player.hanging = true;
+        return;
     }
-}
-
-function hangLedge(player, ledgeX) {
-    player.hanging = true;
-    Body.setPosition(player.body, { x: ledgeX, y: 370 });
-    Body.setVelocity(player.body, { x: 0, y: 0 });
-    Body.setStatic(player.body, true);
-
-    const fx = new PIXI.Graphics();
-    fx.beginFill(0xffff00);
-    fx.drawRect(-5, -25, 10, 10);
-    fx.endFill();
-    fx.x = ledgeX;
-    fx.y = 370;
-    stageContainer.addChild(fx);
-    setTimeout(() => stageContainer.removeChild(fx), 200);
-}
-
-function releaseLedge(player) {
-    if (!player.hanging) return;
-    player.hanging = false;
-    Body.setStatic(player.body, false);
+    // 右崖
+    if (Math.abs(x - ledgeRightX) < grabZone && y > stageY - 80 && y < stageY + 30) {
+        Body.setVelocity(player.body, { x: 0, y: 0 });
+        Body.setPosition(player.body, { x: ledgeRightX - 25, y: stageY - 50 });
+        player.hanging = true;
+        return;
+    }
 }
 
 // --- ゲームループ ---
 app.ticker.add(() => {
-    // Player1
-    if (!player1.hanging) {
-        if (keys['KeyA']) { Body.applyForce(player1.body, player1.body.position, { x: -0.002, y: 0 }); player1.dir = -1; }
-        if (keys['KeyD']) { Body.applyForce(player1.body, player1.body.position, { x: 0.002, y: 0 }); player1.dir = 1; }
-        if (keys['KeyW'] && Math.abs(player1.body.velocity.y) < 0.1) Body.applyForce(player1.body, player1.body.position, { x: 0, y: -0.07 });
-        if (keys['Space']) attack(player1, player2);
-    } else {
-        if (keys['KeyW']) { releaseLedge(player1); Body.applyForce(player1.body, player1.body.position, { x: 0, y: -0.08 }); }
-        if (keys['KeyA'] || keys['KeyD']) releaseLedge(player1);
-    }
+    [player1, player2].forEach((p, i) => {
+        const keySet = i === 0
+            ? { left: 'KeyA', right: 'KeyD', jump: 'KeyW', attack: 'Space' }
+            : { left: 'ArrowLeft', right: 'ArrowRight', jump: 'ArrowUp', attack: 'Enter' };
 
-    // Player2
-    if (!player2.hanging) {
-        if (keys['ArrowLeft']) { Body.applyForce(player2.body, player2.body.position, { x: -0.002, y: 0 }); player2.dir = -1; }
-        if (keys['ArrowRight']) { Body.applyForce(player2.body, player2.body.position, { x: 0.002, y: 0 }); player2.dir = 1; }
-        if (keys['ArrowUp'] && Math.abs(player2.body.velocity.y) < 0.1) Body.applyForce(player2.body, player2.body.position, { x: 0, y: -0.07 });
-        if (keys['Enter']) attack(player2, player1);
-    } else {
-        if (keys['ArrowUp']) { releaseLedge(player2); Body.applyForce(player2.body, player2.body.position, { x: 0, y: -0.08 }); }
-        if (keys['ArrowLeft'] || keys['ArrowRight']) releaseLedge(player2);
-    }
+        // 掴まり中は動けないが、ジャンプで解除可能
+        if (p.hanging) {
+            if (keys[keySet.jump]) {
+                p.hanging = false;
+                Body.applyForce(p.body, p.body.position, { x: 0, y: -0.07 });
+            }
+            return;
+        }
 
-    // 崖つかまりチェック
-    checkLedgeGrab(player1);
-    checkLedgeGrab(player2);
+        // 左右移動
+        if (keys[keySet.left]) { Body.applyForce(p.body, p.body.position, { x: -0.002, y: 0 }); p.dir = -1; }
+        if (keys[keySet.right]) { Body.applyForce(p.body, p.body.position, { x: 0.002, y: 0 }); p.dir = 1; }
 
-    // プレイヤー描画更新＋復帰処理
-    [player1, player2].forEach(p => {
+        // ジャンプ
+        if (keys[keySet.jump] && Math.abs(p.body.velocity.y) < 0.1)
+            Body.applyForce(p.body, p.body.position, { x: 0, y: -0.07 });
+
+        // 攻撃
+        if (keys[keySet.attack]) attack(p, i === 0 ? player2 : player1);
+
+        // 崖判定
+        checkLedgeGrab(p);
+
+        // 転がり防止
         Body.setAngle(p.body, 0);
         Body.setAngularVelocity(p.body, 0);
 
-        if (p.body.position.y > 600 || p.body.position.x < -200 || p.body.position.x > stageWidth + 200) {
-            releaseLedge(p);
-            Body.setStatic(p.body, false);
-            Body.setPosition(p.body, { x: p.spawnX, y: p.spawnY });
-            Body.setVelocity(p.body, { x: 0, y: 0 });
-        }
-
+        // スプライト位置更新
         p.sprite.x = p.body.position.x;
         p.sprite.y = p.body.position.y;
-    });
 
-    // カメラ（ステージを中央に配置）
-    const offsetX = (app.renderer.width / 2) - (stageWidth / 2);
-    stageContainer.x = offsetX;
+        // 画面外→復帰
+        if (p.body.position.y > HEIGHT + 300 || p.body.position.x < -500 || p.body.position.x > WIDTH + 500) {
+            Body.setPosition(p.body, { x: p.spawnX, y: p.spawnY });
+            Body.setVelocity(p.body, { x: 0, y: 0 });
+            p.hanging = false;
+        }
+    });
 });
 </script>
 </body>
