@@ -172,7 +172,7 @@ app.ticker.add(() => {
         p.sprite.y = p.body.position.y;
 
         // --- 座標によるリセット判定 ---
-        if (p.body.position.y > HEIGHT + 400 || p.body.position.x < ledgeLeftX - 600 || p.body.position.x > ledgeRightX + 600) {
+        if (p.body.position.y > HEIGHT + 800 || p.body.position.x < ledgeLeftX - 1000 || p.body.position.x > ledgeRightX + 1000) {
             Body.setPosition(p.body, {x:p.spawnX, y:p.spawnY});
             Body.setVelocity(p.body, {x:0, y:0});
             p.hanging=false;
