@@ -2,10 +2,10 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>HTML大乱闘スマッシュ風デモ（崖つかまり対応）</title>
+<title>HTML大乱闘スマッシュ風デモ（全画面対応）</title>
 <style>
   body { margin: 0; background: #222; overflow: hidden; }
-  canvas { display: block; margin: 0 auto; }
+  canvas { display: block; }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/pixi.js@7.2.4/dist/pixi.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/matter-js@0.19.0/build/matter.min.js"></script>
@@ -14,33 +14,44 @@
 <script>
 const { Engine, Runner, Bodies, Body, Composite } = Matter;
 
-// Pixiアプリ
+// --- ステージ設定 ---
+const stageWidth = 1200;
+const stageHeight = 450;
+
+// Pixiアプリ作成（ウィンドウいっぱい）
 const app = new PIXI.Application({
-    width: 800,
-    height: 450,
+    width: window.innerWidth,
+    height: window.innerHeight,
     backgroundColor: 0x222222
 });
 document.body.appendChild(app.view);
 
-// Matterエンジン
+// リサイズ対応
+window.addEventListener("resize", () => {
+    app.renderer.resize(window.innerWidth, window.innerHeight);
+});
+
+// Matter.jsエンジン
 const engine = Engine.create();
 const world = engine.world;
 const runner = Runner.create();
 Runner.run(runner, engine);
 
-// --- ステージ（終点風＋崖見えるように拡張） ---
-const stageWidth = 1200;
+// --- ステージ（終点風＋崖） ---
 const ground = Bodies.rectangle(stageWidth / 2, 420, stageWidth, 60, { isStatic: true });
 Composite.add(world, ground);
 
-// ステージ描画
+// Pixi描画
+const stageContainer = new PIXI.Container();
+app.stage.addChild(stageContainer);
+
 const groundSprite = new PIXI.Graphics();
 groundSprite.beginFill(0x4444ff);
 groundSprite.drawRect(0, 0, stageWidth, 60);
 groundSprite.endFill();
 groundSprite.x = 0;
 groundSprite.y = 390;
-app.stage.addChild(groundSprite);
+stageContainer.addChild(groundSprite);
 
 // --- プレイヤー生成 ---
 function createPlayer(x, color) {
@@ -49,7 +60,7 @@ function createPlayer(x, color) {
     sprite.beginFill(color);
     sprite.drawRect(-20, -30, 40, 60);
     sprite.endFill();
-    app.stage.addChild(sprite);
+    stageContainer.addChild(sprite);
     return { 
         body, 
         sprite, 
@@ -58,7 +69,7 @@ function createPlayer(x, color) {
         dir: 1, 
         spawnX: x, 
         spawnY: 300,
-        hanging: false // 崖つかまり状態
+        hanging: false 
     };
 }
 
@@ -82,9 +93,9 @@ function attack(player, target) {
     fx.endFill();
     fx.x = player.sprite.x + dir * attackRange;
     fx.y = player.sprite.y;
-    app.stage.addChild(fx);
+    stageContainer.addChild(fx);
 
-    setTimeout(() => app.stage.removeChild(fx), 100);
+    setTimeout(() => stageContainer.removeChild(fx), 100);
 
     const dx = target.body.position.x - player.body.position.x;
     const dy = target.body.position.y - player.body.position.y;
@@ -111,11 +122,9 @@ function checkLedgeGrab(player) {
 
     const x = player.body.position.x;
     const y = player.body.position.y;
-
     const ledgeLeft = 60;
     const ledgeRight = stageWidth - 60;
 
-    // ステージ端付近で、下に落ちている最中なら掴まる
     if (y > 350 && y < 430 && Math.abs(player.body.velocity.y) > 0.1) {
         if (x < ledgeLeft) {
             hangLedge(player, ledgeLeft + 10);
@@ -131,15 +140,14 @@ function hangLedge(player, ledgeX) {
     Body.setVelocity(player.body, { x: 0, y: 0 });
     Body.setStatic(player.body, true);
 
-    // 崖つかまりエフェクト
     const fx = new PIXI.Graphics();
     fx.beginFill(0xffff00);
     fx.drawRect(-5, -25, 10, 10);
     fx.endFill();
     fx.x = ledgeX;
     fx.y = 370;
-    app.stage.addChild(fx);
-    setTimeout(() => app.stage.removeChild(fx), 200);
+    stageContainer.addChild(fx);
+    setTimeout(() => stageContainer.removeChild(fx), 200);
 }
 
 function releaseLedge(player) {
@@ -172,16 +180,15 @@ app.ticker.add(() => {
         if (keys['ArrowLeft'] || keys['ArrowRight']) releaseLedge(player2);
     }
 
-    // 崖つかまり判定
+    // 崖つかまりチェック
     checkLedgeGrab(player1);
     checkLedgeGrab(player2);
 
-    // 転がり防止
+    // プレイヤー描画更新＋復帰処理
     [player1, player2].forEach(p => {
         Body.setAngle(p.body, 0);
         Body.setAngularVelocity(p.body, 0);
 
-        // 復帰処理
         if (p.body.position.y > 600 || p.body.position.x < -200 || p.body.position.x > stageWidth + 200) {
             releaseLedge(p);
             Body.setStatic(p.body, false);
@@ -189,10 +196,13 @@ app.ticker.add(() => {
             Body.setVelocity(p.body, { x: 0, y: 0 });
         }
 
-        // スプライト更新
         p.sprite.x = p.body.position.x;
         p.sprite.y = p.body.position.y;
     });
+
+    // カメラ（ステージを中央に配置）
+    const offsetX = (app.renderer.width / 2) - (stageWidth / 2);
+    stageContainer.x = offsetX;
 });
 </script>
 </body>
