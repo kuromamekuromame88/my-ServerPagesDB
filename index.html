@@ -61,7 +61,7 @@ const groundSprite = new PIXI.Graphics();
 groundSprite.beginFill(0x4444ff);
 groundSprite.drawRect(0, 0, stageWidth, stageHeight);
 groundSprite.endFill();
-groundSprite.x = 0;
+groundSprite.x = ledgeLeftX;
 groundSprite.y = stageY;
 stageContainer.addChild(groundSprite);
 
@@ -171,7 +171,8 @@ app.ticker.add(() => {
         p.sprite.x = p.body.position.x;
         p.sprite.y = p.body.position.y;
 
-        if (p.body.position.y > HEIGHT+300 || p.body.position.x < -500 || p.body.position.x > WIDTH+500) {
+        // --- 座標によるリセット判定 ---
+        if (p.body.position.y > HEIGHT + 400 || p.body.position.x < ledgeLeftX - 600 || p.body.position.x > ledgeRightX + 600) {
             Body.setPosition(p.body, {x:p.spawnX, y:p.spawnY});
             Body.setVelocity(p.body, {x:0, y:0});
             p.hanging=false;
@@ -179,27 +180,30 @@ app.ticker.add(() => {
     });
 
     // --- カメラ制御 ---
-    const midX = (player1.body.position.x + player2.body.position.x)/2;
-    const midY = (player1.body.position.y + player2.body.position.y)/2;
+    const p1y = player1.hanging ? stageY - 80 : player1.body.position.y;
+    const p2y = player2.hanging ? stageY - 80 : player2.body.position.y;
+
+    const midX = (player1.body.position.x + player2.body.position.x) / 2;
+    const midY = (p1y + p2y) / 2;
 
     const distX = Math.abs(player1.body.position.x - player2.body.position.x);
-    const distY = Math.abs(player1.body.position.y - player2.body.position.y);
+    const distY = Math.abs(p1y - p2y);
 
     const zoomX = Math.max(0.8, Math.min(1.2, 800 / (distX + 200)));
     const zoomY = Math.max(0.8, Math.min(1.2, 450 / (distY + 200)));
     const targetZoom = Math.min(zoomX, zoomY);
 
-    stageContainer.scale.x += (targetZoom - stageContainer.scale.x)*0.1;
+    stageContainer.scale.x += (targetZoom - stageContainer.scale.x) * 0.1;
     stageContainer.scale.y = stageContainer.scale.x;
 
-    const screenCenterX = app.renderer.width/2;
-    const screenCenterY = app.renderer.height/2;
+    const screenCenterX = app.renderer.width / 2;
+    const screenCenterY = app.renderer.height / 2;
 
     const targetX = screenCenterX - midX * stageContainer.scale.x;
     const targetY = screenCenterY - midY * stageContainer.scale.y;
 
-    stageContainer.x += (targetX - stageContainer.x)*0.05;
-    stageContainer.y += (targetY - stageContainer.y)*0.05;
+    stageContainer.x += (targetX - stageContainer.x) * 0.05;
+    stageContainer.y += (targetY - stageContainer.y) * 0.05;
 });
 </script>
 </body>
