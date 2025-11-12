@@ -12,7 +12,7 @@
 </head>
 <body>
 <script>
-const { Engine, Render, Runner, Bodies, Body, Composite, Events } = Matter;
+const { Engine, Runner, Bodies, Body, Composite } = Matter;
 
 // Pixiアプリ
 const app = new PIXI.Application({
@@ -48,7 +48,7 @@ function createPlayer(x, color) {
     sprite.drawRect(-20, -30, 40, 60);
     sprite.endFill();
     app.stage.addChild(sprite);
-    return { body, sprite, attacking: false, canAttack: true, dir: 1 };
+    return { body, sprite, attacking: false, canAttack: true, dir: 1, spawnX: x, spawnY: 300 };
 }
 
 // プレイヤー1,2作成
@@ -56,14 +56,14 @@ const player1 = createPlayer(300, 0xff4444);
 const player2 = createPlayer(500, 0x44ff44);
 Composite.add(world, [player1.body, player2.body]);
 
-// --- 攻撃用パラメータ ---
+// --- 攻撃用 ---
 function attack(player, target) {
     if (!player.canAttack) return;
     player.attacking = true;
     player.canAttack = false;
 
     const attackRange = 60;
-    const power = 0.15;
+    const power = 0.075; // 吹っ飛び率を半減
     const dir = player.dir;
 
     // 見た目のエフェクト
@@ -75,7 +75,7 @@ function attack(player, target) {
     fx.y = player.sprite.y;
     app.stage.addChild(fx);
 
-    setTimeout(() => { app.stage.removeChild(fx); }, 100);
+    setTimeout(() => app.stage.removeChild(fx), 100);
 
     // 当たり判定
     const dx = target.body.position.x - player.body.position.x;
@@ -89,13 +89,8 @@ function attack(player, target) {
     }
 
     // 攻撃クールダウン
-    setTimeout(() => {
-        player.attacking = false;
-    }, 200);
-
-    setTimeout(() => {
-        player.canAttack = true;
-    }, 600);
+    setTimeout(() => { player.attacking = false; }, 200);
+    setTimeout(() => { player.canAttack = true; }, 600);
 }
 
 // --- キー入力 ---
@@ -108,26 +103,30 @@ app.ticker.add(() => {
     // Player1: A,D,W,Space
     if (keys['KeyA']) { Body.applyForce(player1.body, player1.body.position, { x: -0.002, y: 0 }); player1.dir = -1; }
     if (keys['KeyD']) { Body.applyForce(player1.body, player1.body.position, { x: 0.002, y: 0 }); player1.dir = 1; }
-    if (keys['KeyW'] && Math.abs(player1.body.velocity.y) < 0.1) Body.applyForce(player1.body, player1.body.position, { x: 0, y: -0.05 });
+    if (keys['KeyW'] && Math.abs(player1.body.velocity.y) < 0.1) Body.applyForce(player1.body, player1.body.position, { x: 0, y: -0.07 }); // ジャンプ強化
     if (keys['Space']) attack(player1, player2);
 
     // Player2: ←,→,↑,Enter
     if (keys['ArrowLeft']) { Body.applyForce(player2.body, player2.body.position, { x: -0.002, y: 0 }); player2.dir = -1; }
     if (keys['ArrowRight']) { Body.applyForce(player2.body, player2.body.position, { x: 0.002, y: 0 }); player2.dir = 1; }
-    if (keys['ArrowUp'] && Math.abs(player2.body.velocity.y) < 0.1) Body.applyForce(player2.body, player2.body.position, { x: 0, y: -0.05 });
+    if (keys['ArrowUp'] && Math.abs(player2.body.velocity.y) < 0.1) Body.applyForce(player2.body, player2.body.position, { x: 0, y: -0.07 }); // ジャンプ強化
     if (keys['Enter']) attack(player2, player1);
 
     // 角度固定（転がらないように）
-    Body.setAngle(player1.body, 0);
-    Body.setAngularVelocity(player1.body, 0);
-    Body.setAngle(player2.body, 0);
-    Body.setAngularVelocity(player2.body, 0);
+    [player1, player2].forEach(p => {
+        Body.setAngle(p.body, 0);
+        Body.setAngularVelocity(p.body, 0);
 
-    // Sprite更新
-    player1.sprite.x = player1.body.position.x;
-    player1.sprite.y = player1.body.position.y;
-    player2.sprite.x = player2.body.position.x;
-    player2.sprite.y = player2.body.position.y;
+        // スプライト位置更新
+        p.sprite.x = p.body.position.x;
+        p.sprite.y = p.body.position.y;
+
+        // --- 復帰処理 ---
+        if (p.body.position.y > 600 || p.body.position.x < -100 || p.body.position.x > 900) {
+            Body.setPosition(p.body, { x: p.spawnX, y: p.spawnY });
+            Body.setVelocity(p.body, { x: 0, y: 0 });
+        }
+    });
 });
 </script>
 </body>
