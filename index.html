@@ -189,7 +189,7 @@ app.ticker.add(() => {
     const zoomY = Math.max(0.8, Math.min(1.2, 450 / (distY + 200)));
     const targetZoom = Math.min(zoomX, zoomY);
 
-    stageContainer.scale.x += (targetZoom - stageContainer.scale.x)*0.05;
+    stageContainer.scale.x += (targetZoom - stageContainer.scale.x)*0.1;
     stageContainer.scale.y = stageContainer.scale.x;
 
     const screenCenterX = app.renderer.width/2;
