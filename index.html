@@ -1,96 +1,134 @@
-<canvas id="game"></canvas>
-<script src="https://cdn.jsdelivr.net/npm/pixi.js@7.x/dist/pixi.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/matter-js"></script>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>HTML大乱闘スマッシュ風デモ</title>
+<style>
+  body { margin: 0; background: #222; overflow: hidden; }
+  canvas { display: block; margin: 0 auto; }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/pixi.js@7.2.4/dist/pixi.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/matter-js@0.19.0/build/matter.min.js"></script>
+</head>
+<body>
 <script>
-  // === Pixi.js 初期化 ===
-  const app = new PIXI.Application({
-    view: document.getElementById('game'),
+const { Engine, Render, Runner, Bodies, Body, Composite, Events } = Matter;
+
+// Pixiアプリ
+const app = new PIXI.Application({
     width: 800,
-    height: 600,
-    backgroundColor: 0x000010
-  });
+    height: 450,
+    backgroundColor: 0x222222
+});
+document.body.appendChild(app.view);
 
-  // === 背景（星空） ===
-  const stars = new PIXI.Graphics();
-  for (let i = 0; i < 100; i++) {
-    stars.beginFill(0xffffff, Math.random());
-    stars.drawCircle(Math.random() * 800, Math.random() * 600, Math.random() * 2);
-    stars.endFill();
-  }
-  app.stage.addChild(stars);
+// Matterエンジン
+const engine = Engine.create();
+const world = engine.world;
+const runner = Runner.create();
+Runner.run(runner, engine);
 
-  // === 終点ステージ ===
-  const stageGraphics = new PIXI.Graphics();
-  stageGraphics.beginFill(0x4040ff);
-  stageGraphics.drawRoundedRect(150, 500, 500, 40, 10);
-  stageGraphics.endFill();
-  app.stage.addChild(stageGraphics);
+// --- ステージ（終点風） ---
+const ground = Bodies.rectangle(400, 420, 800, 60, { isStatic: true });
+Composite.add(world, ground);
 
-  // === プレイヤー ===
-  const player = PIXI.Sprite.from('https://pixijs.io/examples/examples/assets/bunny.png');
-  player.anchor.set(0.5);
-  player.scale.set(1.5);
-  app.stage.addChild(player);
+// Pixiステージ描画
+const groundSprite = new PIXI.Graphics();
+groundSprite.beginFill(0x4444ff);
+groundSprite.drawRect(0, 0, 800, 60);
+groundSprite.endFill();
+groundSprite.y = 390;
+app.stage.addChild(groundSprite);
 
-  // === Matter.js 初期化 ===
-  const Engine = Matter.Engine,
-        World = Matter.World,
-        Bodies = Matter.Bodies,
-        Body = Matter.Body;
+// --- プレイヤー生成関数 ---
+function createPlayer(x, color) {
+    const body = Bodies.rectangle(x, 300, 40, 60, { friction: 0.001, restitution: 0.2 });
+    const sprite = new PIXI.Graphics();
+    sprite.beginFill(color);
+    sprite.drawRect(-20, -30, 40, 60);
+    sprite.endFill();
+    app.stage.addChild(sprite);
+    return { body, sprite, attacking: false, canAttack: true, dir: 1 };
+}
 
-  const engine = Engine.create();
-  engine.gravity.y = 1.2;
+// プレイヤー1,2作成
+const player1 = createPlayer(300, 0xff4444);
+const player2 = createPlayer(500, 0x44ff44);
+Composite.add(world, [player1.body, player2.body]);
 
-  // プレイヤー：矩形ボディ（回転禁止）
-  const playerBody = Bodies.rectangle(400, 300, 40, 60, {
-    restitution: 0.0,
-    friction: 0.1
-  });
-  Body.setInertia(playerBody, Infinity); // 回転しないよう固定
-  Body.setAngle(playerBody, 0);
+// --- 攻撃用パラメータ ---
+function attack(player, target) {
+    if (!player.canAttack) return;
+    player.attacking = true;
+    player.canAttack = false;
 
-  // ステージの床
-  const ground = Bodies.rectangle(400, 520, 500, 40, { isStatic: true, friction: 1 });
+    const attackRange = 60;
+    const power = 0.15;
+    const dir = player.dir;
 
-  World.add(engine.world, [playerBody, ground]);
+    // 見た目のエフェクト
+    const fx = new PIXI.Graphics();
+    fx.beginFill(0xffffff);
+    fx.drawCircle(0, 0, 15);
+    fx.endFill();
+    fx.x = player.sprite.x + dir * attackRange;
+    fx.y = player.sprite.y;
+    app.stage.addChild(fx);
 
-  // === キー入力 ===
-  const keys = {};
-  window.addEventListener('keydown', e => {
-    if (e.code === 'Space') e.preventDefault(); // ブラウザのスクロール防止
-    keys[e.code] = true;
-  });
-  window.addEventListener('keyup', e => keys[e.code] = false);
+    setTimeout(() => { app.stage.removeChild(fx); }, 100);
 
-  // === メインループ ===
-  app.ticker.add(() => {
-    Engine.update(engine, 1000 / 60);
-
-    // 回転を常に止める（完全固定）
-    Body.setAngularVelocity(playerBody, 0);
-    Body.setAngle(playerBody, 0);
-
-    // 移動
-    const vel = playerBody.velocity;
-    if (keys['ArrowLeft']) Body.setVelocity(playerBody, { x: -5, y: vel.y });
-    if (keys['ArrowRight']) Body.setVelocity(playerBody, { x: 5, y: vel.y });
-
-    // 接地判定
-    const onGround = Math.abs(playerBody.position.y - 500) < 50 && Math.abs(vel.y) < 1;
-
-    // ジャンプ（スペースキー）
-    if (keys['Space'] && onGround) {
-      Body.setVelocity(playerBody, { x: vel.x, y: -12 });
+    // 当たり判定
+    const dx = target.body.position.x - player.body.position.x;
+    const dy = target.body.position.y - player.body.position.y;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    if (dist < attackRange) {
+        Body.applyForce(target.body, target.body.position, {
+            x: dir * power,
+            y: -power
+        });
     }
 
-    // 座標同期
-    player.x = playerBody.position.x;
-    player.y = playerBody.position.y;
+    // 攻撃クールダウン
+    setTimeout(() => {
+        player.attacking = false;
+    }, 200);
 
-    // 落下したら復帰
-    if (playerBody.position.y > 800) {
-      Body.setPosition(playerBody, { x: 400, y: 100 });
-      Body.setVelocity(playerBody, { x: 0, y: 0 });
-    }
-  });
+    setTimeout(() => {
+        player.canAttack = true;
+    }, 600);
+}
+
+// --- キー入力 ---
+const keys = {};
+window.addEventListener('keydown', e => keys[e.code] = true);
+window.addEventListener('keyup', e => keys[e.code] = false);
+
+// --- ゲームループ ---
+app.ticker.add(() => {
+    // Player1: A,D,W,Space
+    if (keys['KeyA']) { Body.applyForce(player1.body, player1.body.position, { x: -0.002, y: 0 }); player1.dir = -1; }
+    if (keys['KeyD']) { Body.applyForce(player1.body, player1.body.position, { x: 0.002, y: 0 }); player1.dir = 1; }
+    if (keys['KeyW'] && Math.abs(player1.body.velocity.y) < 0.1) Body.applyForce(player1.body, player1.body.position, { x: 0, y: -0.05 });
+    if (keys['Space']) attack(player1, player2);
+
+    // Player2: ←,→,↑,Enter
+    if (keys['ArrowLeft']) { Body.applyForce(player2.body, player2.body.position, { x: -0.002, y: 0 }); player2.dir = -1; }
+    if (keys['ArrowRight']) { Body.applyForce(player2.body, player2.body.position, { x: 0.002, y: 0 }); player2.dir = 1; }
+    if (keys['ArrowUp'] && Math.abs(player2.body.velocity.y) < 0.1) Body.applyForce(player2.body, player2.body.position, { x: 0, y: -0.05 });
+    if (keys['Enter']) attack(player2, player1);
+
+    // 角度固定（転がらないように）
+    Body.setAngle(player1.body, 0);
+    Body.setAngularVelocity(player1.body, 0);
+    Body.setAngle(player2.body, 0);
+    Body.setAngularVelocity(player2.body, 0);
+
+    // Sprite更新
+    player1.sprite.x = player1.body.position.x;
+    player1.sprite.y = player1.body.position.y;
+    player2.sprite.x = player2.body.position.x;
+    player2.sprite.y = player2.body.position.y;
+});
 </script>
+</body>
+</html>
