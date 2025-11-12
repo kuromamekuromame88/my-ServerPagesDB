@@ -7,10 +7,10 @@
     view: document.getElementById('game'),
     width: 800,
     height: 600,
-    backgroundColor: 0x000010 // 宇宙っぽい背景
+    backgroundColor: 0x000010
   });
 
-  // === 背景の演出 ===
+  // === 背景 ===
   const stars = new PIXI.Graphics();
   for (let i = 0; i < 100; i++) {
     stars.beginFill(0xffffff, Math.random());
@@ -19,14 +19,14 @@
   }
   app.stage.addChild(stars);
 
-  // === ステージ（終点） ===
+  // === 終点ステージ ===
   const stageGraphics = new PIXI.Graphics();
   stageGraphics.beginFill(0x4040ff);
-  stageGraphics.drawRoundedRect(150, 500, 500, 40, 10); // 平坦な足場
+  stageGraphics.drawRoundedRect(150, 500, 500, 40, 10);
   stageGraphics.endFill();
   app.stage.addChild(stageGraphics);
 
-  // === プレイヤー（仮：バニー） ===
+  // === プレイヤー ===
   const player = PIXI.Sprite.from('https://pixijs.io/examples/examples/assets/bunny.png');
   player.anchor.set(0.5);
   player.scale.set(1.5);
@@ -35,15 +35,17 @@
   // === Matter.js 初期化 ===
   const Engine = Matter.Engine,
         World = Matter.World,
-        Bodies = Matter.Bodies;
+        Bodies = Matter.Bodies,
+        Body = Matter.Body;
 
   const engine = Engine.create();
-  engine.gravity.y = 1.2; // 重力やや強め
+  engine.gravity.y = 1.2;
 
-  // プレイヤーの物理ボディ
-  const playerBody = Bodies.circle(400, 300, 20, {
-    restitution: 0.4, // 弾性
-    friction: 0.1
+  // プレイヤー（矩形ボディ、回転しない）
+  const playerBody = Bodies.rectangle(400, 300, 40, 60, {
+    restitution: 0.0,
+    friction: 0.1,
+    inertia: Infinity // 回転を無効化
   });
 
   // ステージの床
@@ -54,32 +56,37 @@
 
   World.add(engine.world, [playerBody, ground]);
 
-  // === 操作（左右・ジャンプ） ===
+  // === 操作入力 ===
   const keys = {};
-  window.addEventListener('keydown', e => keys[e.key] = true);
+  window.addEventListener('keydown', e => {
+    keys[e.key] = true;
+    e.preventDefault(); // スペースなどのスクロールを防止
+  });
   window.addEventListener('keyup', e => keys[e.key] = false);
 
   // === メインループ ===
   app.ticker.add(() => {
-    // Matter更新
     Matter.Engine.update(engine, 1000 / 60);
 
-    // 入力処理
-    if (keys['ArrowLeft']) Matter.Body.setVelocity(playerBody, { x: -5, y: playerBody.velocity.y });
-    if (keys['ArrowRight']) Matter.Body.setVelocity(playerBody, { x: 5, y: playerBody.velocity.y });
-    if (keys[' '] && Math.abs(playerBody.velocity.y) < 0.5) {
-      Matter.Body.setVelocity(playerBody, { x: playerBody.velocity.x, y: -10 });
+    // 左右移動
+    let vel = playerBody.velocity;
+    if (keys['ArrowLeft']) Body.setVelocity(playerBody, { x: -5, y: vel.y });
+    if (keys['ArrowRight']) Body.setVelocity(playerBody, { x: 5, y: vel.y });
+
+    // ジャンプ（接地時のみ）
+    const onGround = Math.abs(playerBody.position.y - 500) < 50 && Math.abs(vel.y) < 1;
+    if (keys[' '] && onGround) {
+      Body.setVelocity(playerBody, { x: vel.x, y: -12 });
     }
 
-    // 座標同期
+    // 座標同期（回転無効なので angle は使用しない）
     player.x = playerBody.position.x;
     player.y = playerBody.position.y;
-    player.rotation = playerBody.angle;
 
-    // 画面外に落ちたら復帰
+    // 落下したら復帰
     if (playerBody.position.y > 800) {
-      Matter.Body.setPosition(playerBody, { x: 400, y: 100 });
-      Matter.Body.setVelocity(playerBody, { x: 0, y: 0 });
+      Body.setPosition(playerBody, { x: 400, y: 100 });
+      Body.setVelocity(playerBody, { x: 0, y: 0 });
     }
   });
 </script>
