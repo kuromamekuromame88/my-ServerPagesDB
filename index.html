@@ -10,7 +10,7 @@
     backgroundColor: 0x000010
   });
 
-  // === 背景 ===
+  // === 背景（星空） ===
   const stars = new PIXI.Graphics();
   for (let i = 0; i < 100; i++) {
     stars.beginFill(0xffffff, Math.random());
@@ -41,45 +41,49 @@
   const engine = Engine.create();
   engine.gravity.y = 1.2;
 
-  // プレイヤー（矩形ボディ、回転しない）
+  // プレイヤー：矩形ボディ（回転禁止）
   const playerBody = Bodies.rectangle(400, 300, 40, 60, {
     restitution: 0.0,
-    friction: 0.1,
-    inertia: Infinity // 回転を無効化
+    friction: 0.1
   });
+  Body.setInertia(playerBody, Infinity); // 回転しないよう固定
+  Body.setAngle(playerBody, 0);
 
   // ステージの床
-  const ground = Bodies.rectangle(400, 520, 500, 40, {
-    isStatic: true,
-    friction: 1
-  });
+  const ground = Bodies.rectangle(400, 520, 500, 40, { isStatic: true, friction: 1 });
 
   World.add(engine.world, [playerBody, ground]);
 
-  // === 操作入力 ===
+  // === キー入力 ===
   const keys = {};
   window.addEventListener('keydown', e => {
-    keys[e.key] = true;
-    e.preventDefault(); // スペースなどのスクロールを防止
+    if (e.code === 'Space') e.preventDefault(); // ブラウザのスクロール防止
+    keys[e.code] = true;
   });
-  window.addEventListener('keyup', e => keys[e.key] = false);
+  window.addEventListener('keyup', e => keys[e.code] = false);
 
   // === メインループ ===
   app.ticker.add(() => {
-    Matter.Engine.update(engine, 1000 / 60);
+    Engine.update(engine, 1000 / 60);
 
-    // 左右移動
-    let vel = playerBody.velocity;
+    // 回転を常に止める（完全固定）
+    Body.setAngularVelocity(playerBody, 0);
+    Body.setAngle(playerBody, 0);
+
+    // 移動
+    const vel = playerBody.velocity;
     if (keys['ArrowLeft']) Body.setVelocity(playerBody, { x: -5, y: vel.y });
     if (keys['ArrowRight']) Body.setVelocity(playerBody, { x: 5, y: vel.y });
 
-    // ジャンプ（接地時のみ）
+    // 接地判定
     const onGround = Math.abs(playerBody.position.y - 500) < 50 && Math.abs(vel.y) < 1;
-    if (keys[' '] && onGround) {
+
+    // ジャンプ（スペースキー）
+    if (keys['Space'] && onGround) {
       Body.setVelocity(playerBody, { x: vel.x, y: -12 });
     }
 
-    // 座標同期（回転無効なので angle は使用しない）
+    // 座標同期
     player.x = playerBody.position.x;
     player.y = playerBody.position.y;
 
