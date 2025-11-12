@@ -189,6 +189,33 @@ app.ticker.add(() => {
             p.hanging = false;
         }
     });
+
+    // --- カメラ制御 ---
+    const midX = (player1.body.position.x + player2.body.position.x) / 2;
+    const midY = (player1.body.position.y + player2.body.position.y) / 2;
+
+    const distX = Math.abs(player1.body.position.x - player2.body.position.x);
+    const distY = Math.abs(player1.body.position.y - player2.body.position.y);
+
+    // ズーム計算（近接:1.2倍、離れる:0.8倍を制限）
+    const zoomX = Math.max(0.8, Math.min(1.2, 800 / (distX + 200)));
+    const zoomY = Math.max(0.8, Math.min(1.2, 450 / (distY + 200)));
+    const targetZoom = Math.min(zoomX, zoomY);
+
+    // 滑らか補間
+    stageContainer.scale.x += (targetZoom - stageContainer.scale.x) * 0.05;
+    stageContainer.scale.y = stageContainer.scale.x;
+
+    // カメラパン
+    const screenCenterX = app.renderer.width / 2;
+    const screenCenterY = app.renderer.height / 2;
+
+    const targetX = screenCenterX - midX * stageContainer.scale.x;
+    const targetY = screenCenterY - midY * stageContainer.scale.y;
+
+    stageContainer.x += (targetX - stageContainer.x) * 0.05;
+    stageContainer.y += (targetY - stageContainer.y) * 0.05;
+
 });
 </script>
 </body>
