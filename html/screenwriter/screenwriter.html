@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Screen Writer 管理</title>
+  <link rel="stylesheet" href="https://tool-webs.onrender.com/style/button.css">
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: #f9f9f9;
+      padding: 20px;
+      color: #333;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    details {
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    .devices {
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 10px;
+      background: #fafafa;
+      min-height: 50px;
+    }
+
+    .control {
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    .control b {
+      display: inline-block;
+      width: 70px;
+    }
+
+    textarea, input[type="text"] {
+      width: 100%;
+      padding: 6px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      resize: vertical;
+    }
+
+    .control .row {
+      margin-bottom: 15px;
+    }
+
+    button {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      background: #000000;/*#4a90e2;*/
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #808080;/*#357ab7;*/
+    }
+
+    .log {
+      margin-top: 20px;
+      padding: 10px;
+      background: #1e1e1e;
+      color: #00ff00;
+      font-family: monospace;
+      font-size: 14px;
+      border-radius: 8px;
+      height: 50px;
+      overflow-y: auto;
+    }
+
+    .lock {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Screen Writer v1.0</h2>
+  
+  <details>
+    <summary>説明・使い方</summary>
+    <b>Screen writer</b>
+    <p>この拡張機能は、フィルタリングの拡張機能では制限しきれないURLを生徒側で設定できるようにした拡張機能です。</p>
+    <b>使い方</b>
+    <p>1:対象のユーザーを▶デバイス一覧パネルから検索します。<br>2:対象のユーザー名を制御パネルのUserに入力して、下の方にある サーバーから読み込み ボタンを押して、現在登録されているポリシーを読み込みます。<br>3:それぞれの項目を編集します。操作ロックは名前の通り、対象のユーザーの操作をブロックします。<br>4:サーバーに書き込むボタンを押し、ポリシーを更新して完了です。<br>
+    </p>
+    <b>※制御対象は、リアルタイムにポリシーが更新されるわけではありません。1分間ごとに更新を行っています。また、wifiの接続が切れているときは更新されません。</b>
+    <br>
+    <b>※ブロックできないページなどもあります。（例：about:blank, file://, chrome-extensions://, data:// など）これらを制限するには、操作ロックを利用してください。</b>
+  </details>
+  
+  <details>
+    <summary>デバイス一覧</summary>
+    <div class="devices" id="devices"></div>
+    <button id="ReloadDevices">更新</button>
+  </details>
+
+  <details open>
+    <summary>制御パネル</summary>
+    <div class="control">
+      <div class="row">
+        <b>User:</b><input type="text" id="user">
+      </div>
+      <div class="row">
+        <b>URL:</b><textarea id="url" rows="3"></textarea>
+      </div>
+      <div class="row">
+        <b>Domain:</b><textarea id="domain" rows="3"></textarea>
+      </div>
+      <div class="lock">
+        <label><input id="lock" type="checkbox"> 操作ロック</label>
+      </div>
+      <button id="setting">サーバーに書き込む</button>
+      <button id="get">サーバーから読み込み</button>
+    </div>
+  </details>
+
+  <div id="log" class="log">
+    <b>ログ:</b><br>
+  </div>
+
+  <script>
+    window.onload = function(){
+      ReloadDevices();
+    }
+
+    function l(t, e){
+      var c;
+      if (e == 1){
+        c = "red";
+      }else if(e == 2){
+        c = "green"
+      }else{
+        c = "black";
+      }
+      document.getElementById("log").innerHTML = `
+        <b>ログ:</b>
+        <br>
+        <font color="${c}"><b>${t}</b></font>
+      `;
+    }
+
+    var UserList;
+
+    async function loadUserData(){
+      ReloadDevices();
+      //console.log(UserList);
+      if (!UserList.includes(document.getElementById("user").value)){
+        l("そのユーザーは存在しません。", 1)
+        return;
+      }
+      var e = document.getElementById("user").value;
+      //console.log("e:",e);
+      console.log("url:",`https://tool-webs.onrender.com/scwriter/geturl?user=${e}`);
+
+      const res = await fetch(`https://tool-webs.onrender.com/scwriter/geturl?user=${e}`);
+      const data = await res.json();
+
+      const { domains = [], urls = [], ips = [], Lock } = data;
+      console.log(data);
+      document.getElementById("url").value = urls.join("\n");
+      document.getElementById("domain").value = domains.join("\n");
+      console.log("lock:", Lock);
+      document.getElementById("lock").checked = Lock;
+    }
+
+    function ReloadDevices(){
+      fetch("https://tool-webs.onrender.com/scwriter/devices")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTPエラー: ${response.status}`);
+        }
+        return response.json(); // JSONとしてパース
+      })
+      .then((data) => {
+        console.log("取得データ:", data.devices);
+        var deviceListElement = document.getElementById("devices");
+        var a = 0;
+        var ListHTML = [];
+        //console.log("data.devices.length:",a < data.devices.length)
+    
+        UserList = data.devices;
+        while(a < data.devices.length){
+          ListHTML.push(`<b>${data.devices[a]}</b><br>`);  
+          a++;
+        }
+        deviceListElement.innerHTML = ListHTML.toString().replace(/,/g,"");
+        l("ユーザー読み込み完了", 2);
+      })
+      .catch((error) => {
+        //console.error("fetchエラー:", error);
+        l(`ユーザー読み込み失敗:${error}`, 1);
+      });
+    }
+
+    async function setting(){
+      await ReloadDevices();
+      if (!UserList.includes(document.getElementById("user").value)){
+        l("そのユーザーは存在しません。", 1);
+        return;
+      }
+      var setData = JSON.stringify({
+        Lock: document.getElementById("lock").checked,
+        urls: document.getElementById("url").value.toString().split("\n"),
+        domains: document.getElementById("domain").value.toString().split("\n")
+      });
+      console.log("SetData:",setData);
+      fetch("https://tool-webs.onrender.com/scwriter/setData", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          UserName: document.getElementById("user").value,
+          SetData: JSON.parse(setData)
+        })
+      })
+      .then(res => res.text())
+        .then(data => {
+          console.log("ポリシー登録POST成功:", data);
+          l("ポリシー登録成功",2);
+        })
+        .catch(err => {
+          //console.error("ポリシー登録POST失敗:", err);
+          l(`ポリシー登録失敗:${err}`,1)
+        });
+    }
+
+    document.getElementById("ReloadDevices").addEventListener("click", ReloadDevices);
+    document.getElementById("setting").addEventListener("click", setting);
+    document.getElementById("get").addEventListener("click", loadUserData);
+  </script>
+</body>
+</html>

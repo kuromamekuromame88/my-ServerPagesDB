@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <link rel="icon" href="https://tool-webs.onrender.com/icon/icon16x16.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://tool-webs.onrender.com/icon/icon320x320.ico" type="image/x-icon">
+  <title>WebChat</title>
+
+  <!-- Pixi.js（追加） -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.4.0/pixi.min.js"></script>
+  
+  <!-- Markdownパーサー -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <!-- XSS対策用 -->
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+
+  <!-- メインのcss -->
+  <link rel="stylesheet" href="https://tool-webs.onrender.com/chat/style/main.css">
+  
+  <!-- チャットの部分のcss-->
+  <link rel="stylesheet" href="https://tool-webs.onrender.com/chat/style/chat.css">
+  
+  <style>
+
+    /* ----------------- ボード ----------------- */
+    #boardUI {
+      display: none;
+      width: 100%;
+      height: calc(100vh - 60px);
+      background: #ddd;
+      overflow: hidden;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- top-bar -->
+  <div class="top-bar">
+    <a href="/" class="logo">tool-html</a>
+
+    <div class="nav-buttons">
+      <!-- ▼ ルーム選択ドロップダウン -->
+      <div class="room" id="room"></div>
+      <div class="roomselect">
+        <button id="roomToggleBtn">ルーム選択 ▾</button>
+
+        <div id="roomMenu" class="room-menu">
+          <div class="room-list">
+            <!-- JS で動的にルームボタンを追加 -->
+          </div>
+
+          <div class="room-create">
+            <input id="new-room-name" type="text" placeholder="新しいルーム名" />
+            <button id="create-room-btn">＋ 作成</button>
+          </div>
+        </div>
+      </div>
+
+      <button id="openChat">💬 チャット</button>
+      <button id="openBoard">📝 ボード</button>
+      <button id="openNicknameChange">✏️ ニックネーム変更</button>
+    </div>
+  </div>
+
+
+  <!-- ニックネーム初回登録UI -->
+  <div id="usernameSetup" class="username-setup">
+    <h2>ニックネームを入力してください</h2>
+    <p>※他人になりすますなよ</p>
+    <input type="text" id="usernameInput" placeholder="ニックネーム">
+    <button id="saveUsername">登録</button>
+  </div>
+
+  <!-- ニックネーム変更モーダル -->
+  <div id="nicknameChangeModal">
+    <div id="nicknameChangeBox" class="nickname-change-box">
+      <h3>ニックネーム変更</h3>
+      <input type="text" id="newNicknameInput" placeholder="新しいニックネーム">
+      <button id="changeNickname">変更</button>
+      <button id="cancelNicknameChange" style="background:#999;">キャンセル</button>
+    </div>
+  </div>
+
+  <!-- チャットUI -->
+  <div id="chatUI" style="display:none;">
+    <div class="chat-container" id="chatContainer"></div>
+
+    <div class="input-area">
+      <button id="img_upload">画像を送信</button>
+      <!--<button id="img_send">URL画像</button>-->
+      <textarea id="messageInput" placeholder="メッセージを入力 (Shift+Enterで改行)"></textarea>
+      <button id="sendButton">送信</button>
+    </div>
+  </div>
+
+  
+  <div id="userStatusBar" class="user-status-bar">
+    <h3>ユーザー</h3>
+    <div id="userList"></div>
+  </div>
+
+
+  <!-- ボードUI（Pixi.js Canvas） -->
+  <div id="boardUI"></div>
+
+  <script src="https://tool-webs.onrender.com/chat/js/board.js"></script>
+  <script>
+
+    /*
+    // サンプルカード追加
+    createCard(0, 0, 'カードA');
+    createCard(50, 50, 'カードB');
+    */
+
+  </script>
+  <script src="https://tool-webs.onrender.com/chat/js/chat.js"></script>
+</body>
+</html>

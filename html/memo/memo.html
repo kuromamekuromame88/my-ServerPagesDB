@@ -1,0 +1,165 @@
+<html>
+<meta charset="utf-8">
+<head>
+<script>
+function l(text){//Pタグにログを出力する用
+  document.getElementById("log").innerText = text;
+}
+
+function e(){//文字列をcookieに保存
+  if (navigator.cookieEnabled){  // cookieが使えるか確認
+    var tm = "text=" + encodeURIComponent(document.getElementById("tx").value);
+    if(! document.getElementById("tx").value == ""){
+      document.cookie = "text=; max-age=10000000000000000"
+      document.cookie = tm;
+      l("cookieを保存しました！", 1000);
+      setTimeout(l, 1000, "");
+    }else{
+      l("文字列が入力されていません", 1000);
+      setTimeout(l, 1000, "");
+    }
+  }
+}
+
+function h(){//保存されている文字列を貼り付け
+  if (navigator.cookieEnabled){  // cookieが使えるか確認
+    if(! document.cookie == ""){
+      var a = decodeURIComponent(document.cookie);
+      document.getElementById("tx").value = a.substring(5, a.length);
+      l("保存されていた文字列を貼り付けました！");
+      setTimeout(l, 1000, "");
+    }else{
+      l("文字列が保存されていません");
+      setTimeout(l, 1000, "");
+    }
+  }
+}
+
+function c(){//背景色を変更
+  var col = document.getElementById("co").value;
+  document.body.style.backgroundColor = col;
+  l("背景色を変更しました！");
+  setTimeout(l, 1000, "");
+}
+
+function del(){//保存されている文字列を削除
+  if (navigator.cookieEnabled){  // cookieが使えるか確認
+    if(! document.cookie == ""){
+      if(prompt("消去します。よろしいですか？ y/n")== "y"){
+        document.cookie = "text=; max-age=0";
+        l("消去しました。");
+        setTimeout(l, 1000, "");
+      }else{
+        l("消去しませんでした。");
+        setTimeout(l, 1000, "");
+      }
+    }else{
+      l("文字列が保存されていません");
+      setTimeout(l, 1000, "")
+    }
+  }
+}
+</script>
+<style>
+body{background:#ffffff;}
+textarea{background:#ffffff;}
+input{width:100px;height:40px;}
+.log{color:red;}
+.tokushu{width:300px;height:40px;}
+  
+/* ボタンの基本スタイル */
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      text-align: center;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      transition: background-color 0.3s, transform 0.2s;
+      margin-bottom: 10px; /* ボタン同士の間隔を10pxに設定 */
+    }
+
+    /* ボタンの色 */
+    button{
+      background-color: #000000;
+      color: #ffffff;
+    }
+
+    /* ホバー時の効果 */
+    button:hover {
+      transform: scale(1.1);
+    }
+    
+    button:hover {
+      background-color: #0f0f0f;
+    }
+
+    body {
+        margin: 0;
+        padding-top: 80px; /* ヘッダーの高さ分だけ下げる */
+        font-family: sans-serif;
+    }
+
+    .top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 50px;
+      background-color: #333;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      z-index: 1000;
+    }
+
+    .top-bar a {
+      color: white;
+      text-decoration: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+
+    .top-bar a:hover {
+      background-color: #555;
+    }
+      
+    .logo {
+      position: absolute;
+      left: 0;
+    }
+</style>
+<title>簡易的なメモ帳 ver 1.2</title>
+</head>
+<body>
+<div class="top-bar">
+  <a href="/" class="logo"><b>tool-html</b></a>
+</div>
+<center>
+<h1><font size="5">簡易的なメモ帳 ver 1.2</font></h1>
+  <small><b>〜cookie消したらデータはおじゃん〜</b></small>
+<p id="log" class="log"> </p>
+<br>
+<textarea id="tx" rows="10" cols="100"></textarea>
+<br>
+<br>
+<div id="buttons">
+<button id="bt" onclick="e()"><font size="4">保存</font></button>
+<button id="open" onclick="h()"><font size="4">開く</font></button>
+<button id="del" onclick="del()" class="tokushu" style="height:48"><font size="4">保存されている文字列をを削除</font></button>
+<br><br>
+<details class="accordion">
+  <summary class="accordion_title">詳細設定</summary><br>
+  <div class="accordion_contents">
+    <font size="4">背景色の設定：</font>
+    <input type="color" id="co">
+    <button onclick="c()"><font size="4">設定</font></button>
+  </div>
+</details>
+</div>
+</center>
+</body>
+</htmL>

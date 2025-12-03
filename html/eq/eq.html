@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="./style/button.css">
+    <title>英語文法練習アプリ</title>
+    <style>
+      .tit {
+        text-align: center;
+      }
+      .main {
+        text-align: center;
+        margin: 0 auto;
+        max-width: 600px;
+      }
+      .word-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 20px;
+        justify-content: center;
+      }
+      .word {
+        background-color: #f0f0f0;
+        padding: 8px 12px;
+        border-radius: 6px;
+        cursor: grab;
+        user-select: none;
+        border: 1px solid #ccc;
+        -webkit-user-drag: element; /* iOS Safari で dragstart を有効化 */
+        touch-action: none;          /* タッチ操作のデフォルトスクロールを無効化 */
+      }
+      .word.dragging {
+        opacity: 0.5;
+      }
+      .dropzone {
+        background-color: #e6f7ff;
+        min-width: 60px;
+        min-height: 30px;
+        border: 2px dashed #1890ff;
+      }
+      .result {
+        margin-top: 15px;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="tit">
+      <h2>英語の構文練習アプリ</h2>
+      <br>
+      <h3>英語の基本的な構文を練習できるウェブアプリです。</h3>
+    </div>
+    <div class="main">
+      <div class="start_button">
+        <b>ボタンをクリックして開始</b>
+        <br>
+        <button id="startBtn">1: be動詞(現在・過去）</button>
+        <button id="startBtn2">2: 一般動詞（現在）</button>
+        <button id="startBtn3">3: 一般動詞2（過去）</button>
+        <button id="startBtn4">4: 進行形（現在・過去）</button>
+        <button id="startBtn5">5: 名刺/a,an,the</button>
+        <button id="startBtn6">6: 代名詞</button>
+      </div>
+      <div id="quizArea" style="display:none;">
+        <div class="word-container" id="wordContainer"></div>
+        <br>
+        <button id="checkBtn">答え合わせ</button>
+        <div class="result" id="resultArea"></div>
+        <br>
+        <button id="nextBtn">次の問題</button>
+      </div>
+    </div>
+
+<script>
+  const quizData = {
+    beVerb: [
+      { answer: "I am a student.", words: ["I", "am", "a", "student."] },
+      { answer: "My friends are kind.", words: ["My", "friends", "are", "kind."] },
+      { answer: "Yuka was tired last night.", words: ["Yuka", "was", "tired", "last", "night."] },
+      { answer: "We were in the library then.", words: ["We", "were", "in", "the", "library", "then."]},
+      {answer: "We are not busy.", words: ["We","are","not","busy."]},
+      {answer: "I wasn't in Osaka yesterday.", words: ["I","wasn't","in","Osaka","yesterday."]},
+      {answer: "Is this your car? Yes, it is.", words: ["Is","this","your","car?","Yes,","it","is."]},
+      {answer: "Were you busy? No, it wasn't.", words: ["Were","you","busy?","No,","it","wasn't."]},
+      {answer: "What is this? It is a new car.", words: ["What","is","this?","It","is","a","new","car."]}
+    ],
+    presentSimple: [
+      { answer: "I like music.", words: ["I", "like", "music."] },
+      { answer: "Tom plays tennis.", words: ["Tom", "plays", "tennis."] },
+      { answer: "Aki has a new computer.", words: ["Aki", "has", "a", "new", "computer."] },
+      { answer: "I don't play soccer.", words: ["I", "don't", "play", "soccer."] },
+      { answer: "Yuki doesn't play soccer.", words: ["Yuki", "doesn't", "play", "soccer."] },
+      { answer: "Do you have a dog? Yes, I do.", words: ["Do", "you", "have", "a", "dog?", "Yes,", "I", "do."] },
+      { answer: "Does Bob have a dog? No, he doesn't.", words: ["Does", "Bob", "have", "a", "dog?", "No,", "he", "doesn't."] },
+      { answer: "What does Bob have? He has a cap.", words: ["What", "does", "Bob", "have?", "He", "has", "a", "cap."] }
+    ],
+    pastSimple: [
+      { answer: "I played tennis yesterday.", words: ["I", "played", "tennis", "yesterday."] },
+      { answer: "We went to Kobe last year.", words: ["We", "went", "to", "Kobe", "last", "year."] },
+      { answer: "Tom had a dog ten years ago.", words: ["Tom", "had", "a", "dog", "ten", "years", "ago."] },
+      { answer: "I didn't watch TV last night.", words: ["I", "didn't", "watch", "TV", "last", "night."] },
+      { answer: "Did Emi help Ken? Yes, she did.", words: ["Did", "Emi", "help", "Ken?", "Yes,", "she", "did."] },
+      { answer: "Did Ai come here? No, she didn't.", words: ["Did", "Ai", "come", "here?", "No,", "she", "didn't."] },
+      { answer: "What did Ryo study? He studied math.", words: ["What", "did", "Ryo", "study?", "He", "studied", "math."] }
+    ],
+    progressive: [
+      { answer: "I am playing soccer now.", words: ["I", "am", "playing", "soccer."] },
+      { answer: "Jun was studying English then.", words: ["Jun", "was", "studying", "English", "then."] },
+      { answer: "We were running then.", words: ["We", "were", "running", "then."] },
+      { answer: "I am not cooking now.", words: ["I", "am", "not", "cooking", "now."] },
+      { answer: "We were not watching TV then.", words: ["We", "were", "not", "watching", "TV", "then."] },
+      { answer: "Is Yuka sleeping now? Yes, she is.", words: ["Is", "Yuka", "sleeping", "now?", "Yes,", "she", "is."] },
+      { answer: "Were you making dinner then? No, I wasn't.", words: ["Were", "you", "making", "dinner", "then?", "No,", "I", "wasn't."] },
+      { answer: "What are you doing now? I am studying.", words: ["What", "are", "you", "doing", "now?", "I", "am", "studying."] }
+    ],
+    articles: [
+      { answer: "I have a pen.", words: ["I", "have", "a", "pen."] },
+      { answer: "The sun is bright.", words: ["The", "sun", "is", "bright."] }
+    ],
+    pronouns: [
+      { answer: "This is mine.", words: ["This", "is", "mine."] },
+      { answer: "We love them.", words: ["We", "love", "them."] }
+    ]
+  };
+
+  let currentQuestion = null;
+
+  // ボタンとカテゴリを紐づけ
+  document.getElementById('startBtn').addEventListener('click', () => startQuiz('beVerb'));
+  document.getElementById('startBtn2').addEventListener('click', () => startQuiz('presentSimple'));
+  document.getElementById('startBtn3').addEventListener('click', () => startQuiz('pastSimple'));
+  document.getElementById('startBtn4').addEventListener('click', () => startQuiz('progressive'));
+  document.getElementById('startBtn5').addEventListener('click', () => startQuiz('articles'));
+  document.getElementById('startBtn6').addEventListener('click', () => startQuiz('pronouns'));
+
+  var gcat = null;
+  
+  document.getElementById("nextBtn").style.display = "none";
+  
+  function startQuiz(category) {
+    document.getElementById("nextBtn").style.display = "none";
+    gcat = category;
+    const questions = quizData[category];
+    currentQuestion = questions[Math.floor(Math.random() * questions.length)];
+    const shuffled = shuffleArray([...currentQuestion.words]);
+    renderWords(shuffled);
+    document.getElementById('quizArea').style.display = 'block';
+    document.getElementById('resultArea').textContent = '';
+  }
+
+  function renderWords(words) {
+    const container = document.getElementById('wordContainer');
+    container.innerHTML = '';
+    words.forEach((word, index) => {
+      const span = document.createElement('div');
+      span.textContent = word;
+      span.className = 'word';
+      span.setAttribute('draggable', true);
+
+      span.addEventListener('dragstart', (e) => {
+        span.classList.add('dragging');
+        e.dataTransfer.setData('text/plain', index);
+      });
+
+      span.addEventListener('dragend', () => {
+        span.classList.remove('dragging');
+      });
+
+      container.appendChild(span);
+    });
+
+    container.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      const draggingEl = container.querySelector('.dragging');
+      const afterElement = getDragAfterElement(container, e.clientX);
+      if (afterElement == null) {
+        container.appendChild(draggingEl);
+      } else {
+        container.insertBefore(draggingEl, afterElement);
+      }
+    });
+  }
+
+
+  function getDragAfterElement(container, x) {
+    const draggableElements = [...container.querySelectorAll('.word:not(.dragging)')];
+    return draggableElements.reduce((closest, child) => {
+      const box = child.getBoundingClientRect();
+      const offset = x - box.left - box.width / 2;
+      if (offset < 0 && offset > closest.offset) {
+        return { offset: offset, element: child };
+      } else {
+        return closest;
+      }
+    }, { offset: Number.NEGATIVE_INFINITY }).element;
+  }
+
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+  document.getElementById('checkBtn').addEventListener('click', () => {
+    const arrangedWords = [...document.querySelectorAll('#wordContainer .word')].map(el => el.textContent);
+    const arrangedSentence = arrangedWords.join(' ');
+    if (arrangedSentence === currentQuestion.answer) {
+      document.getElementById('resultArea').textContent = '正解！';
+      document.getElementById('resultArea').style.color = 'green';
+      document.getElementById("nextBtn").style.display = "inline-block";
+    } else {
+      document.getElementById('resultArea').textContent = '不正解。正しい答え: ' + currentQuestion.answer + 'もう一度並べ直してみよう！';
+      document.getElementById('resultArea').style.color = 'red';
+      document.getElementById("nextBtn").style.display = "none";
+    }
+  });
+
+  document.getElementById('nextBtn').addEventListener('click', () => {
+    if(!gcat) return;
+    startQuiz(gcat);
+  });
+</script>
+
+  </body>
+</html>

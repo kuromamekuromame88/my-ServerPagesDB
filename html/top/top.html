@@ -1,0 +1,85 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="./style/button.css">
+    <title>自作ツール</title>
+    <link rel="icon" href="https://tool-webs.onrender.com/icon/icon16x16.ico"　type="image/x-icon">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://tool-webs.onrender.com/icon/icon320x320.ico"　type="image/x-icon">
+    <style>
+
+      div{text-align: center;}
+
+      body {
+        margin: 0;
+        padding-top: 80px; /* ヘッダーの高さ分だけ下げる */
+        font-family: sans-serif;
+        background:#ffffff;
+      }
+
+      .top-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 50px;
+        background-color: #333;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        z-index: 1000;
+      }
+
+      .top-bar a {
+        color: white;
+        text-decoration: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+      }
+
+      .top-bar a:hover {
+        background-color: #555;
+      }
+      
+      .logo {
+        position: absolute;
+        left: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="top-bar">
+      <a href="/" class="logo"><b>tool-webs</b></a>
+    </div>
+    <div id="description">
+      <h4>Node.js + Fastifyによって稼働しているWebサーバーです。</h4>
+    </div>
+    <div id="links">
+      <div class="tools">
+        <h3>ツール</h3>
+        <br>
+        <a href="./youtube"><button>youtube</button></a>
+        <a href="./chat"><button>WebChat</button></a>
+        <a href="./dot"><button>ドット絵メーカー</button></a>
+        <a href="./imgeditor"><button>画像エディター</button></a>
+        <a href="./webproxy"><button>webproxy</button></a>
+        <a href="./qr"><button>QR</button></a>
+        <a href="./tokutenkeisan"><button>得点計算ツール</button></a>
+        <a href="./memo"><button>メモ</button></a>
+      </div>
+      <div class="games">
+        <h3>今後開発するかも</h3>
+        <br>
+      </div>
+    </div>
+    <div id="notice">
+      <br>
+      <b>2025/5/28 ・サーバーをglitchからrenderに移行しました。</b>
+      <br>
+      <b>2025/9/23 ・@fastify/compress導入により、ページやライブラリの読み込み速度を高速化</b>
+      <br>
+    </div>
+  </body>
+</html>

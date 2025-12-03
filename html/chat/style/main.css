@@ -1,0 +1,184 @@
+body {
+  margin: 0;
+  padding-top: 60px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background-color: #f8f8f8;
+}
+
+/* ----------------- top-bar ----------------- */
+
+.top-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background-color: #222;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+  z-index: 1000;
+}
+
+.top-bar .logo {
+  font-size: 1.2em;
+  font-weight: bold;
+  text-decoration: none;
+  color: white;
+}
+
+.nav-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.top-bar button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 5px;
+  background-color: #333;
+  color: white;
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: all 0.2s ease;
+}
+
+.top-bar button:hover {
+  background-color: #555;
+}
+
+
+
+.room{
+  position: relative;
+  top: 8px;
+  font-size: 1.2em;
+  font-weight: bold;
+  text-decoration: none;
+  color: white;
+}
+
+/* ▼ メニューボタン */
+.roomselect {
+  position: relative;
+}
+
+/* ▼ ルーム選択メニュー（デフォルト非表示） */
+.room-menu {
+  display: none;
+  position: absolute;
+  top: 40px;
+  left: 0;
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 8px;
+  width: 250px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+  z-index: 999;
+}
+
+/* ▼ ルーム一覧 */
+.room-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.room-btn {
+  padding: 8px;
+  background: #f2f2f2;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+.room-btn:hover {
+  background: #e2e2e2;
+}
+
+/* ▼ 新規ルーム */
+.room-create {
+  display: flex;
+  gap: 6px;
+}
+
+#new-room-name {
+  width: 160px;
+  flex: 1;
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+#create-room-btn {
+  padding: 6px 10px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+#create-room-btn:hover {
+  opacity: 0.9;
+}
+
+
+
+
+
+
+.user-status-bar {
+  position: fixed;
+  top: 60px;
+  right: 0;
+  width: 220px;
+  
+  height: 100vh;
+  background: #f4f4f4;
+  border-left: 1px solid #ccc;
+  padding: 10px;
+  overflow-y: auto;
+  box-shadow: -2px 0 6px rgba(0,0,0,0.1);
+  z-index: -1;
+}
+
+.user-status-bar h3 {
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+.user-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 4px;
+  border-bottom: 1px solid #ddd;
+}
+
+.user-item .status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.status-online {
+  background: #4caf50;
+}
+
+.status-away {
+  background: #ffc107;
+}
+
+.status-offline {
+  background: #f44336;
+}
+
+.user-nick {
+  flex-grow: 1;
+  font-size: 14px;
+}

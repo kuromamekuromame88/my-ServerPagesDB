@@ -1,0 +1,633 @@
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <link rel="icon" href="https://tool-webs.onrender.com/icon/icon16x16.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://tool-webs.onrender.com/icon/icon320x320.ico" type="image/x-icon">
+  <title>youtubePlayer</title>
+  <style>
+    a{
+      color: black;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    
+    .ifr{
+      text-align: center;
+      
+    }
+    
+    .tt{
+      text-align: center;
+    }
+    
+    input{
+      height:30;
+      }
+      
+    /* ボタンの基本スタイル */
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      text-align: center;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      transition: background-color 0.3s, transform 0.2s;
+      margin-bottom: 10px;
+    }
+      			
+    button{
+      background-color: #000000;
+      color: #ffffff;
+    }
+      			
+    button:hover {
+      transform: scale(1.1);
+      background-color: #0f0f0f;
+    }
+      
+    input[type="checkbox"].slide {
+      --size: 25px;
+      --scale: 0.6;
+      appearance: none;
+      cursor: pointer;
+      margin: 0;
+      height: var(--size);
+      aspect-ratio: 2;
+      border-radius: var(--size);
+      background-color: #444444;
+    }
+      			
+    input[type="checkbox"].slide::before {
+      content: "";
+      display: block;
+      height: var(--size);
+      aspect-ratio: 1;
+      border-radius: var(--size);
+      background-color: #FFFFFF;
+      transform: scale(var(--scale));
+      transition: 0.2s;
+    }
+      			
+    input[type="checkbox"].slide:checked {
+      background-color: #24B441;
+    }
+      			
+    input[type="checkbox"].slide:checked::before {
+      transform: translateX(var(--size)) scale(var(--scale));
+    }
+      
+    body {
+      margin: 0;
+      padding-top: 80px;
+      font-family: sans-serif;
+    }
+      
+    .top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 50px;
+      background-color: #333;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      z-index: 1000;
+    }
+      			
+    .top-bar a {
+      color: white;
+      text-decoration: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+      			
+    .top-bar a:hover {
+      background-color: #555;
+    }
+      			
+    .logo {
+      position: absolute;
+      left: 0;
+    }
+      
+    /* サイドバー */
+    .sidebar {
+      position: fixed;
+      top: 50px; /* ヘッダー下から */
+      right: 0;
+      width: 40%;
+      height: 100%;
+      background-color: #f4f4f4;
+      box-shadow: -2px 0 5px rgba(0,0,0,0.3);
+      overflow-x: hidden;
+      transition: width 0.3s ease;
+      padding: 20px;
+    }
+      	
+    .sidebar.collapsed {
+      width: 0;
+      padding: 0;
+    }
+      			
+    .sidebar_title{
+      text-align:center;
+    }
+      			
+    .toggle-btn {
+      position: fixed;
+      top: 60px;
+      right: 10px;
+      z-index: 2000;
+      background: #333;
+      color: #fff;
+      border-radius: 5px;
+      padding: 8px 12px;
+    }
+      
+    .video_iframe {
+      width: 30%;
+      height: 200px;
+    }
+      
+    .playlist{
+      max-height: 450px; /* スクロール範囲 */
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+      
+    .play-item {
+      display: flex;                /* 横並び */
+      align-items: center;          /* 縦位置を中央に */
+      justify-content: space-between; /* ボタンを右側へ寄せる */
+      background: #e9e9e9;
+      padding: 8px;
+      border-radius: 8px;
+      transition: background 0.2s;
+    }
+      
+    .play-item:hover {
+      background-color: #d5d5d5;
+    }
+      
+    .thumb {
+      width: 240px;
+      height: 136px;
+      border-radius: 10px;
+      object-fit: cover;
+      background: #000;
+    }
+
+    .remove {
+      background: #ff3333;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      padding: 4px 10px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .remove:hover {
+      background: #cc0000;
+    }
+
+    /* 🔍 検索トグルボタン */
+    .toggle-search-btn {
+      position: fixed;
+      bottom: 15px;
+      right: 10px;
+      z-index: 2000;
+      background: #333;
+      color: #fff;
+      border-radius: 5px;
+      padding: 10px 15px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+    }
+    
+    .toggle-search-btn:hover {
+      background: #555;
+      transform: scale(1.05);
+    }
+
+    /* 🔽 下部スライドパネル */
+    .search-panel {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: -80%;
+      height: 80%;
+      background-color: #f4f4f4;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
+      transition: bottom 0.4s ease;
+      padding: 20px;
+      overflow-y: auto;
+      z-index: 1500;
+    }
+
+    /* 開いた状態 */
+    .search-panel.open {
+      bottom: -5%;
+    }
+
+    /* 閉じた状態 */
+    .search-panel.collapsed {
+      bottom: -100%;
+    }
+
+    /* 検索ヘッダー部分 */
+    .search-header {
+      position: relative; /* 結果を内側に収めるために必要 */
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #333;
+      color: #fff;
+      padding: 0px 30px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+    
+    .search-header button {
+      background: transparent;
+      border: none; /* 必要なら枠も消す */
+      color: #fff;
+      height: 40px;
+      width: 40px;
+      padding: 6px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .search-header button:hover {
+      background: #555;
+    }
+
+    /*ここから検索エンジンのcssの設定*/
+    /*.gsc-control-cse*/
+    /*.gsc-wrapper*/
+    /* 親パネル */
+
+.search-div {
+  margin-bottom: 20px;
+  height: 77% !important;
+  overflow: visible; /*hiddenだと隠れる*/
+  position: relative;
+}
+
+.gsc-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.gsc-expansionArea {
+  flex: 1 1 auto;
+  overflow-y: scroll;
+}
+
+/* ページネーション */
+.gsc-cursor-box {
+  flex: 0 0 auto;
+  position: sticky;
+  bottom: 0;
+  background: white;
+  z-index: 10;
+}
+
+
+
+
+    /*検索欄*/
+    div#gsc-iw-id1 {
+      border-radius: 100px !important;
+    }
+
+    .gsc-input{
+      padding: 5px !important;
+    }
+
+    .gsc-search-button-v2{
+      margin-top: 7px !important;
+      padding: 10px 27px !important;
+      border-radius: 10px !important;
+    }
+
+    .gsib_b {
+      position: relative !important;
+      left: -10px !important; /* 左に10pxずらす */ 
+    }
+
+    .gscb_a{
+      font-size: 40px !important;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="top-bar">
+    <a href="/" class="logo">
+      <b>tool-html</b>
+    </a>
+  </div>
+  <button class="toggle-btn" onclick="toggleSidebar()">☰プレイリスト</button>
+  <div class="tt">
+    <div id="title">
+      <h1>youtube_player</h1>
+    </div>
+    <h5>URLまたは動画IDを入力<br>下の検索ボタンからも検索可<br>右上のボタンでプレイリストを作れるよ</h5>
+  </div>
+  <div class="ifr">URL:
+    <input id="ur" type="text">
+    <button onclick="a()" id="see">
+      <b>見る</b>
+    </button>
+    <details class="accordion">
+      <summary class="accordion_title">詳細設定（実装中）</summary>
+      <br>
+      <div class="accordion_contents">
+        <button onclick="open_nw()">履歴の残らないタブを開く</button>
+        <button onclick="embedcopy()">埋め込みコードをコピー</button>
+      </div>
+    </details>
+    <p id="log">
+      <b>URLを入力してください</b>
+    </p>
+    <br>
+    <iframe id="video_iframe" class="video_iframe" src="about:blank" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+    </iframe>
+  </div>
+  <!-- サイドバー -->
+  <div id="sidebar" class="sidebar collapsed">
+    <div class="sidebar_title">
+      <h2>プレイリスト</h2>
+      <br>
+    </div>
+    <button onclick="add_playlist()">＋現在の動画をプレイリストに追加</button>
+    <input type="checkbox" class="slide" id="loop">
+    <div id="playlist" class="playlist"></div>
+  </div>
+  
+  <!-- 検索トグルボタン -->
+  <button class="toggle-search-btn" onclick="toggleSearch()">🔍検索</button>
+
+  <!-- 下部の検索パネル -->
+  <div id="searchPanel" class="search-panel collapsed">
+    <div class="search-header">
+      <h2>動画検索</h2>
+      <button onclick="toggleSearch()">✕</button>
+    </div>
+    <!-- Googleカスタム検索ボックス＋結果 -->
+    <div class="search-div">
+      <div class="gcse-search"></div>
+    </div>
+  </div>
+
+  <!-- Google Custom Search埋め込み -->
+  <script async src="https://cse.google.com/cse.js?cx=a18efe66248354aa4"></script>
+
+  <script>
+    
+    window.onload = function(){
+      const url = new URL(window.location.href);
+      const params = new URLSearchParams(url.search);
+      let value = params.get('url');
+      if(value){
+        document.getElementById("ur").value = value;
+      	a();
+      }
+    }
+      
+    document.addEventListener('keypress', keypress_ivent);
+      
+    function keypress_ivent(e) {
+      var ur = document.getElementById("ur");
+      if(e.code === 'Enter'){
+        if(document.activeElement == ur){
+          if(ur.value) a();
+        }
+      }
+    }
+      			
+    function toggleSidebar() {
+      document.getElementById("sidebar").classList.toggle("collapsed");
+    }
+
+    function toggleSearch() {
+      const panel = document.getElementById("searchPanel");
+      panel.classList.toggle("open");
+      panel.classList.toggle("collapsed");
+    }
+
+      
+    // ====== 既存のJS（省略せず移植） ======
+    function open_nw(){
+      const newWindow = window.open("about:blank");
+      if(newWindow){
+        fetch("./youtube")  // 同一ページ
+          .then(res => res.text())
+          .then(html => {
+            const newWin = window.open("about:blank");
+            newWin.document.write(html);
+            newWin.document.close();
+          });
+        newWindow.close();
+      }
+    }
+      
+    const playlist = document.getElementById("playlist");
+    
+    function extractVideoId(url) {
+      const match = url.match(/[?&]v=([^&#]+)/) || url.match(/youtu\.be\/([^&#]+)/);
+      var Amatch = match ? match[1] : null;
+      if(!Amatch){
+        Amatch = url.substring(url.length-11, url.length);
+        console.log(`検知結果: ${Amatch}`);
+        return Amatch;
+      }else{
+        console.log(`検知結果: ${Amatch}`);
+        return Amatch;
+      }
+    }
+
+    function p(id){
+      document.getElementById("ur").value = id;
+      a();
+    }
+      			
+    function a(){
+      var irm = document.getElementById("video_iframe");
+      var url = document.getElementById("ur").value;
+      var tempURL = extractVideoId(url);
+      if(tempURL) {
+        irm.src=`https://www.youtube-nocookie.com/embed/${tempURL}?autoplay=1&mute=0`;
+        log("動画IDは正常です","black");
+        return;
+      }
+      if(url == ''){
+        irm.src='';
+        log("有効なURLまたは動画IDを入力してください","red");
+        return;
+      }else {
+        url = url.substring(url.length-11, url.length);
+        console.log(url);
+        irm.src=`https://www.youtube-nocookie.com/embed/${url}`;
+        log("リンクは正常です","black");
+        return;
+      }
+    }
+      			
+    function log(m, c){
+      var l = document.getElementById("log");
+      l.style.color = c
+      l.innerHTML = `<b>${m}`;
+    }
+      
+    const defaultPlaylist = [];
+      
+    // 🎯 localStorageキー
+    const STORAGE_KEY = "playlistUrls";
+      
+    // 🎬 プレイリスト読み込み
+    function loadPlaylist() {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    }
+      		
+    // 💾 プレイリスト保存
+    function savePlaylist(playlist) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(playlist));
+    }
+      
+    // 🖼️ プレイリスト描画
+    function renderPlaylist() {
+      const container = document.getElementById("playlist");
+      const playlist = loadPlaylist();
+      container.innerHTML = "";
+      playlist.forEach((url, index) => {
+        const id = extractVideoId(url);
+        const thumb = `https://i.ytimg.com/vi/${id}/mqdefault.jpg`;
+        container.insertAdjacentHTML("beforeend", `
+          <div class="item">
+            <button onclick="p('${id}')">
+              <img src="${thumb}" alt="" title="この動画を読み込む">
+            </button>
+            <button class="remove" onclick="removeVideo(${index})">✕</button>
+          </div>
+        `);
+      });
+      if (playlist.length === 0) {
+        container.innerHTML = "<p>プレイリストが空です。</p>";
+      }
+    }
+      
+    // ➕ 追加
+    function addVideo(url) {
+      const playlist = loadPlaylist();
+      playlist.push(url);
+      savePlaylist(playlist);
+      renderPlaylist();
+    }
+      
+    // ❌ 個別削除
+    function removeVideo(index) {
+      const playlist = loadPlaylist();
+      playlist.splice(index, 1);
+      savePlaylist(playlist);
+      renderPlaylist();
+    }
+      
+    // 🔄 初期化
+    function resetPlaylist() {
+      if (confirm("プレイリストを初期化しますか？")) {
+        savePlaylist(defaultPlaylist);
+        renderPlaylist();
+      }
+    }
+
+    function add_playlist() {
+      var data = document.getElementById("video_iframe");
+      var ur = document.getElementById("ur");
+      var ID = extractVideoId(ur.value);
+      if(!ur.value){
+      	console.error("動画のURLが未指定です！");
+      }else{
+        if(!extractVideoId(ur.value)){
+          console.error("URLが破損しています");
+        }else{
+      		addVideo(ur.value);
+        }
+      }
+    }
+      
+    // 初回描画
+    renderPlaylist();
+
+    // 🔽 Google検索結果クリック監視
+    document.addEventListener("click", function (e) {
+      // クリック対象がリンク(<a>)で、かつ検索結果内のものか確認
+      const link = e.target.closest("a");
+      if (!link){
+        //console.log("対象外！");
+        return;
+      }
+
+      // CSE検索結果領域内のクリックだけ処理
+      if (link.closest(".gsc-resultsbox-visible")) {
+        const href = link.href;
+        var decodedurl = decodeURIComponent(link.href);
+        //console.log(decodedurl);
+        // YouTube動画のリンクならiframeで再生
+        if (href.includes("youtube.com/watch") || href.includes("youtu.be/")) {
+          e.preventDefault(); // 既定動作（リンク遷移）を止める
+          //https://www.google.com/url?client=internal-element-cse&cx=a18efe66248354aa4&q=https://www.youtube.com/watch?v=ME87dbGdD8E&sa=U&ved=2ahUKEwiu37XaidyQAxWPp1YBHRtpNIYQFnoECAIQAg&usg=AOvVaw2o3r--iRZRPinVBl1Fxobm&fexp=73177442,73177443
+          var url = new URL(href);
+          var params = new URLSearchParams(url.search);
+          var value = params.get('q');
+          console.log(value);
+        
+          const videoId = value ? extractVideoId(value) : extractVideoId(href);
+        
+          if (videoId) {
+            var vu = `https://youtube.com/watch?v=${videoId}`;
+            //console.log(vu);
+            document.getElementById("ur").value = vu;
+            a();
+            log(`検索から動画を読み込みました (${videoId})`, "black");
+
+            // 🔒 検索パネルを自動的に閉じる
+            document.getElementById("searchPanel").classList.remove("open");
+            document.getElementById("searchPanel").classList.add("collapsed");
+          }
+        }
+      }
+    });
+
+    
+    async function embedcopy(){    
+      try{
+        var url = document.getElementById("ur").value;
+        var tempURL = extractVideoId(url);
+        if(!tempURL){
+          alert("URLまたはIDを入力してください");
+          return;
+        }
+        await navigator.clipboard.writeText(`<iframe src="https://www.youtube-nocookie.com/embed/${tempURL}" width="560" height="315" class="video_iframe" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`);
+        alert('📋 コピーしました！');
+      }catch(e){
+        alert('❌ コピーに失敗しました: '+e.message);
+      }
+    }
+  </script>
+</body>
+
+</html>

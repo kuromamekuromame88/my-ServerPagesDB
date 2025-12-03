@@ -1,0 +1,545 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>ドット絵メーカー</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #ffffff;
+      color: #333;
+      padding: 20px;
+      padding-top: 75px; /* ヘッダーの高さ分だけ下げる */
+      margin: 0;
+      line-height: 1.5
+    }
+
+    .top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 50px;
+      background-color: #333;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      z-index: 1000;
+    }
+
+    .top-bar a {
+      color: white;
+      text-decoration: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+
+    .top-bar a:hover {
+      background-color: #555;
+    }
+
+    .logo {
+      position: absolute;
+      left: 0;
+    }
+
+    #grid {
+      display: grid;
+      grid-template-columns: repeat(var(--size), 20px);
+      grid-template-rows: repeat(var(--size), 20px);
+      background-color: #ccc;
+      width: fit-content;
+      border: 2px solid #999;
+    }
+
+    .pixel {
+      width: 18px;
+      height: 18px;
+      margin: 1px; /* グリッド間の隙間 */
+      background-color: white;
+      box-sizing: content-box; /* borderやpaddingを含めない */
+    }
+
+    .pixel.transparent {
+      background-color: transparent;
+      background-image:
+        linear-gradient(45deg, #bbb 25%, transparent 25%, transparent 75%, #bbb 75%),
+        linear-gradient(45deg, #bbb 25%, transparent 25%, transparent 75%, #bbb 75%);
+      background-size: 20px 20px;
+      background-position: 0 0, 10px 10px;
+    }
+
+
+
+    #palette {
+      margin: 10px 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .swatch {
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+      border: 1px solid #666;
+      cursor: pointer;
+      box-shadow: inset 0 0 1px rgba(0,0,0,0.5);
+    }
+
+    .swatch.transparent {
+      background-color: transparent;
+      background-image:
+        linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%),
+        linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%);
+      background-size: 10px 10px;
+      background-position: 0 0, 5px 5px;
+    }
+
+    button {
+      margin: 4px 4px 4px 0;
+      padding: 5px 12px;
+      font-size: 14px;
+      border-radius: 4px;
+      border: none;
+      background-color: #000;
+      color: white;
+      cursor: pointer;
+    }
+    
+    input[type="file"] {
+      margin: 2px 2px 2px 0;
+      padding: 4px 12px;
+      font-size: 14px;
+      border-radius: 4px;
+      border: none;
+      background-color: #000;
+      color: white;
+      cursor: pointer;
+    }
+
+    input[type="color"],
+    input[type="number"] {
+      padding: 4px 6px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+    
+    .tit{
+      text-align:center;
+    }
+    
+    .tools{
+      border: 5px solid #000000;
+      text-align:center;
+    }
+    
+    .palette{
+      border: 2.5px solid #000000;
+      text-align:center;
+      padding: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="top-bar">
+    <a href="https://tool-webs.onrender.com/" class="logo"><b>tool-html</b></a>
+  </div>
+  
+  <div class="tit">
+    <h2>ドット絵メーカー</h2>
+  </div>
+  <div class="tools">
+    <b>ツール</b>
+    <br>
+    色: <input type="color" id="colorPicker" value="#000000">
+    サイズ: <input type="number" id="sizeInput" value="16" min="1" max="64">
+    <button id="applySize">サイズ更新</button>
+    <br>
+    <button id="clear">クリア</button>
+    <button id="eraser">消しゴム</button>
+    <button onclick="uneraseMode()">通常描画</button>
+    <button id="fill">塗りつぶし</button>
+    <button id="fillRandom">ランダム塗り</button>
+    <button id="undo">戻る</button>
+    <button id="redo">進む</button>
+    <button id="save">PNG保存</button>
+    <button id="addPalette">+ パレット追加</button>
+    <button id="addTransparent">+ 透明色</button>
+    <button id="eyedropper">スポイト</button>
+    <input type="file" id="fileInput">
+    <br><br>
+    ランダム色範囲:
+    最小色 <input type="color" id="minColor" value="#000000">
+    最大色 <input type="color" id="maxColor" value="#ffffff">
+  </div>
+
+  <div id="palette" class="palette">
+    <b>パレット</b>
+  </div>
+  <div id="grid"></div>
+  <canvas id="canvas" style="display:none;"></canvas>
+  
+
+  <script>
+    const grid = document.getElementById('grid');
+    const palette = document.getElementById('palette');
+    const canvas = document.getElementById('canvas');
+    const colorPicker = document.getElementById('colorPicker');
+    const sizeInput = document.getElementById('sizeInput');
+    const minColor = document.getElementById('minColor');
+    const maxColor = document.getElementById('maxColor');
+
+    //ボタンのイベントリスナー用
+    const applySize = document.getElementById('applySize');
+    const eraser = document.getElementById('eraser');
+    const fill = document.getElementById('fill');
+    const fillRandom = document.getElementById('fillRandom');
+    const undoBtn = document.getElementById('undo');
+    const redoBtn = document.getElementById('redo');
+    const clear = document.getElementById('clear');
+    const save = document.getElementById('save');
+    const addPalette = document.getElementById('addPalette');
+    const addTransparent = document.getElementById('addTransparent');
+    const eyedropper = document.getElementById('eyedropper');
+
+    //フラグ・配列など
+    let currentColor = colorPicker.value;
+    let eraseMode = false;
+    let fillMode = false;
+    let fillRandomMode = false;
+    let eyedropperMode = false;
+    let isDrawing = false;
+    let lastDrawIndex = null;
+    let pixels = [];
+    let colorData = [];
+    let size = parseInt(sizeInput.value);
+    let undoStack = [];
+    let redoStack = [];
+
+    //通常描画に戻す関数
+    function uneraseMode(){
+      eraseMode = false;
+    }
+
+    
+    function pushUndo() {
+      undoStack.push([...colorData]);
+      redoStack = [];
+    }
+
+    //行った操作を戻す関数
+    function undo() {
+      if (undoStack.length === 0) return;
+      redoStack.push([...colorData]);
+      restoreColorData(undoStack.pop());
+    }
+
+    //行った操作を進める関数
+    function redo() {
+      if (redoStack.length === 0) return;
+      undoStack.push([...colorData]);
+      restoreColorData(redoStack.pop());
+    }
+
+    function restoreColorData(data) {
+      data.forEach((color, i) => {
+        colorData[i] = color;
+        if (color === null) {
+          pixels[i].style.backgroundColor = 'transparent';
+          pixels[i].classList.add('transparent');
+        } else {
+          pixels[i].style.backgroundColor = color;
+          pixels[i].classList.remove('transparent');
+        }
+      });
+    }
+
+    //グリッド描画用の関数
+    function createGrid() {
+      size = Math.max(1, Math.min(64, parseInt(sizeInput.value)));
+      grid.innerHTML = '';
+      pixels = [];
+      colorData = [];
+      lastDrawIndex = null;
+
+      grid.style.gridTemplateColumns = `repeat(${size}, 20px)`;
+      grid.style.gridTemplateRows = `repeat(${size}, 20px)`;
+      grid.style.setProperty('--size', size); // createGrid 内で
+
+
+      for (let i = 0; i < size * size; i++) {
+        const pixel = document.createElement('div');
+        pixel.className = 'pixel transparent';
+        colorData[i] = null;
+
+        pixel.addEventListener('mousedown', (e) => {
+          e.preventDefault();
+
+          if (eyedropperMode) {
+            const picked = colorData[i];
+            addSwatch(picked);
+            eyedropperMode = false;
+            return;
+          }
+
+          pushUndo();
+          handleDraw(i, e);
+        });
+
+        pixel.addEventListener('mouseover', () => {
+          if (isDrawing && !fillMode && !fillRandomMode) {
+            drawPixel(i);
+            lastDrawIndex = i;
+          }
+        });
+
+        pixels.push(pixel);
+        grid.appendChild(pixel);
+      }
+
+      grid.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        const touch = e.touches[0];
+        const target = document.elementFromPoint(touch.clientX, touch.clientY);
+        const index = pixels.indexOf(target);
+        if (index !== -1) {
+          pushUndo();
+          if (fillMode) floodFill(index);
+          else if (fillRandomMode) floodFillRandom(index);
+          else {
+            drawPixel(index);
+            isDrawing = true;
+            lastDrawIndex = index;
+          }
+        }
+      }, { passive: false });
+
+      grid.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        const touch = e.touches[0];
+        const target = document.elementFromPoint(touch.clientX, touch.clientY);
+        const index = pixels.indexOf(target);
+        if (index !== -1 && isDrawing) {
+          drawPixel(index);
+          lastDrawIndex = index;
+        }
+      }, { passive: false });
+
+      grid.addEventListener('touchend', () => {
+        isDrawing = false;
+      });
+
+      pushUndo();
+    }
+
+    function drawPixel(i) {
+      const color = eraseMode ? '#ffffff' : currentColor;
+      if (color === null) {
+        pixels[i].style.backgroundColor = 'transparent';
+        pixels[i].classList.add('transparent');
+        colorData[i] = null;
+      } else {
+        pixels[i].style.backgroundColor = color;
+        pixels[i].classList.remove('transparent');
+        colorData[i] = color;
+      }
+    }
+
+    function handleDraw(i, e) {
+      if (fillRandomMode) floodFillRandom(i);
+      else if (fillMode) floodFill(i);
+      else {
+        if (e.shiftKey && lastDrawIndex !== null) drawLine(lastDrawIndex, i);
+        else drawPixel(i);
+        isDrawing = true;
+        lastDrawIndex = i;
+      }
+    }
+
+    //範囲塗りつぶし
+    function floodFill(i) {
+      const target = colorData[i];
+      if (target === currentColor) return;
+      const queue = [i], visited = new Set();
+      while (queue.length) {
+        const index = queue.shift();
+        if (visited.has(index) || colorData[index] !== target) continue;
+        visited.add(index);
+        drawPixel(index);
+        const x = index % size, y = Math.floor(index / size);
+        if (x > 0) queue.push(index - 1);
+        if (x < size - 1) queue.push(index + 1);
+        if (y > 0) queue.push(index - size);
+        if (y < size - 1) queue.push(index + size);
+      }
+    }
+
+    //範囲ランダム塗りつぶし
+    function floodFillRandom(i) {
+      const target = colorData[i];
+      const queue = [i], visited = new Set();
+      const min = hexToRgb(minColor.value), max = hexToRgb(maxColor.value);
+      while (queue.length) {
+        const index = queue.shift();
+        if (visited.has(index) || colorData[index] !== target) continue;
+        visited.add(index);
+        const rand = randomColor(min, max);
+        colorData[index] = rand;
+        pixels[index].style.backgroundColor = rand;
+        pixels[index].classList.remove('transparent');
+        const x = index % size, y = Math.floor(index / size);
+        if (x > 0) queue.push(index - 1);
+        if (x < size - 1) queue.push(index + 1);
+        if (y > 0) queue.push(index - size);
+        if (y < size - 1) queue.push(index + size);
+      }
+    }
+
+    //HEX(16進数のカラーコード)をRGBに変換する関数
+    function hexToRgb(hex) {
+      const n = parseInt(hex.slice(1), 16);
+      return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
+    }
+
+    //ランダムな色を生成する関数
+    function randomColor(min, max) {
+      const r = Math.floor(Math.random() * (max.r - min.r + 1)) + min.r;
+      const g = Math.floor(Math.random() * (max.g - min.g + 1)) + min.g;
+      const b = Math.floor(Math.random() * (max.b - min.b + 1)) + min.b;
+      return `rgb(${r},${g},${b})`;
+    }
+
+    //線を引く関数
+    function drawLine(from, to) {
+      let x0 = from % size, y0 = Math.floor(from / size);
+      let x1 = to % size, y1 = Math.floor(to / size);
+      const dx = Math.abs(x1 - x0), dy = Math.abs(y1 - y0);
+      const sx = x0 < x1 ? 1 : -1, sy = y0 < y1 ? 1 : -1;
+      let err = dx - dy;
+      while (true) {
+        drawPixel(y0 * size + x0);
+        if (x0 === x1 && y0 === y1) break;
+        const e2 = 2 * err;
+        if (e2 > -dy) { err -= dy; x0 += sx; }
+        if (e2 < dx) { err += dx; y0 += sy; }
+      }
+    }
+
+    function addSwatch(color) {
+      const swatch = document.createElement('div');
+      swatch.className = color === null ? 'swatch transparent' : 'swatch';
+      swatch.title = color === null ? '透明' : color;
+      if (color !== null) swatch.style.backgroundColor = color;
+      swatch.onclick = () => {
+        currentColor = color;
+        if (color) colorPicker.value = rgbToHex(color);
+        eraseMode = fillMode = fillRandomMode = false;
+      };
+      swatch.oncontextmenu = (e) => { e.preventDefault(); swatch.remove(); };
+      palette.appendChild(swatch);
+    }
+
+    //RGBをHEX(16進数のカラーコード)に変換する関数
+    function rgbToHex(rgb) {
+      const [r, g, b] = rgb.match(/\d+/g).map(Number);
+      return "#" + [r, g, b].map(x => x.toString(16).padStart(2, '0')).join('');
+    }
+
+    //これよりボタンのイベントハンドラ
+
+    applySize.onclick = createGrid;
+    colorPicker.oninput = () => {
+      currentColor = colorPicker.value;
+      eraseMode = fillMode = fillRandomMode = eyedropperMode = false;
+    };
+    eraser.onclick = () => { eraseMode = true; fillMode = fillRandomMode = eyedropperMode = false; };
+    fill.onclick = () => { fillMode = true; eraseMode = fillRandomMode = eyedropperMode = false; };
+    fillRandom.onclick = () => { fillRandomMode = true; eraseMode = fillMode = eyedropperMode = false; };
+    eyedropper.onclick = () => { eyedropperMode = true; eraseMode = fillMode = fillRandomMode = false; };
+    undoBtn.onclick = undo;
+    redoBtn.onclick = redo;
+    document.onmouseup = () => isDrawing = false;
+    document.onkeydown = (e) => {
+      if (e.ctrlKey && e.key === 'z') undo();
+      if (e.ctrlKey && e.key === 'y') redo();
+    };
+
+    clear.onclick = () => {
+      pushUndo();
+      pixels.forEach((_, i) => {
+        pixels[i].style.backgroundColor = 'transparent';
+        pixels[i].classList.add('transparent');
+        colorData[i] = null;
+      });
+    };
+
+    save.onclick = () => {
+      const scale = 20;
+      const exportCanvas = document.createElement('canvas');
+      exportCanvas.width = size * scale;
+      exportCanvas.height = size * scale;
+      const ctx = exportCanvas.getContext('2d');
+      ctx.clearRect(0, 0, exportCanvas.width, exportCanvas.height);
+      colorData.forEach((c, i) => {
+        if (!c) return;
+        const x = i % size, y = Math.floor(i / size);
+        ctx.fillStyle = c;
+        ctx.fillRect(x * scale, y * scale, scale, scale);
+      });
+      const link = document.createElement('a');
+      link.download = `dot_${size}x${size}.png`;
+      link.href = exportCanvas.toDataURL('image/png');
+      link.click();
+    };
+    
+    // PNG読込
+    document.getElementById("fileInput").addEventListener("change", e => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const img = new Image();
+      img.onload = () => {
+        const tempCanvas = document.createElement("canvas");
+        tempCanvas.width = size;
+        tempCanvas.height = size;
+        const tempCtx = tempCanvas.getContext("2d");
+        tempCtx.drawImage(img, 0, 0, size, size);
+        const imageData = tempCtx.getImageData(0, 0, size, size).data;
+
+        for (let i = 0; i < pixels.length; i++) {
+          const r = imageData[i * 4];
+          const g = imageData[i * 4 + 1];
+          const b = imageData[i * 4 + 2];
+          const a = imageData[i * 4 + 3];
+
+          if (a === 0) {
+            colorData[i] = null;
+            pixels[i].style.backgroundColor = 'transparent';
+            pixels[i].classList.add('transparent');
+          } else {
+            const color = `rgb(${r},${g},${b})`;
+            colorData[i] = color;
+            pixels[i].style.backgroundColor = color;
+            pixels[i].classList.remove('transparent');
+          }
+        }
+
+        pushUndo(); // 読み込んだ状態をundoスタックに保存
+      };
+      img.src = URL.createObjectURL(file);
+    });
+
+    addPalette.onclick = () => addSwatch(currentColor);
+    addTransparent.onclick = () => addSwatch(null);
+
+    createGrid();
+  </script>
+</body>
+</html>

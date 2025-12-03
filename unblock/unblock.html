@@ -1,0 +1,116 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+  </head>
+  <body>
+    <style>
+      /* ボタンの基本スタイル */
+      button {
+        height: 50px;
+        width: 200px;
+        line-height: 10px;
+        padding: 10px 20px;
+        font-size: 16px;
+        text-align: center;
+        cursor: pointer;
+        border: none;
+        border-radius: 5px;
+        transition: background-color 0.3s, transform 0.2s;
+        margin-bottom: 10px; /* ボタン同士の間隔を10pxに設定 */
+      }
+
+      /* ボタンの色 */
+      button{
+        background-color: #000000;
+        color: #ffffff;
+      }
+    
+      /* ホバー時の効果 */
+      button:hover {
+        transform: scale(1.1);
+      }
+    
+      button:hover {
+        background-color: #0f0f0f;
+      }
+    </style>
+    <title>ブロックコード共有</title>
+    <center>
+      <h2>ブロック解除用のコード共有サイト</h2>
+      <b><p id="log">それぞれのボタンを押してコピー</p></b>
+      <button onclick="a()">no-cookie-youtube</button>
+      <button onclick="b()">extension-kill</button>
+      <button onclick="c()">kill-code</button>
+      <br>
+      <script>
+        function l(a){
+          document.getElementById("log").innerText = a;
+        }
+        
+        function copyToClipboard(text) {
+          if (navigator.clipboard && window.isSecureContext) {
+              if (!document.hasFocus()) {
+                  console.warn('クリップボードのコピーはフォーカスが必要です。');
+                  return;
+              }
+              navigator.clipboard.writeText(text).then(() => {
+                  //console.log('クリップボードにコピーされました: ' + text);
+                  console.log('クリップボードにコピーされました。')
+              }).catch(err => {
+                  console.error('クリップボードにコピーできませんでした: ', err);
+                  fallbackCopy(text); // フォールバックを試みる
+              });
+          } else {
+              fallbackCopy(text);
+          }
+        }
+
+        function fallbackCopy(text) {
+          const textarea = document.createElement('textarea');
+          textarea.value = text;
+          textarea.style.position = 'fixed';
+          textarea.style.left = '-9999px';
+          document.body.appendChild(textarea);
+          textarea.select();
+
+          setTimeout(() => {
+              try {
+                if (document.execCommand('copy')) {
+                    console.log('フォールバックでコピー成功');
+                } else {
+                   console.warn('フォールバックでもコピーに失敗しました');
+                }
+              } catch (err) {
+                console.error('フォールバックのコピーエラー:', err);
+              }
+                document.body.removeChild(textarea);
+              }, 100); // 少し遅らせることで動作を安定させる
+        }
+      
+        function a(){
+          var a = document.getElementById("scr").value;
+          // 使用例
+          copyToClipboard(a);
+          l('クリップボードにコピーしました');
+          setTimeout(l, 1000, '　');
+        }
+
+        function b(){
+          var a = document.getElementById("exturl").value;
+          copyToClipboard(a);
+          l('クリップボードにコピーしました');
+        }
+
+        function c(){
+          var a = document.getElementById("code").value;
+          copyToClipboard(a);
+          l('クリップボードにコピーしました');
+        }
+      
+      </script>
+      <textarea id='scr'>javascript:(function(){  var url = location.href;  var newTab = window.open('about:blank');  var doc = newTab.document;  doc.write(`<html><meta charset="utf-8"><body><style>.ifr{text-align: center}.tt{text-align: center}button{width:80;height:50}input{height:30}</style><title>youtubePlayer</title><div class="tt"><h3>youtube_player</h3><br><p>url%E3%81%BE%E3%81%9F%E3%81%AF%E5%8B%95%E7%94%BBID%E3%82%92%E5%85%A5%E5%8A%9B</p></div><div class="ifr">URL:<input id="ur" type="text" value="${url}"><button onclick="a()"><h3>%E8%A6%8B%E3%82%8B</h3></button><script>function log(m, c){var l = document.getElementById("log");l.style.color = cl.innerText = m;}function a(){var irm = document.getElementById("video_iframe");var url = document.getElementById("ur").value;if(url.substring(5)==="watch"){irm.src="https://www.youtube-nocookie.com/embed/"+url;log("%E5%8B%95%E7%94%BBID%E3%81%AF%E6%AD%A3%E5%B8%B8%E3%81%A7%E3%81%99")}else {url = url.substring(url.length-11, url.length);console.log(url);irm.src="https://www.youtube-nocookie.com/embed/"+url;log("%E3%83%AA%E3%83%B3%E3%82%AF%E3%81%AF%E6%AD%A3%E5%B8%B8%E3%81%A7%E3%81%99")}}//https://www.youtube-nocookie.com/embed/WkRWoBap4SI</script><br><p id="log">URL%E3%82%92%E5%85%A5%E5%8A%9B%E3%81%97%E3%81%A6%E3%81%8F%E3%81%A0%E3%81%95%E3%81%84</p><br><iframe id="video_iframe" width="50%" height="50%" src="about:blank" frameborder="0" allowfullscreen></iframe></div></body></html>  `);newTab.onload = function() { newTab.a(); };  doc.close();})();</textarea>
+      <textarea id='exturl'>chrome-extension://gndmhdcefbhlchkhipcnnbkcmicncehk/manifest.json</textarea>
+      <textarea id='code'>chrome.management.setEnabled('extensionID', false);</textarea>
+    </center>
+  </body>
+</html>

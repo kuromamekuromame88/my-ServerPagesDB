@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <title>Webシリアルモニター</title>
+  <button id="connect">シリアルポートに接続</button>
+  <pre id="log"></pre>
+
+  <script>
+    const log = document.getElementById("log");
+
+    document.getElementById("connect").addEventListener('click', async () => {
+      try {
+        const port = await navigator.serial.requestPort(); // COMポート選択
+        await port.open({ baudRate: 115200 }); // ESP32と同じボーレートに！
+
+        const reader = port.readable.getReader();
+        while (true) {
+          const { value, done } = await reader.read();
+          if (done) break;
+          log.textContent += new TextDecoder().decode(value);
+        }
+      } catch (e) {
+        log.textContent += `エラー: ${e.message}\n`;
+      }
+    });
+  </script>
+</body>
+</html>
