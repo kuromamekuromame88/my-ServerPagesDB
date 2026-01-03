@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>Spotify Track Explorer (CSE)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Google CSE -->
+  <script async src="https://cse.google.com/cse.js?cx=566968ae60bc84f90"></script>
+
+  <style>
+    body {
+      margin: 0;
+      background: #0f0f0f;
+      color: #fff;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    header {
+      padding: 16px;
+      background: #1db954;
+      color: #000;
+      font-weight: bold;
+    }
+
+    .container {
+      padding: 16px;
+      padding-bottom: 180px; /* プレイヤー分 */
+    }
+
+    .player {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background: #000;
+      border-top: 1px solid #222;
+    }
+
+    iframe {
+      width: 100%;
+      height: 152px;
+      border: none;
+    }
+
+    /* CSE ダーク調整（最低限） */
+    .gsc-control-cse {
+      background: transparent !important;
+      border: none !important;
+    }
+
+    .gsc-webResult.gsc-result {
+      background: #181818 !important;
+      border-radius: 8px;
+      padding: 8px;
+      margin-bottom: 8px;
+    }
+
+    .gsc-webResult.gsc-result:hover {
+      background: #222 !important;
+    }
+
+    .gsc-result-info,
+    .gsc-orderby-container,
+    .gcsc-more-maybe-branding-root {
+      display: none !important;
+    }
+
+    a.gs-title {
+      color: #1db954 !important;
+      text-decoration: none;
+    }
+
+    a.gs-title:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  🎧 Spotify Track Explorer（Google CSE）
+</header>
+
+<div class="container">
+  <!-- 検索ボックス -->
+  <div class="gcse-search"></div>
+</div>
+
+<div class="player">
+  <iframe
+    id="player"
+    allow="autoplay; clipboard-write; encrypted-media; picture-in-picture">
+  </iframe>
+</div>
+
+<script>
+  /*
+    Google CSE の検索結果リンクをクリックしたら、
+    Spotify track URL を捕捉して iframe 再生する
+  */
+
+  document.addEventListener("click", e => {
+    const a = e.target.closest("a");
+    if (!a) return;
+
+    const href = a.href;
+    if (!href) return;
+
+    const trackId = extractTrackId(href);
+    if (!trackId) return;
+
+    e.preventDefault(); // ページ遷移を止める
+    play(trackId);
+  });
+
+  function extractTrackId(url) {
+    // https://open.spotify.com/track/{ID}?si=...
+    const match = url.match(/open\.spotify\.com\/track\/([a-zA-Z0-9]+)/);
+    return match ? match[1] : null;
+  }
+
+  function play(trackId) {
+    const iframe = document.getElementById("player");
+    iframe.src = `https://open.spotify.com/embed/track/${trackId}`;
+  }
+</script>
+
+</body>
+</html>
