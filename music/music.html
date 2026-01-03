@@ -9,69 +9,62 @@
   <script async src="https://cse.google.com/cse.js?cx=566968ae60bc84f90"></script>
 
   <style>
-    body {
-      margin: 0;
-      background: #0f0f0f;
-      color: #fff;
+        body {
+      background-color: #f4f6f8;
+      color: #111;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
-    header {
-      padding: 16px;
-      background: #1db954;
-      color: #000;
-      font-weight: bold;
+    /* CSE 全体の枠 */
+    .gcse-searchresults,
+    .gcse-search {
+      background: #ffffff;
+      padding: 12px;
+      border-radius: 10px;
     }
 
-    .container {
-      padding: 16px;
-      padding-bottom: 180px; /* プレイヤー分 */
+    /* 検索ボックス */
+    input.gsc-input {
+      background: #ffffff !important;
+      color: #111 !important;
+      font-size: 16px !important;
     }
 
-    .player {
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-      background: #000;
-      border-top: 1px solid #222;
+    /* 検索結果タイトル */
+    .gsc-webResult .gsc-result .gs-title {
+      color: #0b5cff !important;
+      font-size: 17px;
+      font-weight: 600;
     }
 
-    iframe {
-      width: 100%;
-      height: 152px;
-      border: none;
-    }
-
-    /* CSE ダーク調整（最低限） */
-    .gsc-control-cse {
-      background: transparent !important;
-      border: none !important;
-    }
-
-    .gsc-webResult.gsc-result {
-      background: #181818 !important;
-      border-radius: 8px;
-      padding: 8px;
-      margin-bottom: 8px;
-    }
-
-    .gsc-webResult.gsc-result:hover {
-      background: #222 !important;
-    }
-
-    .gsc-result-info,
-    .gsc-orderby-container,
-    .gcsc-more-maybe-branding-root {
-      display: none !important;
-    }
-
-    a.gs-title {
-      color: #1db954 !important;
-      text-decoration: none;
-    }
-
-    a.gs-title:hover {
+    /* 検索結果リンク（ホバー時） */
+    .gsc-webResult .gsc-result .gs-title:hover {
       text-decoration: underline;
+    }
+
+    /* スニペット（説明文） */
+    .gsc-webResult .gsc-result .gs-snippet {
+      color: #222 !important;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    /* URL表示 */
+    .gsc-webResult .gsc-result .gs-visibleUrl {
+      color: #0a7c3a !important;
+      font-size: 13px;
+    }
+
+    /* 区切り線 */
+    .gsc-result {
+      border-bottom: 1px solid #e0e0e0;
+      padding-bottom: 10px;
+      margin-bottom: 10px;
+    }
+
+    /* 広告ラベルを目立たなく */
+    .gsc-adBlock {
+      opacity: 0.9;
     }
   </style>
 </head>
