@@ -6,10 +6,6 @@
   <link rel="apple-touch-icon" sizes="180x180" href="https://tool-webs.onrender.com/icon/icon320x320.ico" type="image/x-icon">
   <title>youtubePlayer</title>
   <style>
-    body{
-      background-color: #fff;
-    }
-
     a{
       color: black;
       font-weight: bold;
@@ -153,9 +149,10 @@
       border-radius: 5px;
       padding: 8px 12px;
     }
-
+      
     .video_iframe {
-      padding: 20px;
+      width: 30%;
+      height: 200px;
     }
       
     .playlist{
@@ -281,32 +278,34 @@
     /*.gsc-wrapper*/
     /* 親パネル */
 
-    .search-div {
-      margin-bottom: 20px;
-      height: 77% !important;
-      overflow: visible; /*hiddenだと隠れる*/
-      position: relative;
-    }
+.search-div {
+  margin-bottom: 20px;
+  height: 77% !important;
+  overflow: visible; /*hiddenだと隠れる*/
+  position: relative;
+}
 
-    .gsc-wrapper {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-    }
+.gsc-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
 
-    .gsc-expansionArea {
-      flex: 1 1 auto;
-      overflow-y: scroll;
-    }
+.gsc-expansionArea {
+  flex: 1 1 auto;
+  overflow-y: scroll;
+}
 
-    /* ページネーション */
-    .gsc-cursor-box {
-      flex: 0 0 auto;
-      position: sticky;
-      bottom: 0;
-      background: white;
-      z-index: 10;
-    }
+/* ページネーション */
+.gsc-cursor-box {
+  flex: 0 0 auto;
+  position: sticky;
+  bottom: 0;
+  background: white;
+  z-index: 10;
+}
+
+
 
 
     /*検索欄*/
@@ -338,7 +337,7 @@
 <body>
   <div class="top-bar">
     <a href="/" class="logo">
-      <b>tool-webs</b>
+      <b>tool-html</b>
     </a>
   </div>
   <button class="toggle-btn" onclick="toggleSidebar()">☰プレイリスト</button>
@@ -359,8 +358,6 @@
       <div class="accordion_contents">
         <button onclick="open_nw()">履歴の残らないタブを開く</button>
         <button onclick="embedcopy()">埋め込みコードをコピー</button>
-        <br>
-        プレイヤーの大きさをデフォルトで大きくする:<input type="checkbox" class="slide" id="bigplayer">
       </div>
     </details>
     <p id="log">
@@ -377,6 +374,7 @@
       <br>
     </div>
     <button onclick="add_playlist()">＋現在の動画をプレイリストに追加</button>
+    <input type="checkbox" class="slide" id="loop">
     <div id="playlist" class="playlist"></div>
   </div>
   
@@ -403,20 +401,7 @@
     window.onload = function(){
       const url = new URL(window.location.href);
       const params = new URLSearchParams(url.search);
-
-      let phoneMode = params.get('phone');
       let value = params.get('url');
-
-      if(phoneMode){
-        var irm = document.getElementById("video_iframe");
-        irm.style.position = "fixed";
-        irm.style.top = "-20";
-        irm.style.left = "-20";
-        irm.style.width = "100vw";
-        irm.style.height = "100vh";
-        irm.style.zIndex = "2147483647";
-      }
-      
       if(value){
         document.getElementById("ur").value = value;
       	a();
@@ -485,7 +470,7 @@
       var url = document.getElementById("ur").value;
       var tempURL = extractVideoId(url);
       if(tempURL) {
-        irm.src=`https://www.youtube-nocookie.com/embed/${tempURL}?autoplay=1&mute=0`;
+        irm.src=`https://piped.wireway.ch/embed/${tempURL}?autoplay=1&mute=0`;
         log("動画IDは正常です","black");
         return;
       }
@@ -496,7 +481,7 @@
       }else {
         url = url.substring(url.length-11, url.length);
         console.log(url);
-        irm.src=`https://www.youtube-nocookie.com/embed/${url}`;
+        irm.src=`https://piped.wireway.ch/embed/${url}?autoplay=1&mute=0`;
         log("リンクは正常です","black");
         return;
       }
@@ -636,32 +621,14 @@
           alert("URLまたはIDを入力してください");
           return;
         }
-        await navigator.clipboard.writeText(`<iframe src="https://www.youtube-nocookie.com/embed/${tempURL}" width="560" height="315" class="video_iframe" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`);
+        await navigator.clipboard.writeText(`<iframe src="https://piped.wireway.ch/embed/${tempURL}" width="560" height="315" class="video_iframe" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`);
         alert('📋 コピーしました！');
       }catch(e){
         alert('❌ コピーに失敗しました: '+e.message);
       }
     }
 
-    var irm = document.getElementById("video_iframe");
-    let bigmode;
-
-    irm.width = "30%";
-    irm.height = "200px";
-
-    document.getElementById("bigplayer").addEventListener("change", (e) => {
-      //alert("大きさ変更");
-      
-      bigmode = !bigmode;
-      if(bigmode){
-        irm.width = "60%";
-        irm.height = "400px";
-      }else{
-        irm.width = "30%";
-        irm.height = "200px";
-      }
-      //console.log(e);
-    });
+    
   </script>
 </body>
 

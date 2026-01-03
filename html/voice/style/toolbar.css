@@ -1,0 +1,198 @@
+
+
+/*画面下部のツールバー*/
+
+.toolbar{
+  
+  width:100%;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  background-color: #f0f0f0;
+  box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+  z-index: 3;
+}
+
+/*マイク切り替え部*/
+
+.micchengebox{
+  padding: 10px;
+}
+
+/* checkboxは見せない */
+.micchengebox input.mic {
+  display: none;
+}
+
+/* ボタン本体 */
+.micButton {
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  background-color: #de0000; /* OFF：赤 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  transition: background-color 0.25s ease;
+}
+
+.micButton:hover {
+  background-color: #c80000;
+}
+
+/* SVG共通 */
+.micIcon {
+  width: 32px;
+  height: 32px;
+  fill: white;
+  color: white;
+  position: absolute;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+/* 初期状態（OFF） */
+.micon {
+  opacity: 0;
+  transform: scale(0.9);
+}
+
+.micoff {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ON状態 */
+.micchengebox input.mic:checked + .micButton {
+  background-color: #29de00; /* ON：緑 */
+}
+
+.micchengebox input.mic:checked + .micButton:hover{
+  background-color: #23be00;
+}
+
+.micchengebox input.mic:checked + .micButton .micon {
+  opacity: 1;
+  transform: scale(1);
+  fill: black;
+}
+
+.micchengebox input.mic:checked + .micButton .micoff {
+  opacity: 0;
+  transform: scale(0.9);
+}
+
+
+
+/*カメラ*/
+
+.camchengebox{
+  padding: 10px;
+}
+
+/* checkboxは見せない */
+.camchengebox input.cam {
+  display: none;
+}
+
+/* ボタン本体 */
+.camButton {
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  background-color: #de0000; /* OFF：赤 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  transition: background-color 0.25s ease;
+}
+
+.camButton:hover {
+  background-color: #c80000;
+}
+
+/* SVG共通 */
+.camIcon {
+  width: 32px;
+  height: 32px;
+  fill: white;
+  color: white;
+  position: absolute;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+/* 初期状態（OFF） */
+.camon {
+  opacity: 0;
+  transform: scale(0.9);
+}
+
+.camoff {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ON状態 */
+.camchengebox input.cam:checked + .camButton {
+  background-color: #29de00; /* ON：緑 */
+}
+
+.camchengebox input.cam:checked + .camButton:hover{
+  background-color: #23be00;
+}
+
+.camchengebox input.cam:checked + .camButton .camon {
+  opacity: 1;
+  transform: scale(1);
+  fill: black;
+}
+
+.camchengebox input.cam:checked + .camButton .camoff {
+  opacity: 0;
+  transform: scale(0.9);
+}
+
+
+
+
+
+/* 通話終了ボタン本体 */
+.callEnd {
+  margin: 10px;
+  padding: 10px;
+  width: 64px;
+  height: 64px;
+  background-color: #de0000; /* 赤 */
+  border: none;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  /* 押し心地 */
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+/* ホバー（PC想定） */
+.callEnd:hover {
+  background-color: #c80000;
+}
+
+/* 押下時 */
+.callEnd:active {
+  transform: scale(0.95);
+}
+
+/* SVG */
+.callEndIcon {
+  width: 32px;
+  height: 32px;
+  fill: white;
+  pointer-events: none; /* SVGでクリックを奪わない */
+}

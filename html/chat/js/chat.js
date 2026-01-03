@@ -1,5 +1,31 @@
 /*チャットのJS*/
-    
+
+// 🌟 モバイルでのユーザーリスト表示/非表示の切り替えロジック 🌟
+const userStatusBar = document.getElementById('userStatusBar');
+const toggleUserListBtn = document.getElementById('toggleUserList');
+
+window.onresize = () => {
+  if (window.innerWidth <= 768) {
+    // モバイルサイズの場合、ユーザーリストボタンを表示
+    toggleUserListBtn.style.display = 'block';
+
+    // ユーザーリストの表示/非表示を切り替える関数
+    toggleUserListBtn.addEventListener('click', () => {
+      userStatusBar.classList.toggle('open');
+    });
+
+    // 画面をタップした際にユーザーリストを閉じる（簡単な実装）
+    document.addEventListener('click', (event) => {
+      const isClickInsideBar = userStatusBar.contains(event.target);
+      const isClickOnToggleBtn = toggleUserListBtn.contains(event.target);
+        
+      if (userStatusBar.classList.contains('open') && !isClickInsideBar && !isClickOnToggleBtn) {
+        userStatusBar.classList.remove('open');
+      }
+    });
+  }
+}
+
 const SERVER_URL = "wss://tool-webs.onrender.com/ws/chat";
 const chatContainer = document.getElementById("chatContainer");
 const messageInput = document.getElementById("messageInput");
@@ -17,9 +43,16 @@ const changeNickname = document.getElementById("changeNickname");
 const cancelNicknameChange = document.getElementById("cancelNicknameChange");
 
 
-//ルームの保持変数
-let room = "Main";
+let wr = new URL(window.location.href);
+const params = new URLSearchParams(wr.search);
+wr = params.get('room');
+ 
 
+//ルームの保持変数
+let room = wr || "Main";
+document.getElementById("room").innerText = room;
+console.log("移動:", room);
+    
 //ルーム切り替え用
 const roomToggleBtn = document.getElementById("roomToggleBtn");
 const roomMenu = document.getElementById("roomMenu");
@@ -41,6 +74,7 @@ openChat.onclick = () => {
 
   boardUI.style.display = "none";
 };
+
 openBoard.onclick = () => {
   chatUI.style.display = "none";
   document.getElementById("room").style.display = "none";
@@ -112,7 +146,42 @@ document.addEventListener("click", (e) => {
   }
 });
 
-document.getElementById("room").innerText = "Main";
+
+//既読機能用observer
+
+// メッセージを監視するオブザーバ
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const msgId = entry.target.dataset.messageId;
+
+      // WebSocket で既読を送信
+      ws.send(JSON.stringify({
+        app: "webchat",
+        type: "read",
+        channel: room,
+        messageId: msgId,
+        user: getFullUsername()
+      }));
+      //console.log("既読:", msgId);
+
+      // 一度既読にしたら監視を外す
+      observer.unobserve(entry.target);
+    }
+  });
+}, {
+  threshold: 0.1  // 60% 見えたら既読
+});
+
+
+//ルーム移動時の既読処理
+function observeAllMessagesInView() {
+  document.querySelectorAll(".message").forEach(msg => {
+    observeMessage(msg);
+  });
+}
+
+
 // ▼ ルーム移動
 
 // ---- visitedroom 初期化 ----
@@ -123,25 +192,57 @@ if (!visitedroom) {
 }
 
 
+async function callRoomAuth(room, pass) {
+  try {
+    const params = new URLSearchParams();
+    if (room != null) params.set("room", room);
+    if (pass != null) params.set("pass", pass);
+
+    const url = `https://tool-webs.onrender.com/webchat/roomauth?${params.toString()}`;
+
+    const res = await fetch(url, { method: "GET" });
+
+    if (!res.ok) {
+      throw new Error(`HTTP Error ${res.status}`);
+    }
+
+    const data = await res.json();
+    return {
+      result: data.result,
+      reason: data.reason
+    };
+  } catch (e) {
+    console.warn("Authment room failed:", e);
+    return { result: false, reason: "network_error" };
+  }
+}
+
+
 // ---- ルーム切り替えイベント ----
-document.addEventListener("click", (e) => {
+document.addEventListener("click", async (e) => {
   if (e.target.classList.contains("room-btn")) {
 
     const roomName = e.target.dataset.room;
     const roomPass = e.target.dataset.pass; // null または 文字列
 
-    // --- パスワードチェック ---
+
     // roomPass が null でない → パスワード保護ルーム
-    if (roomPass && roomPass !== "null") {
+    if ((/true/).test(roomPass)) {
 
       // 訪問済みではない
       if (!visitedroom.includes(roomName)) {
 
         const entered = prompt("このルームのパスワードを入力してください");
 
-        // キャンセル or 不一致
-        if (entered === null || entered !== roomPass) {
-          alert("パスワードが違います。");
+        // キャンセル
+        if (entered === null) {
+          alert("パスワードが入力されていません。");
+          return;
+        }
+
+        let res = await callRoomAuth(roomName, entered);
+        if(!res.result){
+          alert("認証に失敗しました。");
           return;
         }
 
@@ -161,9 +262,26 @@ document.addEventListener("click", (e) => {
       channel: room
     }));
 
+    // チャットを描画したら、画面内の全メッセージを監視
+    setTimeout(() => {
+      observeAllMessagesInView();
+    }, 500);
+
+    const url = new URL(location);
+    url.searchParams.set("room", room);
+    history.pushState({}, "", url);
+
     console.log("移動:", room);
     document.getElementById("room").innerText = room;
     roomMenu.style.display = "none";
+
+    setTimeout(() => {
+      if(!chatContainer.innerHTML){
+        console.log("チャットが読み込まれてないなあ...");
+        onReachTop(100000000000);
+        console.log("しょうがないから読み込んだよ");
+      }
+    }, 1000);
   }
 });
 
@@ -181,7 +299,7 @@ async function RegistRoom(name) {
     id = prompt("保護キーを設定してください（何の文字でも単語でもOK）");
   }
 
-  const url = `https://tool-webs.onrender.com/webchat/roomregist?name=${name}&id=${id}`;
+  const url = `https://tool-webs.onrender.com/webchat/roomregist?name=${name}&id=${id}&onwer=${userID}`;
 
   try {
     await fetch(url, { method: "GET" });
@@ -206,9 +324,6 @@ document.getElementById("create-room-btn").addEventListener("click", () => {
   console.log("新規ルーム作成:", name);
   document.getElementById("new-room-name").value = "";
 });
-
-
-
 
 
 //オフラインやwebsocketの接続が切れたときのmuteAPI取得関数
@@ -273,17 +388,88 @@ function qdel(id){
   chatContainer.querySelector(`[id="${id}"]`).remove();
 }
 
+let RUID;
+const RUIDAPI = "https://tool-webs.onrender.com/api/RUID";
 
-// ------------------- WebSocket接続 -------------------
+async function checkupdate(){
+  try {
+    const res = await fetch(RUIDAPI);
+    const data = await res.json();
+    RUID = localStorage.getItem("RUID");
+    if(!RUID){
+      localStorage.setItem("RUID", data.RUID);
+    }else{
+      if(RUID != data.RUID && data.update){
+        localStorage.setItem("RUID", data.RUID);
+        alert("サーバーの更新を検知しました。ページをリロードします...");
+        location.reload();
+      }
+    }
+  } catch (err) {
+    console.error("RUID取得エラー:", err);
+  }
+}
+
+//古いメッセージ取得をリクエスト
+function onReachTop(id) {
+  const firstMsg = chatContainer.getElementsByClassName("message")[0];
+  if (!firstMsg && !id) return;
+  let firstMessageId;
+  if(firstMsg){
+    firstMessageId = firstMsg.dataset.messageId || id;
+  }
+  firstMessageId = firstMessageId || 100000000000000;
+
+  console.log("ページの一番上までスクロールされました！");
+  console.log("最初のメッセージのID:", firstMessageId);
+
+  console.log("サーバーにリクエストを送ります");
+  ws.send(JSON.stringify({
+    app: "webchat",
+    type: "loadMore",
+    room: room,
+    beforeID: firstMessageId
+  }));
+}
+
+let loadingOld = false;
+
+//位置保持用
+let prevHeight;
+
+chatContainer.addEventListener("scroll", () => {
+  if (chatContainer.scrollTop === 0 && !loadingOld && chatContainer.scrollHeight > chatContainer.clientHeight || !chatContainer.innerHTML) {
+    loadingOld = true;
+    prevHeight = chatContainer.scrollHeight;
+    onReachTop();
+  }
+});
+
+
+
+// 重要------------------- WebSocket接続 -------------------
 function connectWebSocket() {
-  
-  loadMuteState();
   ws = new WebSocket(SERVER_URL);
-  if(ws) resetChat();
+
+  checkupdate();
+  loadMuteState();
+
+  if(ws){
+    ws.addEventListener("open", () => {
+      resetChat();
+      ws.send(JSON.stringify({
+        app: "webchat",
+        type: "getAll",
+        channel: room
+      }));
+    });
+  }
+
   ws.addEventListener("message", (event) => {
     const msg = JSON.parse(event.data);
+    if(msg.app !== "webchat") return;
     const fullUsername = getFullUsername();
-    console.log("受信:",msg);
+    if(msg.type !== "view") console.log("受信:",msg);
 
     if (msg.type === "mute" && msg.user === userID /*|| msg.user.includes(userID)*/ ) {
       wasmuted = true;
@@ -301,6 +487,15 @@ function connectWebSocket() {
     if(msg.type === "delete"){
       qdel(msg.id);
       return;
+    }
+
+    if(msg.type === "view"){
+      
+      let message = chatContainer.querySelector(`[id="${msg.id}"]`);
+      if(!message) return;
+      //console.log("message:", message);
+      //console.log("既読数:",msg.count);
+      message.getElementsByClassName("views")[0].innerHTML = `既読数:${msg.count}`;
     }
 
     if(msg.type === "edit"){
@@ -352,11 +547,13 @@ function connectWebSocket() {
         </div>
         <div class="hide_text" style="display:none;">${markdown}</div>
         <div class="text">${html}</div>
+        <div class="views" style="font-size:12px;color:gray;">既読数:0</div>
         ${createdAt ? `<div style="font-size:12px;color:gray;">${createdAt}</div>` : ""}
-        <div style="font-size:10px;opacity:0.5;">#${id? id: ''}</div>
+        <div style="font-size:10px;opacity:0.5;" class="comid">#${id? id: ''}</div>
         ${displayID === userID && id ? `<div class="message_remove"><button class="remove_button" onclick="msgdel(${id})">削除</button>`:""}
       `;
           
+      //<div style="font-size:10px;opacity:0.5;" class="read">既読:${/*read? read: ''*/}</div>
       //<button class="remove_button" id="edit">編集</button></div>
       notifyNewMessage();
     }
@@ -388,8 +585,11 @@ function connectWebSocket() {
       //
       if (displayID === localStorage.getItem("userID")) div.classList.add("mine");
       if (displayID === "server") div.classList.add("server");
+      if (displayID === "other") div.classList.add("other");
 
       div.id = id;
+
+      div.dataset.messageId = id;
 
       const html = DOMPurify.sanitize(marked.parse(markdown, { breaks: true }), {
         ADD_TAGS: ["iframe"],
@@ -414,7 +614,6 @@ function connectWebSocket() {
         }
       });
 
-
       div.innerHTML = `
         <div class="user">
           <span class="nickname">${displayName}</span>
@@ -422,14 +621,28 @@ function connectWebSocket() {
         </div>
         <div class="hide_text" style="display:none;">${markdown}</div>
         <div class="text">${html}</div>
+        <div class="views" style="font-size:12px;color:gray;">既読数:0</div>
         ${createdAt ? `<div style="font-size:12px;color:gray;">${createdAt}</div>` : ""}
-        <div style="font-size:10px;opacity:0.5;">#${id? id: ''}</div>
+        <div style="font-size:10px;opacity:0.5;" class="comid">#${id? id: ''}</div>
         ${displayID === userID && id ? `<div class="message_remove"><button class="remove_button" onclick="msgdel(${id})">削除</button></div>`:""}
       `;
       
       notifyNewMessage();
-      chatContainer.appendChild(div);
-      chatContainer.scrollTop = chatContainer.scrollHeight;
+
+      if(msg.isHistory){
+        chatContainer.prepend(div);
+        observer.observe(div);
+        loadingOld = false;
+
+        let newHeight = chatContainer.scrollHeight;
+        chatContainer.scrollTop = newHeight - prevHeight;
+
+      }else{
+        chatContainer.appendChild(div);
+        observer.observe(div);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }
+
 
       //<button class="remove_button" id="edit">編集</button>
       /*
@@ -565,8 +778,21 @@ function sendMessage() {
     return;
   }
 
-  if(text.includes("しね") || text.includes("シネ") || text.includes("死ね") || text.includes("4545") || text.includes("４５４５")){
+  if(text.includes("しね") || text.includes("シネ") || text.includes("死ね") || text.includes("4545") || text.includes("４５４５") || text.includes("デブ") ){
     alert("言葉遣いは丁寧に");
+    return;
+  }
+
+  if(text.startsWith('/delgroup')){
+    const parts = text.split(' ');
+    const id = Number(parts[1]);
+    if(confirm(`voiceのグループ${id}を削除しますか？`)){
+      ws.send(JSON.stringify({
+        app: "voice",
+        type: "group-delete",
+        groupId: id
+      }));
+    }
     return;
   }
 
@@ -576,6 +802,7 @@ function sendMessage() {
     msgdel(id);
     return;
   }
+
 
   const fullUser = getFullUsername();
   ws.send(JSON.stringify({
@@ -621,6 +848,8 @@ changeNickname.onclick = () => {
 };
 
 
+//定期登録系
+
 // ------------------- mute用 定期登録 API -------------------
 async function sendRegistPing() {
   // ネットワーク状態チェック
@@ -631,7 +860,9 @@ async function sendRegistPing() {
 
   var date = new Date();
 
-  const url = `https://tool-webs.onrender.com/webchat/regist?user=${encodeURIComponent(userID)}&nick=${nickname}&lasttime=${date.toISOString()}`;
+  var nick = nickname ? nickname: "匿名";
+
+  const url = `https://tool-webs.onrender.com/webchat/regist?user=${encodeURIComponent(userID)}&nick=${nick}&room=${room}&lasttime=${date.toISOString()}`;
 
   try {
     await fetch(url, { method: "GET" });
@@ -641,14 +872,8 @@ async function sendRegistPing() {
   }
 }
 
-// 10秒ごと（10000ms）に送信
-
-setInterval(sendRegistPing, 10000);
-
 // ページ読み込み時に1回実行（任意）
 sendRegistPing();
-
-
 
 
 const channelAPI = "https://tool-webs.onrender.com/webchat/channelList";
@@ -688,7 +913,7 @@ async function updateChannelListUI() {
       const btn = document.createElement("button");
       btn.classList.add("room-btn");
       btn.textContent = name;
-      btn.dataset.pass = ch.data.pass ? ch.data.pass: "";
+      btn.dataset.pass = ch.data.pass ? true:false;
       btn.dataset.roomId = id;   // ← ID で管理
       btn.dataset.room = name;   // ← 表示名
 
@@ -704,10 +929,6 @@ async function updateChannelListUI() {
 
 // 初回ロード
 updateChannelListUI();
-
-// 3秒ごとに自動更新
-
-setInterval(updateChannelListUI, 3000);
 
 
 const userAPI = "https://tool-webs.onrender.com/webchat/user";
@@ -733,17 +954,19 @@ async function updateUserStatus() {
     userListDiv.innerHTML = ""; // 毎回リセット
 
     users.forEach(u => {
-      const status = detectStatus(u.lastTime);
+      if(u.room === room){
+        const status = detectStatus(u.lastTime);
 
-      const div = document.createElement("div");
-      div.classList.add("user-item");
+        const div = document.createElement("div");
+        div.classList.add("user-item");
 
-      div.innerHTML = `
-        <div class="status-dot status-${status}"></div>
-        <div class="user-nick">${u.nick} | ${u.id}</div>
-      `;
+        div.innerHTML = `
+          <div class="status-dot status-${status}"></div>
+          <div class="user-nick">${u.nick} | ${u.id}</div>
+        `;
 
-      userListDiv.appendChild(div);
+        userListDiv.appendChild(div);
+      }
     });
 
   } catch (err) {
@@ -751,11 +974,18 @@ async function updateUserStatus() {
   }
 }
 
-// 10秒ごとに更新
-
-setInterval(updateUserStatus, 10000);
-
 // 初回実行
 updateUserStatus();
 
 
+//全部まとめて繰り返し
+async function repeatprocess(){
+  if(navigator.onLine){
+    await sendRegistPing();
+    await updateChannelListUI();
+    await updateUserStatus();
+  }
+}
+
+// 5秒ごとに実行
+setInterval(repeatprocess, 5000);

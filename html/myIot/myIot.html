@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>IoT Dashboard</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 20px;
+    }
+
+    top-title{
+      position: fixed;
+      top: 0px;
+      left: 0px;
+      width: 100%;
+      height: 10%;
+      background-color: #000;
+      color: #fff;
+      text-align:center;
+    }
+
+    top-title h1 {
+      margin-bottom: 20px;
+    }
+
+    .card {
+      border: 1px solid #ddd; border-radius: 8px;
+      padding: 16px; margin: 8px;
+      display: inline-block; width: 200px;
+      box-shadow: 2px 2px 6px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
+    }
+    .card:hover { transform: scale(1.03); }
+    .title { font-weight: bold; margin-bottom: 8px; }
+    .status { margin-top: 4px; font-size: 0.9em; color: gray; }
+    button {
+      margin: 4px; padding: 6px 12px;
+      border: none; border-radius: 4px;
+      cursor: pointer;
+    }
+    button.on { background: #4caf50; color: white; }
+    button.off { background: #f44336; color: white; }
+  </style>
+</head>
+<body>
+  <div class="top-title">
+    <h1>IoT Dashboard</h1>
+  </div>
+  <div id="devices"></div>
+
+  <script src="https://tool-webs.onrender.com/myIot/js/main.js"></script>
+</body>
+</html>

@@ -128,16 +128,12 @@ body {
 }
 
 
-
-
-
-
+/*ユーザー一覧*/
 .user-status-bar {
   position: fixed;
   top: 60px;
   right: 0;
   width: 220px;
-  
   height: 100vh;
   background: #f4f4f4;
   border-left: 1px solid #ccc;
@@ -181,4 +177,15 @@ body {
 .user-nick {
   flex-grow: 1;
   font-size: 14px;
+}
+
+
+
+
+div[id^="jsFrame_fixed_"] {
+  z-index: 1000000 !important;
+}
+
+span[id^="htmlElement_window_"] {
+  z-index: 1000000 !important;
 }

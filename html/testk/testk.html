@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="icon" href="https://tool-webs.onrender.com/icon/icon16x16.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://tool-webs.onrender.com/icon/icon320x320.ico" type="image/x-icon">
+    <title>テスト得点計算ツール</title>
+
+    <style>
+      .top-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 50px;
+        background-color: #333;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        z-index: 1000;
+      }
+
+      .top-bar a {
+        color: white;
+        text-decoration: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+      }
+
+      .top-bar a:hover {
+        background-color: #555;
+      }
+      
+      .logo {
+        position: absolute;
+        left: 0;
+      }
+
+      body{
+        padding-top: 80px;
+      }
+
+      .title {
+        text-align: center;
+      }
+
+      .add_sample{
+        background-color: #888;
+        color: #fff;
+      }
+
+      .subjects input{
+        width: 80px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="top-bar">
+    <a href="/" class="logo"><b>tool-webs</b></a>
+    </div>
+    <div class="title">
+      <h2>テスト得点計算ツール</h2>
+    </div>
+    <div class="add_sample">
+      <input type="checkbox" id="testtype">9教科
+      <div class="subjects" id="subjects"></div>
+      <button class="add" id="add" onclick="setinput(9)">追加</button>
+    </div>
+    <div class="cells"></div>
+    <script src="https://tool-webs.onrender.com/testk/js/main.js"></script>
+  </body>
+</html>

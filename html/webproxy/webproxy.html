@@ -1,0 +1,56 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="https://tool-webs.onrender.com/style/button.css">
+    <style>
+      input[type="checkbox"].slide {
+        --size: 25px;
+        --scale: 0.6;
+
+        appearance: none;
+        cursor: pointer;
+        margin: 0;
+        height: var(--size);
+        aspect-ratio: 2;
+        border-radius: var(--size);
+        background-color: #444444;
+
+        &::before {
+          content: "";
+          display: block;
+          height: var(--size);
+          aspect-ratio: 1;
+          border-radius: var(--size);
+          background-color: #FFFFFF;
+          transform: scale(var(--scale));
+          transition: 0.2s;
+        }
+
+        &:checked {
+          background-color: #24B441;
+          &::before {
+            transform: translateX(var(--size)) scale(var(--scale));
+          }
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      function o(){
+        if(document.getElementById("instances").value){
+          document.getElementById("irm").src = "https://cloud2.0816041taisei.workers.dev/?url="+document.getElementById("url").value;
+        }else{
+          document.getElementById("irm").src = "https://tool-webs.onrender.com/proxy?url="+document.getElementById("url").value;
+        }
+      }
+    </script>
+    <center>
+    <h2>web_proxy(開発中)</h2>
+    <iframe id="irm" src="about:blank" width="1200" height="500"></iframe>
+    <br>
+    URL:<input id="url">
+    <input type="checkbox" class="slide" id="instances">
+    <button onclick="o()">決定</button>
+    </center>
+  </body>
+</html>

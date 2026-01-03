@@ -14,6 +14,9 @@
   <!-- XSS対策用 -->
   <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
 
+  <script src="https://riversun.github.io/jsframe/jsframe.js"></script>
+
+
   <!-- メインのcss -->
   <link rel="stylesheet" href="https://tool-webs.onrender.com/chat/style/main.css">
   
@@ -30,13 +33,110 @@
       background: #ddd;
       overflow: hidden;
     }
+
+        /* ----------------- 🌟 モバイル向けスタイル追加 🌟 ----------------- */
+    @media (max-width: 768px) {
+      /* top-bar: ボタンを縦に積み重ねるか、アイコン化する */
+      .top-bar {
+        height: auto; /* 高さを自動調整 */
+        flex-direction: column; /* 縦並びにする */
+        padding: 8px;
+        align-items: flex-start;
+      }
+
+      .top-bar .logo {
+        margin-bottom: 8px;
+      }
+
+      .top-bar .nav-buttons {
+        display: flex;
+        flex-wrap: wrap; /* ボタンが多すぎる場合、折り返す */
+        gap: 4px; /* ボタン間のスペースを小さく */
+        width: 100%;
+      }
+      
+      .top-bar .nav-buttons button,
+      .top-bar .nav-buttons .roomselect button {
+        /* タッチしやすいようにボタンのパディングを大きく */
+        padding: 8px 12px;
+        font-size: 14px;
+        flex-grow: 1; /* スペースに合わせてボタンを広げる */
+        min-width: 80px; /* 最小幅を確保 */
+      }
+      
+      /* ルーム選択メニュー */
+      .roomselect {
+        flex-grow: 1;
+      }
+      .room-menu {
+        width: 250px; /* メニューの幅を固定 */
+      }
+      .room-create input {
+        width: calc(100% - 60px);
+      }
+      
+      /* userStatusBar: モバイルでは右側から引き出す形式を想定し、初期は非表示 */
+      #userStatusBar {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 250px; /* 幅を固定 */
+        height: 100vh;
+        transform: translateX(100%); /* 画面外に隠す */
+        transition: transform 0.3s ease-in-out;
+        z-index: 1000;
+        background: #fff; /* 背景色を設定して見やすく */
+        box-shadow: -2px 0 5px rgba(0,0,0,0.2);
+        padding: 10px;
+      }
+      
+      #userStatusBar.open {
+        transform: translateX(0); /* 表示 */
+      }
+
+      /* chatUI: ユーザーリスト非表示に合わせて幅を調整 */
+      #chatUI {
+        width: 100%;
+        left: 0;
+      }
+
+      body{
+        padding-top: 140px;
+        overflow: hidden;
+      }
+      
+      /* chat-container: top-barの高さが可変なので、vhからtop-barの最大高さを引く */
+      .chat-container {
+        height: calc(100vh - 300px) !important; /* input-areaとtop-barに合わせて調整 */
+      }
+
+      /* input-area: 縦に広がりすぎないように調整 */
+      .input-area {
+        flex-direction: column;
+        padding: 8px;
+        gap: 8px;
+        border-top: 1px solid #ccc;
+      }
+
+      .input-area textarea {
+        height: 80px; /* 高さを固定 */
+        resize: none; /* ユーザーによるリサイズを禁止 */
+      }
+
+      .input-area #sendButton,
+      .input-area #img_upload {
+        width: 100%; /* 幅をいっぱいに広げる */
+        padding: 10px;
+        margin: 0;
+      }
+    }
   </style>
 </head>
 
 <body>
   <!-- top-bar -->
   <div class="top-bar">
-    <a href="/" class="logo">tool-html</a>
+    <a href="/" class="logo">tool-webs</a>
 
     <div class="nav-buttons">
       <!-- ▼ ルーム選択ドロップダウン -->
@@ -51,13 +151,16 @@
 
           <div class="room-create">
             <input id="new-room-name" type="text" placeholder="新しいルーム名" />
-            <button id="create-room-btn">＋ 作成</button>
+            <button id="create-room-btn">＋作成</button>
           </div>
         </div>
       </div>
-
-      <button id="openChat">💬 チャット</button>
-      <button id="openBoard">📝 ボード</button>
+      <button title="メッセージ読込" onclick="onReachTop();">メッセージ読込</button>
+      <button id="openVoice" title="音声通話" style="background-color: #0068a9;">📞</button>
+      <button id="openYoutube" title="youtubePlayerを表示" style="background-color:#c80000;">▶</button>
+      <button id="openChat" title="チャット">💬</button>
+      <button id="openBoard" title="ボード">📝</button>
+      <button id="toggleUserList" style="display: none;">👤 ユーザー</button>
       <button id="openNicknameChange">✏️ ニックネーム変更</button>
     </div>
   </div>
@@ -65,8 +168,9 @@
 
   <!-- ニックネーム初回登録UI -->
   <div id="usernameSetup" class="username-setup">
-    <h2>ニックネームを入力してください</h2>
+    <h2>ニックネームを入力してください（後で変更可）</h2>
     <p>※他人になりすますなよ</p>
+    <p>※ユーザーに関する情報はローカルに保存されます</p>
     <input type="text" id="usernameInput" placeholder="ニックネーム">
     <button id="saveUsername">登録</button>
   </div>
@@ -103,6 +207,8 @@
   <!-- ボードUI（Pixi.js Canvas） -->
   <div id="boardUI"></div>
 
+  <script src="https://tool-webs.onrender.com/chat/js/window.js"></script>
+  <script src="https://tool-webs.onrender.com/chat/js/chat.js"></script>
   <script src="https://tool-webs.onrender.com/chat/js/board.js"></script>
   <script>
 
@@ -113,6 +219,5 @@
     */
 
   </script>
-  <script src="https://tool-webs.onrender.com/chat/js/chat.js"></script>
 </body>
 </html>

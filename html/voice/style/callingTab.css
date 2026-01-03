@@ -1,0 +1,61 @@
+/* ===== 通話中ウィンドウ（Grid版） ===== */
+.callingTab {
+  flex: 9;
+  display: grid;
+
+  /* 画面幅に応じて自動で列数決定 */
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+
+  /* 行の高さも均等に使う */
+  grid-auto-rows: 1fr;
+
+  gap: 12px;
+  padding: 12px;
+
+  background: linear-gradient(135deg, #1e1e1e, #2b2b2b);
+  box-sizing: border-box;
+}
+
+/* ===== 各 video を包むコンテナ ===== */
+.callingTab > div {
+  position: relative;
+  display: flex;
+
+  /* 中身を中央に */
+  align-items: center;
+  justify-content: center;
+
+  /* Meetっぽさの要 */
+  aspect-ratio: 16 / 9;
+
+  background: #000;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* ===== 共通 video スタイル ===== */
+.callingTab video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background-color: #000;
+}
+
+/* ===== 相手の映像 ===== */
+#remoteVideo video {
+  border: 2px solid #fff;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+/* ===== 自分の映像 ===== */
+#localVideo video {
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.3);
+}
+
+.remote.speaking,
+.myvideo.speaking {
+  background: #000;
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
+}

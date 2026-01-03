@@ -29,6 +29,11 @@
       margin-left: auto;
     }
 
+    .message.other {
+      background: #c4f2f8;
+      margin-left: auto;
+    }
+
     /* Markdown 表示エリア */
     .text p {
       margin: 6px 0;
@@ -185,7 +190,7 @@
     .chat-container img {
       max-width: 100%; /* 親要素の幅を超えない */
       height: auto;    /* 縦横比を維持 */
-      border-radius: 3px; /* 好みで角丸 */
+      border-radius: 5px; /* 好みで角丸 */
     }
 
 
