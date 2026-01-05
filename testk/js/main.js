@@ -37,6 +37,15 @@ function setinput() {
   renderRows();
 }
 
+/* ===== 行の削除 ===== */
+
+function deleteRow(index) {
+  const rows = loadRows();
+  rows.splice(index, 1);
+  saveRows(rows);
+  renderRows();
+}
+
 /* ===== 行の描画 ===== */
 
 function renderRows() {
@@ -49,21 +58,25 @@ function renderRows() {
     html += `
       <input type="date"
         value="${row.date}"
-        onchange="updateDate(${rowIndex}, this.value)" width="150px">
+        onchange="updateDate(${rowIndex}, this.value)">
     `;
 
-    SUBJECTS.forEach((sub, subIndex) => {
+    SUBJECTS.forEach(sub => {
       const v = row.scores[sub.id] ?? "";
-      html += `${SUBJECTS[subIndex].name}:
+      html += `
+        ${sub.name}:
         <input type="number"
           min="0" max="100"
           value="${v}"
           style="width:60px"
-          onchange="updateScore(${rowIndex}, '${sub.id}', this.value)">|
+          onchange="updateScore(${rowIndex}, '${sub.id}', this.value)">
+        |
       `;
     });
 
-    html += `</div>`;
+    html += `
+      <button onclick="deleteRow(${rowIndex})">削除</button>
+    </div>`;
   });
 
   document.getElementById("subjects").innerHTML = html;
@@ -89,20 +102,28 @@ function updateScore(index, subjectId, value) {
 
 function renderStats() {
   const rows = loadRows();
-  let html = "<h3>教科別平均</h3>";
+  let html = "<h3>教科別統計</h3>";
 
   SUBJECTS.forEach(sub => {
     const values = rows
       .map(r => r.scores[sub.id])
-      .filter(v => v !== undefined);
+      .filter(v => typeof v === "number");
 
     if (values.length === 0) return;
 
-    const avg = (
-      values.reduce((a, b) => a + b, 0) / values.length
-    ).toFixed(1);
+    const sum = values.reduce((a, b) => a + b, 0);
+    const avg = (sum / values.length).toFixed(1);
+    const min = Math.min(...values);
+    const max = Math.max(...values);
 
-    html += `<div>${sub.name}: 平均 ${avg}</div>`;
+    html += `
+      <div>
+        <b>${sub.name}</b>｜
+        平均: ${avg}｜
+        最低: ${min}｜
+        最高: ${max}
+      </div>
+    `;
   });
 
   document.querySelector(".cells").innerHTML = html;
