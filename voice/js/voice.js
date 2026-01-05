@@ -1,3 +1,17 @@
+
+
+//ライブラリ読み込み
+import {
+  SkyWayContext,
+  SkyWayAuthToken
+} from "https://cdn.jsdelivr.net/npm/@skyway-sdk/core@1.7.2/dist/index.js";
+
+import {
+  SkyWayRoom
+} from "https://cdn.jsdelivr.net/npm/@skyway-sdk/room@1.7.2/dist/index.js";
+
+
+
 /* ===============================
    ユーザーID
 ================================ */
