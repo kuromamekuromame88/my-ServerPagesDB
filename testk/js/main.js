@@ -1,4 +1,4 @@
-const subjects = [
+const SUBJECTS = [
   { name: "技術家庭科", id: "gizyutukateika" },
   { name: "音楽", id: "onngaku" },
   { name: "美術", id: "bizyutu" },
@@ -10,76 +10,95 @@ const subjects = [
   { name: "国語", id: "kokugo" }
 ];
 
-let scoreData = loadScores();
+const STORAGE_KEY = "test_scores";
 
-/* 入力欄生成 */
+/* ========= localStorage ========= */
+
+function loadData() {
+  const data = localStorage.getItem(STORAGE_KEY);
+  return data ? JSON.parse(data) : {};
+}
+
+function saveData(data) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+/* ========= 入力UI ========= */
+
 function setinput(count) {
   let html = "";
 
   for (let i = count - 1; i >= 0; i--) {
     html += `
       <div>
-        ${subjects[i].name}
-        <input type="number" id="${subjects[i].id}" min="0" max="100">
+        ${SUBJECTS[i].name}
+        <input type="number" id="${SUBJECTS[i].id}" min="0" max="100">
       </div>
     `;
   }
 
-  html += `<button onclick="saveScores()">保存</button>`;
+  html += `<button onclick="addScores()">保存</button>`;
   document.getElementById("subjects").innerHTML = html;
 }
 
-/* 保存 */
-function saveScores() {
-  subjects.forEach(sub => {
+/* ========= 点数追加 ========= */
+
+function addScores() {
+  const data = loadData();
+
+  SUBJECTS.forEach(sub => {
     const input = document.getElementById(sub.id);
     if (!input || input.value === "") return;
 
     const score = Number(input.value);
-    if (!scoreData[sub.id]) scoreData[sub.id] = [];
-    scoreData[sub.id].push(score);
+    if (!data[sub.id]) data[sub.id] = [];
+    data[sub.id].push(score);
+
+    input.value = "";
   });
 
-  localStorage.setItem("scores", JSON.stringify(scoreData));
+  saveData(data);
   renderStats();
 }
 
-/* 読み込み */
-function loadScores() {
-  const data = localStorage.getItem("scores");
-  return data ? JSON.parse(data) : {};
-}
+/* ========= 統計 ========= */
 
-/* 統計計算 */
 function calcStats(arr) {
   const sum = arr.reduce((a, b) => a + b, 0);
   return {
     avg: (sum / arr.length).toFixed(1),
     max: Math.max(...arr),
-    min: Math.min(...arr)
+    min: Math.min(...arr),
+    lastDiff: arr.length >= 2 ? arr[arr.length - 1] - arr[arr.length - 2] : 0
   };
 }
 
-/* 表示 */
+/* ========= 表示 ========= */
+
 function renderStats() {
-  let html = "<h3>統計</h3>";
+  const data = loadData();
+  let html = "<h3>成績統計</h3>";
 
-  subjects.forEach(sub => {
-    const data = scoreData[sub.id];
-    if (!data) return;
+  SUBJECTS.forEach(sub => {
+    const scores = data[sub.id];
+    if (!scores) return;
 
-    const stats = calcStats(data);
+    const s = calcStats(scores);
     html += `
       <div>
-        <b>${sub.name}</b>  
-        平均: ${stats.avg}  
-        最高: ${stats.max}  
-        最低: ${stats.min}
+        <b>${sub.name}</b><br>
+        回数: ${scores.length}　
+        平均: ${s.avg}　
+        最高: ${s.max}　
+        最低: ${s.min}　
+        前回差: ${s.lastDiff >= 0 ? "+" : ""}${s.lastDiff}
       </div>
     `;
   });
 
   document.querySelector(".cells").innerHTML = html;
 }
+
+/* ========= 初期描画 ========= */
 
 renderStats();
