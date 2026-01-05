@@ -4,11 +4,11 @@
 import {
   SkyWayContext,
   SkyWayAuthToken
-} from "https://cdn.jsdelivr.net/npm/@skyway-sdk/core@1.7.2/dist/index.js";
+} from "https://cdn.jsdelivr.net/npm/@skyway-sdk/core@2.2.1/dist/index.js";
 
 import {
   SkyWayRoom
-} from "https://cdn.jsdelivr.net/npm/@skyway-sdk/room@1.7.2/dist/index.js";
+} from "https://cdn.jsdelivr.net/npm/@skyway-sdk/room@2.2.1/dist/index.js";
 
 
 
