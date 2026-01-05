@@ -25,6 +25,89 @@ const remoteAudio = document.getElementById("remoteAudio");
 const remoteVideo = document.getElementById("remoteVideo");
 const localVideo  = document.getElementById("localVideo");
 
+
+// ===============================
+// SkyWay（グループ用）
+// ===============================
+let skywayContext = null;
+let skywayRoom = null;
+let skywayMember = null;
+
+//初期化関数
+async function initSkyWay() {
+  if (skywayContext) return;
+
+  skywayContext = await SkyWayContext.Create({
+    token: SkyWayAuthToken({
+      jti: crypto.randomUUID(),
+      iat: Math.floor(Date.now() / 1000),
+      exp: Math.floor(Date.now() / 1000) + 60 * 60,
+      scope: {
+        app: {
+          id: "be40f660-e970-4016-9b1f-b05af9b4bc94",
+          turn: true,
+          actions: ["read"],
+          channels: [{
+            id: "*",
+            name: "*",
+            actions: ["write"],
+            members: [{
+              id: "*",
+              name: "*",
+              actions: ["write"],
+              publication: { actions: ["write"] },
+              subscription: { actions: ["write"] }
+            }]
+          }]
+        }
+      }
+    }).encode("Fm7ENj7/tWi9z+86e87iEibtb+8PKW3s7j4ezWOBHpQ=")
+  });
+}
+
+
+async function joinSkyWayGroup(groupId) {
+  if (callState.mode !== "idle") return;
+  if (skywayRoom || skywayMember) return; // ★追加
+
+
+  callState.mode = "group";
+  callState.groupId = groupId;
+
+  await startMedia();
+  await initSkyWay();
+
+  skywayRoom = await SkyWayRoom.FindOrCreate(
+    skywayContext,
+    { type: "sfu", name: groupId }
+  );
+
+  skywayMember = await skywayRoom.join({ name: userID });
+
+  for (const track of localStream.getTracks()) {
+    await skywayMember.publish(track);
+  }
+
+  skywayRoom.publications.forEach(pub => {
+    if (pub.publisher.id !== skywayMember.id) {
+      subscribePublication(pub);
+    }
+  });
+
+  skywayRoom.onStreamPublished.add(e => {
+    subscribePublication(e.publication);
+  });
+
+  skywayRoom.onMemberLeft.add(e => {
+    removeRemoteVideo(e.member.name);
+  });
+
+  setCallStatus("グループ通話中");
+}
+
+
+
+
 /* ===============================
    状態管理（★追加）
 ================================ */
@@ -33,8 +116,7 @@ const localVideo  = document.getElementById("localVideo");
 ================================ */
 let callState = {
   mode: "idle",   // idle | p2p | group
-  groupId: null,
-  peers: new Map()     // Map (group用)
+  groupId: null
 };
 
 let micEnabled = true;
@@ -76,13 +158,6 @@ function addRemoteVideo(userId, stream) {
     video.srcObject = stream;
     audio.srcObject = stream;
   }
-}
-
-function removeRemoteVideo(userId) {
-  const el = document.querySelector(
-    `.remote[data-user-id="${userId}"]`
-  );
-  if (el) el.remove();
 }
 
 
@@ -146,39 +221,38 @@ function removeRemoteVideo(userId) {
 }
 
 
-//グループ通話用Peerの作成関数
-async function createGroupPeer(targetId) {
-  if (callState.peers.has(targetId)) {
-    return callState.peers.get(targetId);
+function requestJoinGroup(groupId, first=false) {
+  ws.send(JSON.stringify({
+    app: "voice",
+    type: "group-join",
+    groupId,
+    first,
+    userId: userID
+  }));
+}
+
+
+function joinGroupCall(groupId) {
+  if (callState.mode !== "idle") {
+    alert("すでに通話中です");
+    return;
+  }
+  requestJoinGroup(groupId);
+}
+
+
+async function subscribePublication(publication) {
+  if (!skywayMember) return;
+
+  const { stream } = await skywayMember.subscribe(publication);
+
+  if (stream.track.kind === "video") {
+    addRemoteVideo(publication.publisher.name, stream);
   }
 
-  if (!localStream) {
-    await startMedia();
+  if (stream.track.kind === "audio") {
+    addRemoteVideo(publication.publisher.name, stream);
   }
-
-  const pc = new RTCPeerConnection({
-    iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
-  });
-
-  callState.peers.set(targetId, pc);
-
-
-  localStream.getTracks().forEach(t => pc.addTrack(t, localStream));
-
-  pc.ontrack = e => addRemoteVideo(targetId, e.streams[0]);
-
-  pc.onicecandidate = e => {
-    if (e.candidate) {
-      ws.send(JSON.stringify({
-        app: "voice",
-        type: "group-ice",
-        to: targetId,
-        candidate: e.candidate
-      }));
-    }
-  };
-
-  return pc;
 }
 
 
@@ -217,8 +291,7 @@ async function checkupdate(){
     if(!RUID){
       localStorage.setItem("RUID", data.RUID);
     }else{
-      if(RUID != data.RUID && data.update){
-        console.log(data.update);
+      if(RUID != data.RUID){
         localStorage.setItem("RUID", data.RUID);
         alert("サーバーの更新を検知しました。ページをリロードします...");
         location.reload();
@@ -246,7 +319,6 @@ function connectWebSocket(){
       type: "register",
       userId: userID
     }));
-    
   };
 
   ws.onmessage = async (e) => {
@@ -320,121 +392,22 @@ function connectWebSocket(){
     // グループ通話 WS
     // ===============================
     if (msg.type === "group-joined") {
-      if(msg.to !== userID) return;
-      console.log(`まだ入っていない側:グループ(${msg.group})に参加しました。webRTCの接続を開始します...`);
-      console.log("メンバー一覧:",msg.members);
-      await startMedia();
-
-      for (const uid of msg.members) {
-        if (uid === userID){
-          console.log("自分を除外:",uid);
-          continue;//自分を除外
-        }
-
-        // ★ ここで「初対面か」を判断
-        /*if (callState.peers.has(uid)){
-          console.log("初対面ではないので除外:",uid);
-          continue;
-        }一旦無効化*/
-
-        const pc = await createGroupPeer(uid);
-        console.log(`${uid}とpeerを作成:`, pc);
-
-        const offer = await pc.createOffer();
-        await pc.setLocalDescription(offer);
-
-        ws.send(JSON.stringify({
-          app: "voice",
-          type: "group-offer",
-          to: uid,
-          sdp: offer
-        }));
-      }
+      if (msg.to !== userID) return;
+      await joinSkyWayGroup(msg.group);
     }
+
 
     if (msg.type === "user-left") {
       if (callState.mode !== "group") return;
-
-      const pc = callState.peers.get(msg.userId);
-      if (pc) {
-        pc.close();
-        callState.peers.delete(msg.userId);
-        removeRemoteVideo(msg.userId);
-      }
+      removeRemoteVideo(msg.userId);
     }
-
-    if (msg.type === "group-offer") {
-      await startMedia();
-      console.log(`すでに入っている側: ${msg.from} からofferを受け取りました`);
-      const pc = await createGroupPeer(msg.from);
-      console.log(`${msg.from}とpeerを作成しました:`, pc);
-
-      // ★ ここでは state を見ない
-      await pc.setRemoteDescription(msg.sdp);
-
-      const answer = await pc.createAnswer();
-      await pc.setLocalDescription(answer);
-
-      ws.send(JSON.stringify({
-        app: "voice",
-        type: "group-answer",
-        to: msg.from,
-        sdp: answer
-      }));
-
-      // answer / offer 後 ICEキューを処理
-      if (iceQueue.has(msg.from)) {
-        for (const c of iceQueue.get(msg.from)) {
-          await pc.addIceCandidate(c);
-        }
-        iceQueue.delete(msg.from);
-      }
-      setCallStatus("グループ通話中");
-    }
-
-    if (msg.type === "group-answer") {
-      if (callState.mode !== "group") return;
-      console.log("まだ入っていない側:answerを受け取りました");
-      const pc = callState.peers.get(msg.from);
-      if (pc && pc.signalingState === "have-local-offer") {
-        await pc.setRemoteDescription(msg.sdp);
-      }
-
-      // answer / offer 後 ICEキューを処理
-      if (iceQueue.has(msg.from)) {
-        for (const c of iceQueue.get(msg.from)) {
-          await pc.addIceCandidate(c);
-        }
-        iceQueue.delete(msg.from);
-      }
-    }
-
-    if (msg.type === "group-ice") {
-      const pc = callState.peers.get(msg.from);
-      if (!pc) return;
-
-      if (pc.remoteDescription) {
-        await pc.addIceCandidate(msg.candidate);
-      } else {
-        //キューに登録
-        if (!iceQueue.has(msg.from)) iceQueue.set(msg.from, []);
-        iceQueue.get(msg.from).push(msg.candidate);
-      }
-    }
-
 
     //グループ作成通知
-    if (msg.type === "group-created") {
-      
-      currentGroupId = msg.group.id;
-
-      if(msg.owner === userID){
-        console.log("オーナー自動参加:", msg.group.id);
-        joinGroupCall(msg.group.id, true);
-        //参加処理
-      }
-
+    if (msg.type === "group-created" && msg.owner === userID) {
+      // UI更新のみ、joinは送らない
+      await joinSkyWayGroup(msg.group.id);
     }
+
 
     if (msg.type === "group-list-update") {
       //UI更新だけ
@@ -552,51 +525,28 @@ function endCall(sendSignal = true) {
 /*
 グループ通話終了
 */
-function cleanupGroupCall() {
-  for (const pc of callState.peers.values()) {
-    try {
-      pc.ontrack = null;
-      pc.onicecandidate = null;
-      pc.close();
-    } catch {}
-  }
-
-  callState.peers.clear();
-  iceQueue.clear();
-
-  callState.groupId = null;
-  callState.mode = "idle";
-
-}
-
 
 function leaveGroupCall() {
   if (callState.mode !== "group") return;
 
-  ws.send(JSON.stringify({
-    app: "voice",
-    userId: userID,
-    type: "group-leave"
-  }));
+  skywayMember?.leave();
+  skywayRoom?.dispose();
 
-  for (const uid of callState.peers.keys()) {
-    removeRemoteVideo(uid);
-  }
+  skywayMember = null;
+  skywayRoom = null;
 
-  cleanupGroupCall();
-
-  //初期化処理
   localStream?.getTracks().forEach(t => t.stop());
   localStream = null;
 
-  audioTrack = null;
-  videoTrack = null;
-  localVideo.srcObject = null;
+  document.querySelectorAll(".remote").forEach(e => e.remove());
 
-  //callState.peers = null;
+  callState.mode = "idle";
+  callState.groupId = null;
 
   setCallStatus("待機中");
 }
+
+
 
 function endAnyCall() {
   if (callState.mode === "p2p") {
@@ -798,43 +748,12 @@ groupList.appendChild(groupItemElement);
 
 */
 
-function joinGroupCall(groupId, first) {
-  if (!ws || ws.readyState !== WebSocket.OPEN) {
-    alert("WebSocket未接続です");
-    return;
-  }
-
-  if (callState.mode !== "idle") {
-    alert("すでに通話中です");
-    return;
-  }
-
-  currentTarget = null;
-
-
-  callState.mode = "group";
-  callState.groupId = groupId;
-  callState.peers.clear();
-
-  ws.send(JSON.stringify({
-    app: "voice",
-    type: "group-join",
-    groupId,
-    first: first?true:false,
-    userId: userID
-  }));
-
-  setCallStatus("グループ通話に参加中…");
-}
-
 
 document.addEventListener("click", (e) => {
   const btn = e.target.closest(".group-call");
   if (!btn) return;
 
   const groupId = btn.dataset.groupId;
-  if (!groupId) return;
-
   joinGroupCall(groupId);
 });
 
