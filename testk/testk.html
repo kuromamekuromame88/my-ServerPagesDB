@@ -39,22 +39,143 @@
         left: 0;
       }
 
+      /* ===== 全体 ===== */
+
       body{
         padding-top: 80px;
+        background: #f7f7f7;
+        color: #111;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans JP", sans-serif;
       }
 
-      .title {
+      /* ===== タイトル ===== */
+
+      .title h2 {
+        font-weight: 600;
+        letter-spacing: 0.05em;
+      }
+
+      /* ===== 入力エリア全体 ===== */
+
+      .add_sample {
+        background: #fff;
+        padding: 16px;
+        margin: 0 auto 20px;
+        max-width: 1100px;
+        border-radius: 14px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      }
+
+      /* ===== 行（1回のテスト） ===== */
+
+      #subjects > div {
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 10px 12px;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 6px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+      }
+
+      /* ===== 日付・セレクト ===== */
+
+      input[type="date"],
+      select {
+        background: #fafafa;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 6px 8px;
+        font-size: 13px;
+      }
+
+      /* ===== 点数入力 ===== */
+
+      input[type="number"] {
+        background: #fafafa;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 5px 6px;
         text-align: center;
+        font-size: 13px;
+        transition: border 0.2s;
       }
 
-      .add_sample{
-        background-color: #888;
+      input[type="number"]:focus,
+      input[type="date"]:focus,
+      select:focus {
+        outline: none;
+        border-color: #000;
+      }
+
+      /* ===== 教科名 ===== */
+
+      #subjects div {
+        font-size: 13px;
+      }
+
+      /* ===== ボタン ===== */
+
+      button {
+        background: #111;
         color: #fff;
+        border: none;
+        border-radius: 999px;
+        padding: 6px 14px;
+        font-size: 12px;
+        cursor: pointer;
+        transition: background 0.2s, transform 0.1s;
       }
 
-      .subjects input{
-        width: 80px;
+      button:hover {
+        background: #333;
       }
+
+      button:active {
+        transform: scale(0.97);
+      }
+
+      /* 追加ボタン */
+      button.add {
+        margin-top: 10px;
+      }
+
+      /* 削除ボタン（行内） */
+      #subjects button {
+        margin-left: auto;
+        background: #eee;
+        color: #111;
+      }
+
+      #subjects button:hover {
+        background: #ddd;
+      }
+
+      /* ===== 統計表示 ===== */
+
+      .cells {
+        max-width: 1100px;
+        margin: 0 auto;
+        background: #fff;
+        border-radius: 14px;
+        padding: 16px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      }
+
+      .cells h3 {
+        margin-top: 0;
+        font-weight: 600;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 6px;
+      }
+
+      .cells div {
+        padding: 4px 0;
+        font-size: 14px;
+      }
+
     </style>
   </head>
   <body>
