@@ -48,8 +48,11 @@ let skywayRoom = null;
 let skywayMember = null;
 
 //初期化関数
-async function initSkyWay() {
-  if (skywayContext) return;
+async function initSkyWay(force = false) {
+  if (skywayContext && !force) return;
+
+  skywayContext?.dispose?.();
+  skywayContext = null;
 
   skywayContext = await SkyWayContext.Create({
     token: SkyWayAuthToken({
@@ -108,7 +111,7 @@ async function joinSkyWayGroup(groupId) {
     }
   });
 
-  skywayRoom.onStreamPublished.add(e => {
+  skywayRoom.onPublicationAdded.add(e => {
     subscribePublication(e.publication);
   });
 
@@ -255,31 +258,28 @@ function joinGroupCall(groupId) {
 }
 
 
-async function subscribePublication(publication) {
-  if (!skywayMember) return;
+const subscribed = new Set();
 
+
+const remoteStreams = new Map(); // userId -> MediaStream
+
+async function subscribePublication(publication) {
+  if (subscribed.has(publication.id)) return;
+  subscribed.add(publication.id);
+  
   const { stream } = await skywayMember.subscribe(publication);
   const userId = publication.publisher.name;
 
-  let container = document.querySelector(
-    `.remote[data-user-id="${userId}"]`
-  );
-
-  if (!container) {
-    addRemoteVideo(userId, null);
-    container = document.querySelector(
-      `.remote[data-user-id="${userId}"]`
-    );
+  let mediaStream = remoteStreams.get(userId);
+  if (!mediaStream) {
+    mediaStream = new MediaStream();
+    remoteStreams.set(userId, mediaStream);
+    addRemoteVideo(userId, mediaStream);
   }
 
-  if (stream.track.kind === "video") {
-    container.querySelector("video").srcObject = stream;
-  }
-
-  if (stream.track.kind === "audio") {
-    container.querySelector("audio").srcObject = stream;
-  }
+  mediaStream.addTrack(stream.track);
 }
+
 
 
 
@@ -555,7 +555,6 @@ function leaveGroupCall() {
   if (callState.mode !== "group") return;
 
   skywayMember?.leave();
-  skywayRoom?.dispose();
 
   skywayMember = null;
   skywayRoom = null;
