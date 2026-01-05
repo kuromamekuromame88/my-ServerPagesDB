@@ -52,9 +52,9 @@ function renderRows() {
         onchange="updateDate(${rowIndex}, this.value)">
     `;
 
-    SUBJECTS.forEach(sub => {
+    SUBJECTS.forEach((sub, subIndex) => {
       const v = row.scores[sub.id] ?? "";
-      html += `
+      html += `${SUBJECTS[subIndex].name}
         <input type="number"
           min="0" max="100"
           value="${v}"
