@@ -59,7 +59,7 @@ function renderRows() {
           min="0" max="100"
           value="${v}"
           style="width:60px"
-          onchange="updateScore(${rowIndex}, '${sub.id}', this.value)">
+          onchange="updateScore(${rowIndex}, '${sub.id}', this.value)">|
       `;
     });
 
