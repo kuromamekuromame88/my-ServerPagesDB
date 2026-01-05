@@ -1,9 +1,13 @@
-const SUBJECTS = [
+const SUBJECTS_5 = [
   { name: "国語", id: "kokugo" },
   { name: "数学", id: "suugaku" },
   { name: "英語", id: "eigo" },
   { name: "社会", id: "shakai" },
-  { name: "理科", id: "rika" },
+  { name: "理科", id: "rika" }
+];
+
+const SUBJECTS_9 = [
+  ...SUBJECTS_5,
   { name: "音楽", id: "onngaku" },
   { name: "美術", id: "bizyutu" },
   { name: "保健体育", id: "hokenntaiiku" },
@@ -30,6 +34,7 @@ function setinput() {
 
   rows.push({
     date: new Date().toISOString().slice(0, 10),
+    type: 5,        // デフォルトは5教科
     scores: {}
   });
 
@@ -37,7 +42,7 @@ function setinput() {
   renderRows();
 }
 
-/* ===== 行の削除 ===== */
+/* ===== 行削除 ===== */
 
 function deleteRow(index) {
   const rows = loadRows();
@@ -46,22 +51,34 @@ function deleteRow(index) {
   renderRows();
 }
 
-/* ===== 行の描画 ===== */
+/* ===== 行描画 ===== */
 
 function renderRows() {
   const rows = loadRows();
   let html = "";
 
   rows.forEach((row, rowIndex) => {
+    const subjects = row.type === 9 ? SUBJECTS_9 : SUBJECTS_5;
+
     html += `<div style="margin-bottom:8px;">`;
 
+    // 日付
     html += `
       <input type="date"
         value="${row.date}"
         onchange="updateDate(${rowIndex}, this.value)">
     `;
 
-    SUBJECTS.forEach(sub => {
+    // テスト種別
+    html += `
+      <select onchange="updateType(${rowIndex}, this.value)">
+        <option value="5" ${row.type === 5 ? "selected" : ""}>5教科</option>
+        <option value="9" ${row.type === 9 ? "selected" : ""}>9教科</option>
+      </select>
+    `;
+
+    // 教科入力
+    subjects.forEach(sub => {
       const v = row.scores[sub.id] ?? "";
       html += `
         ${sub.name}:
@@ -91,6 +108,13 @@ function updateDate(index, value) {
   saveRows(rows);
 }
 
+function updateType(index, value) {
+  const rows = loadRows();
+  rows[index].type = Number(value);
+  saveRows(rows);
+  renderRows(); // 教科枠を再構築
+}
+
 function updateScore(index, subjectId, value) {
   const rows = loadRows();
   rows[index].scores[subjectId] = Number(value);
@@ -104,7 +128,9 @@ function renderStats() {
   const rows = loadRows();
   let html = "<h3>教科別統計</h3>";
 
-  SUBJECTS.forEach(sub => {
+  const ALL_SUBJECTS = SUBJECTS_9;
+
+  ALL_SUBJECTS.forEach(sub => {
     const values = rows
       .map(r => r.scores[sub.id])
       .filter(v => typeof v === "number");
