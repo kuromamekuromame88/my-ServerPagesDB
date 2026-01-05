@@ -2,15 +2,16 @@
 
 //ライブラリ読み込み
 import {
-  SkyWayContext,
+  SkyWayContext
 } from "https://cdn.jsdelivr.net/npm/@skyway-sdk/core@2.2.1/dist/index.js";
 
-import {
+/*import {
   SkyWayAuthToken
 } from "https://cdn.jsdelivr.net/npm/@skyway-sdk/token@2.0.2/dist/index.js";
-
+*/
 import {
-  SkyWayRoom
+  SkyWayRoom,
+  SkyWayAuthToken
 } from "https://cdn.jsdelivr.net/npm/@skyway-sdk/room@2.2.1/dist/index.js";
 
 
