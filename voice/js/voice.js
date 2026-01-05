@@ -245,16 +245,27 @@ async function subscribePublication(publication) {
   if (!skywayMember) return;
 
   const { stream } = await skywayMember.subscribe(publication);
+  const userId = publication.publisher.name;
+
+  let container = document.querySelector(
+    `.remote[data-user-id="${userId}"]`
+  );
+
+  if (!container) {
+    addRemoteVideo(userId, null);
+    container = document.querySelector(
+      `.remote[data-user-id="${userId}"]`
+    );
+  }
 
   if (stream.track.kind === "video") {
-    addRemoteVideo(publication.publisher.name, stream);
+    container.querySelector("video").srcObject = stream;
   }
 
   if (stream.track.kind === "audio") {
-    addRemoteVideo(publication.publisher.name, stream);
+    container.querySelector("audio").srcObject = stream;
   }
 }
-
 
 
 
