@@ -7,7 +7,7 @@ import {
 
 import {
   SkyWayAuthToken
-} from "https://cdn.jsdelivr.net/npm/@skyway-sdk/token@1.7.4/dist/skyway-token.js";
+} from "https://cdn.jsdelivr.net/npm/@skyway-sdk/token@2.0.2/dist/skyway_token-2.0.2.js";
 
 import {
   SkyWayRoom
