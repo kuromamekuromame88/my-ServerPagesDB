@@ -3,177 +3,179 @@ class IframeWindow {
 
   win(name, option = {}) {
     const state = {
-      title: name,
-      pos: option.pos || [0, 0],
-      size: option.size || [320, 220],
-      content: option.content || { type: "html", con: "" },
-      style: option.style || {},
+      x: option.pos?.[0] ?? 0,
+      y: option.pos?.[1] ?? 0,
+      w: option.size?.w ?? 320,
+      h: option.size?.h ?? 220,
       maximized: false,
-      prevPos: null,
-      prevSize: null
+      prev: null
     };
 
     const body = document.body;
 
-    /* ===== ウィンドウ本体 ===== */
-    const newwin = document.createElement("div");
-    Object.assign(newwin.style, {
+    // ===== Window =====
+    const win = document.createElement("div");
+    win.className = `win-${name}`;
+    Object.assign(win.style, {
       position: "fixed",
-      left: state.pos[0] + "px",
-      top: state.pos[1] + "px",
-      width: state.size[0] + "px",
-      height: state.size[1] + "px",
-      zIndex: 1000000,
+      left: state.x + "px",
+      top: state.y + "px",
+      width: state.w + "px",
+      height: state.h + "px",
       background: "#fff",
-      border: "1px solid #888",
-      boxSizing: "border-box"
+      zIndex: 1000000,
+      boxShadow: "0 6px 20px rgba(0,0,0,.2)",
+      display: "flex",
+      flexDirection: "column"
     });
-    Object.assign(newwin.style, state.style);
 
-    /* ===== タイトルバー ===== */
-    const toptab = document.createElement("div");
-    Object.assign(toptab.style, {
+    // ===== Top Bar =====
+    const bar = document.createElement("div");
+    Object.assign(bar.style, {
       height: "32px",
-      backgroundColor: "#dedede",
+      background: "#dedede",
+      cursor: "move",
       display: "flex",
       alignItems: "center",
       justifyContent: "space-between",
       padding: "0 6px",
       userSelect: "none",
-      cursor: "grab",
-      boxSizing: "border-box",
-
-      /* ★ 超重要 */
       touchAction: "none"
     });
 
-    const wintitle = document.createElement("span");
-    wintitle.innerText = state.title;
-    wintitle.style.fontSize = "12px";
-
-    const btnArea = document.createElement("div");
+    const title = document.createElement("span");
+    title.textContent = name;
 
     const btnMax = document.createElement("button");
-    btnMax.textContent = "⬜";
-
-    const btnMin = document.createElement("button");
-    btnMin.textContent = "–";
+    btnMax.textContent = "□";
 
     const btnClose = document.createElement("button");
     btnClose.textContent = "×";
 
-    btnArea.append(btnMin, btnMax, btnClose);
-    toptab.append(wintitle, btnArea);
+    const btns = document.createElement("div");
+    btns.append(btnMax, btnClose);
 
-    /* ===== iframe ===== */
-    const cont = document.createElement("iframe");
-    cont.style.width = "100%";
-    cont.style.height = "calc(100% - 32px)";
-    cont.style.border = "none";
-    cont.style.display = "block";
+    bar.append(title, btns);
 
-    if (state.content.type === "web") {
-      cont.src = state.content.con;
+    // ===== iframe =====
+    const iframe = document.createElement("iframe");
+    iframe.style.flex = "1";
+    iframe.style.border = "none";
+
+    if (option.content?.type === "web") {
+      iframe.src = option.content.con;
     } else {
-      cont.srcdoc = state.content.con;
+      iframe.srcdoc = option.content?.con ?? "";
     }
 
-    newwin.append(toptab, cont);
-    body.appendChild(newwin);
+    // ===== Resize Handle =====
+    const resize = document.createElement("div");
+    Object.assign(resize.style, {
+      position: "absolute",
+      right: "0",
+      bottom: "0",
+      width: "16px",
+      height: "16px",
+      cursor: "nwse-resize",
+      touchAction: "none",
+      background: "transparent"
+    });
 
-    /* ===== ボタン動作 ===== */
-    btnClose.onclick = () => newwin.remove();
+    win.append(bar, iframe, resize);
+    body.appendChild(win);
 
-    let minimized = false;
-    btnMin.onclick = () => {
-      minimized = !minimized;
-      cont.style.display = minimized ? "none" : "block";
-      newwin.style.height = minimized ? "32px" : state.size[1] + "px";
-    };
-
-    btnMax.onclick = () => {
-      if (!state.maximized) {
-        state.prevPos = [...state.pos];
-        state.prevSize = [...state.size];
-        newwin.style.left = "0px";
-        newwin.style.top = "0px";
-        newwin.style.width = "100vw";
-        newwin.style.height = "100vh";
-        state.maximized = true;
-      } else {
-        newwin.style.left = state.prevPos[0] + "px";
-        newwin.style.top = state.prevPos[1] + "px";
-        newwin.style.width = state.prevSize[0] + "px";
-        newwin.style.height = state.prevSize[1] + "px";
-        state.maximized = false;
-      }
-    };
-
-    /* ===== ドラッグ（完全修正版） ===== */
-    let dragging = false;
-    let dragPointerId = null;
-    let startPointer = null;
-    let startPos = null;
-
-    const endDrag = () => {
-      dragging = false;
-      dragPointerId = null;
-      toptab.style.cursor = "grab";
-    };
-
-    toptab.addEventListener("pointerdown", (e) => {
+    // ===== Drag =====
+    bar.addEventListener("pointerdown", e => {
       if (state.maximized) return;
 
-      dragging = true;
-      dragPointerId = e.pointerId;
-      startPointer = [e.clientX, e.clientY];
-      startPos = [...state.pos];
+      const sx = e.clientX;
+      const sy = e.clientY;
+      const ox = state.x;
+      const oy = state.y;
 
-      toptab.setPointerCapture(e.pointerId);
-      toptab.style.cursor = "grabbing";
+      iframe.style.pointerEvents = "none";
+      bar.setPointerCapture(e.pointerId);
+
+      const move = ev => {
+        state.x = ox + (ev.clientX - sx);
+        state.y = oy + (ev.clientY - sy);
+        win.style.left = state.x + "px";
+        win.style.top = state.y + "px";
+      };
+
+      const up = ev => {
+        iframe.style.pointerEvents = "auto";
+        bar.releasePointerCapture(ev.pointerId);
+        document.removeEventListener("pointermove", move);
+        document.removeEventListener("pointerup", up);
+      };
+
+      document.addEventListener("pointermove", move);
+      document.addEventListener("pointerup", up);
     });
 
-    toptab.addEventListener("pointermove", (e) => {
-      if (!dragging) return;
-      if (e.pointerId !== dragPointerId) return;
+    // ===== Resize =====
+    resize.addEventListener("pointerdown", e => {
+      if (state.maximized) return;
 
-      const dx = e.clientX - startPointer[0];
-      const dy = e.clientY - startPointer[1];
+      const sx = e.clientX;
+      const sy = e.clientY;
+      const ow = state.w;
+      const oh = state.h;
 
-      state.pos = [startPos[0] + dx, startPos[1] + dy];
-      newwin.style.left = state.pos[0] + "px";
-      newwin.style.top = state.pos[1] + "px";
+      iframe.style.pointerEvents = "none";
+      resize.setPointerCapture(e.pointerId);
+
+      const move = ev => {
+        state.w = Math.max(200, ow + (ev.clientX - sx));
+        state.h = Math.max(120, oh + (ev.clientY - sy));
+        win.style.width = state.w + "px";
+        win.style.height = state.h + "px";
+      };
+
+      const up = ev => {
+        iframe.style.pointerEvents = "auto";
+        resize.releasePointerCapture(ev.pointerId);
+        document.removeEventListener("pointermove", move);
+        document.removeEventListener("pointerup", up);
+      };
+
+      document.addEventListener("pointermove", move);
+      document.addEventListener("pointerup", up);
     });
 
-    /* ★ 重要：すべてで解除 */
-    toptab.addEventListener("pointerup", endDrag);
-    toptab.addEventListener("pointercancel", endDrag);
-    toptab.addEventListener("lostpointercapture", endDrag);
-
-    /* ===== API ===== */
-    return {
-      el: newwin,
-      iframe: cont,
-
-      set pos([x, y]) {
-        state.pos = [x, y];
-        newwin.style.left = x + "px";
-        newwin.style.top = y + "px";
-      },
-
-      set size([w, h]) {
-        state.size = [w, h];
-        newwin.style.width = w + "px";
-        newwin.style.height = h + "px";
-      },
-
-      set title(t) {
-        wintitle.innerText = t;
-      },
-
-      close() {
-        newwin.remove();
+    // ===== Maximize =====
+    btnMax.onclick = () => {
+      if (!state.maximized) {
+        state.prev = { ...state };
+        Object.assign(win.style, {
+          left: "0",
+          top: "0",
+          width: "100vw",
+          height: "100vh"
+        });
+        resize.style.display = "none";
+      } else {
+        Object.assign(win.style, {
+          left: state.prev.x + "px",
+          top: state.prev.y + "px",
+          width: state.prev.w + "px",
+          height: state.prev.h + "px"
+        });
+        Object.assign(state, state.prev);
+        resize.style.display = "block";
       }
+      state.maximized = !state.maximized;
+    };
+
+    btnClose.onclick = () => win.remove();
+
+    // ===== API =====
+    return {
+      el: win,
+      iframe,
+      maximize: () => btnMax.click(),
+      close: () => win.remove()
     };
   }
 }
