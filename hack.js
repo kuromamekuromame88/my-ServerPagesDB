@@ -43,3 +43,10 @@ function fireAsciiString(text) {
     document.dispatchEvent(new KeyboardEvent("keyup", eventInit));
   }
 }
+
+
+//マイタイピングチートコード
+setInterval(()=>{
+  var d=document.getElementsByClassName("mtjNowInput");
+  if(d[d.length-1]&&d[d.length-1].innerText) fireAsciiString(d[d.length-1].innerText);
+},1);
