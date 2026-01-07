@@ -13,21 +13,24 @@ class IframeWindow {
 
     const body = document.body;
 
-    // ===== Window =====
     const win = document.createElement("div");
-    win.className = `win-${name}`;
     Object.assign(win.style, {
       position: "fixed",
-      left: state.x + "px",
-      top: state.y + "px",
-      width: state.w + "px",
-      height: state.h + "px",
       background: "#fff",
       zIndex: 1000000,
       boxShadow: "0 6px 20px rgba(0,0,0,.2)",
       display: "flex",
       flexDirection: "column"
     });
+
+    function applyRect() {
+      win.style.left   = state.x + "px";
+      win.style.top    = state.y + "px";
+      win.style.width  = state.w + "px";
+      win.style.height = state.h + "px";
+    }
+
+    applyRect(); // ★ 生成時に必ず反映
 
     // ===== Top Bar =====
     const bar = document.createElement("div");
@@ -54,7 +57,6 @@ class IframeWindow {
 
     const btns = document.createElement("div");
     btns.append(btnMax, btnClose);
-
     bar.append(title, btns);
 
     // ===== iframe =====
@@ -77,8 +79,7 @@ class IframeWindow {
       width: "16px",
       height: "16px",
       cursor: "nwse-resize",
-      touchAction: "none",
-      background: "transparent"
+      touchAction: "none"
     });
 
     win.append(bar, iframe, resize);
@@ -99,8 +100,7 @@ class IframeWindow {
       const move = ev => {
         state.x = ox + (ev.clientX - sx);
         state.y = oy + (ev.clientY - sy);
-        win.style.left = state.x + "px";
-        win.style.top = state.y + "px";
+        applyRect();
       };
 
       const up = ev => {
@@ -129,8 +129,7 @@ class IframeWindow {
       const move = ev => {
         state.w = Math.max(200, ow + (ev.clientX - sx));
         state.h = Math.max(120, oh + (ev.clientY - sy));
-        win.style.width = state.w + "px";
-        win.style.height = state.h + "px";
+        applyRect();
       };
 
       const up = ev => {
@@ -148,33 +147,24 @@ class IframeWindow {
     btnMax.onclick = () => {
       if (!state.maximized) {
         state.prev = { ...state };
-        Object.assign(win.style, {
-          left: "0",
-          top: "0",
-          width: "100vw",
-          height: "100vh"
-        });
+        state.x = 0;
+        state.y = 0;
+        state.w = window.innerWidth;
+        state.h = window.innerHeight;
         resize.style.display = "none";
       } else {
-        Object.assign(win.style, {
-          left: state.prev.x + "px",
-          top: state.prev.y + "px",
-          width: state.prev.w + "px",
-          height: state.prev.h + "px"
-        });
         Object.assign(state, state.prev);
         resize.style.display = "block";
       }
       state.maximized = !state.maximized;
+      applyRect();
     };
 
     btnClose.onclick = () => win.remove();
 
-    // ===== API =====
     return {
       el: win,
       iframe,
-      maximize: () => btnMax.click(),
       close: () => win.remove()
     };
   }
