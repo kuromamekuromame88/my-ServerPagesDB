@@ -74,6 +74,11 @@ class IframeWindow {
     btns.append(btnMin, btnMax, btnClose);
     bar.append(title, btns);
 
+    // ★ ボタンのイベントは上に伝えない
+    [btnMin, btnMax, btnClose].forEach(btn => {
+      btn.addEventListener("pointerdown", e => e.stopPropagation());
+    });
+
     // ===== iframe =====
     const iframe = document.createElement("iframe");
     iframe.style.flex = "1";
@@ -100,25 +105,14 @@ class IframeWindow {
     win.append(bar, iframe, resize);
     body.appendChild(win);
 
-    // ===== Utility: Height Animation =====
-    function animateHeight(to) {
-      win.style.transition = "height 0.25s ease";
-      requestAnimationFrame(() => {
-        state.h = to;
-        applyRect();
-      });
-      setTimeout(() => {
-        win.style.transition = "";
-      }, 250);
-    }
-
-    // ===== Focus handling =====
+    // ===== Focus =====
     win.addEventListener("pointerdown", focus);
     bar.addEventListener("pointerdown", focus);
     iframe.addEventListener("pointerdown", focus);
 
     // ===== Drag =====
     bar.addEventListener("pointerdown", e => {
+      if (e.target !== bar) return;   // ★ 重要
       if (state.maximized || state.minimized) return;
 
       const sx = e.clientX;
@@ -175,26 +169,23 @@ class IframeWindow {
       document.addEventListener("pointerup", up);
     });
 
-    // ===== Minimize =====
+    // ===== Min / Max / Close =====
     btnMin.onclick = () => {
-      console.log("Minimize");
       focus();
       if (!state.minimized) {
         state.prevSize = state.h;
         resize.style.display = "none";
         iframe.style.display = "none";
-        animateHeight(BAR_HEIGHT);
+        win.style.height = BAR_HEIGHT + "px";
       } else {
         iframe.style.display = "block";
         resize.style.display = state.maximized ? "none" : "block";
-        animateHeight(state.prevSize);
+        win.style.height = state.prevSize + "px";
       }
       state.minimized = !state.minimized;
     };
 
-    // ===== Maximize =====
     btnMax.onclick = () => {
-      console.log("Maximize");
       focus();
       if (state.minimized) btnMin.onclick();
 
@@ -213,16 +204,8 @@ class IframeWindow {
       applyRect();
     };
 
-    btnClose.onclick = () => {
-      console.log("remove");
-      win.remove();
-    };
+    btnClose.onclick = () => win.remove();
 
-    return {
-      el: win,
-      iframe,
-      focus,
-      close: () => win.remove()
-    };
+    return { el: win, iframe, focus, close: () => win.remove() };
   }
 }
