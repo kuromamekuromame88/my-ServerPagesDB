@@ -56,7 +56,7 @@ class IframeWindow {
     title.textContent = name;
 
     const btnMin = document.createElement("button");
-    btnMin.textContent = "—";
+    btnMin.textContent = "_";
 
     const btnMax = document.createElement("button");
     btnMax.textContent = "□";
