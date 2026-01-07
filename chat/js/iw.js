@@ -1,4 +1,6 @@
 class IframeWindow {
+  static topZ = 1000000;
+
   constructor() {}
 
   win(name, option = {}) {
@@ -15,19 +17,22 @@ class IframeWindow {
       prevSize: null
     };
 
-    console.log("body:",document.body);
     const body = document.body;
 
     const win = document.createElement("div");
     Object.assign(win.style, {
       position: "fixed",
       background: "#fff",
-      zIndex: 1000000,
+      zIndex: ++IframeWindow.topZ,
       boxShadow: "0 6px 20px rgba(0,0,0,.2)",
       display: "flex",
       flexDirection: "column",
       overflow: "hidden"
     });
+
+    function focus() {
+      win.style.zIndex = ++IframeWindow.topZ;
+    }
 
     function applyRect() {
       win.style.left   = state.x + "px";
@@ -67,7 +72,6 @@ class IframeWindow {
 
     const btns = document.createElement("div");
     btns.append(btnMin, btnMax, btnClose);
-
     bar.append(title, btns);
 
     // ===== iframe =====
@@ -107,6 +111,11 @@ class IframeWindow {
         win.style.transition = "";
       }, 250);
     }
+
+    // ===== Focus handling =====
+    win.addEventListener("pointerdown", focus);
+    bar.addEventListener("pointerdown", focus);
+    iframe.addEventListener("pointerdown", focus);
 
     // ===== Drag =====
     bar.addEventListener("pointerdown", e => {
@@ -168,6 +177,7 @@ class IframeWindow {
 
     // ===== Minimize =====
     btnMin.onclick = () => {
+      focus();
       if (!state.minimized) {
         state.prevSize = state.h;
         resize.style.display = "none";
@@ -183,6 +193,7 @@ class IframeWindow {
 
     // ===== Maximize =====
     btnMax.onclick = () => {
+      focus();
       if (state.minimized) btnMin.onclick();
 
       if (!state.maximized) {
@@ -205,6 +216,7 @@ class IframeWindow {
     return {
       el: win,
       iframe,
+      focus,
       close: () => win.remove()
     };
   }
