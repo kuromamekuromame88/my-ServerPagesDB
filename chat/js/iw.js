@@ -17,7 +17,6 @@ class IframeWindow {
 
     /* ===== ウィンドウ本体 ===== */
     const newwin = document.createElement("div");
-    newwin.classList.add(`win-${name}`);
     Object.assign(newwin.style, {
       position: "fixed",
       left: state.pos[0] + "px",
@@ -42,7 +41,10 @@ class IframeWindow {
       padding: "0 6px",
       userSelect: "none",
       cursor: "grab",
-      boxSizing: "border-box"
+      boxSizing: "border-box",
+
+      /* ★ 超重要 */
+      touchAction: "none"
     });
 
     const wintitle = document.createElement("span");
@@ -80,11 +82,8 @@ class IframeWindow {
     body.appendChild(newwin);
 
     /* ===== ボタン動作 ===== */
-
-    // 閉じる
     btnClose.onclick = () => newwin.remove();
 
-    // 最小化（表示切替のみ）
     let minimized = false;
     btnMin.onclick = () => {
       minimized = !minimized;
@@ -92,38 +91,41 @@ class IframeWindow {
       newwin.style.height = minimized ? "32px" : state.size[1] + "px";
     };
 
-    // 最大化 / 復元
     btnMax.onclick = () => {
       if (!state.maximized) {
         state.prevPos = [...state.pos];
         state.prevSize = [...state.size];
-
         newwin.style.left = "0px";
         newwin.style.top = "0px";
         newwin.style.width = "100vw";
         newwin.style.height = "100vh";
-
         state.maximized = true;
       } else {
         newwin.style.left = state.prevPos[0] + "px";
         newwin.style.top = state.prevPos[1] + "px";
         newwin.style.width = state.prevSize[0] + "px";
         newwin.style.height = state.prevSize[1] + "px";
-
         state.maximized = false;
       }
     };
 
-    /* ===== ドラッグ移動（PC / モバイル共通） ===== */
-
+    /* ===== ドラッグ（完全修正版） ===== */
     let dragging = false;
+    let dragPointerId = null;
     let startPointer = null;
     let startPos = null;
+
+    const endDrag = () => {
+      dragging = false;
+      dragPointerId = null;
+      toptab.style.cursor = "grab";
+    };
 
     toptab.addEventListener("pointerdown", (e) => {
       if (state.maximized) return;
 
       dragging = true;
+      dragPointerId = e.pointerId;
       startPointer = [e.clientX, e.clientY];
       startPos = [...state.pos];
 
@@ -133,6 +135,7 @@ class IframeWindow {
 
     toptab.addEventListener("pointermove", (e) => {
       if (!dragging) return;
+      if (e.pointerId !== dragPointerId) return;
 
       const dx = e.clientX - startPointer[0];
       const dy = e.clientY - startPointer[1];
@@ -142,12 +145,12 @@ class IframeWindow {
       newwin.style.top = state.pos[1] + "px";
     });
 
-    toptab.addEventListener("pointerup", () => {
-      dragging = false;
-      toptab.style.cursor = "grab";
-    });
+    /* ★ 重要：すべてで解除 */
+    toptab.addEventListener("pointerup", endDrag);
+    toptab.addEventListener("pointercancel", endDrag);
+    toptab.addEventListener("lostpointercapture", endDrag);
 
-    /* ===== 操作用API ===== */
+    /* ===== API ===== */
     return {
       el: newwin,
       iframe: cont,
@@ -166,10 +169,6 @@ class IframeWindow {
 
       set title(t) {
         wintitle.innerText = t;
-      },
-
-      maximize() {
-        btnMax.onclick();
       },
 
       close() {
