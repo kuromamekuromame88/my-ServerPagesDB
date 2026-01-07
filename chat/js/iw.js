@@ -1,6 +1,8 @@
 class IframeWindow {
   static topZ = 1000000;
 
+  constructor() {}
+
   win(name, option = {}) {
     const BAR_HEIGHT = 32;
 
@@ -33,15 +35,15 @@ class IframeWindow {
     }
 
     function applyRect() {
-      win.style.left = state.x + "px";
-      win.style.top = state.y + "px";
-      win.style.width = state.w + "px";
+      win.style.left   = state.x + "px";
+      win.style.top    = state.y + "px";
+      win.style.width  = state.w + "px";
       win.style.height = state.h + "px";
     }
 
     applyRect();
 
-    /* ===== Top Bar ===== */
+    // ===== Top Bar =====
     const bar = document.createElement("div");
     Object.assign(bar.style, {
       height: BAR_HEIGHT + "px",
@@ -59,58 +61,30 @@ class IframeWindow {
     const title = document.createElement("span");
     title.textContent = name;
 
-    /* ===== SVG Button Factory ===== */
-    function makeBtn(svg) {
-      const b = document.createElement("button");
-      b.innerHTML = svg;
-      Object.assign(b.style, {
-        width: "28px",
-        height: "22px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        background: "transparent",
-        border: "none",
-        padding: "0",
-        cursor: "pointer"
-      });
-
-      // ★ ドラッグ判定を奪わせない
-      ["pointerdown", "mousedown", "touchstart"].forEach(ev =>
-        b.addEventListener(ev, e => e.stopPropagation())
-      );
-
-      return b;
-    }
-
-    const btnMin = makeBtn(`
+    const btnMin = document.createElement("button");
+    //btnMin.textContent = "_";
+    btnMin.innerHTML = `
       <svg width="16" height="16" viewBox="0 0 16 16">
-        <line x1="3" y1="8" x2="13" y2="8"
-          stroke="black" stroke-width="1.5"/>
+        <line x1="3" y1="8" x2="13" y2="8" stroke="black" stroke-width="1.5"/>
       </svg>
-    `);
+    `;
 
-    const btnMax = makeBtn(`
-      <svg width="16" height="16" viewBox="0 0 16 16">
-        <rect x="3" y="3" width="10" height="10"
-          fill="none" stroke="black" stroke-width="1.5"/>
-      </svg>
-    `);
+    const btnMax = document.createElement("button");
+    btnMax.textContent = "□";
 
-    const btnClose = makeBtn(`
-      <svg width="16" height="16" viewBox="0 0 16 16">
-        <line x1="4" y1="4" x2="12" y2="12"
-          stroke="black" stroke-width="1.5"/>
-        <line x1="12" y1="4" x2="4" y2="12"
-          stroke="black" stroke-width="1.5"/>
-      </svg>
-    `);
+    const btnClose = document.createElement("button");
+    btnClose.textContent = "×";
 
     const btns = document.createElement("div");
     btns.append(btnMin, btnMax, btnClose);
     bar.append(title, btns);
 
-    /* ===== iframe ===== */
+    // ★ ボタンのイベントは上に伝えない
+    [btnMin, btnMax, btnClose].forEach(btn => {
+      btn.addEventListener("pointerdown", e => e.stopPropagation());
+    });
+
+    // ===== iframe =====
     const iframe = document.createElement("iframe");
     iframe.style.flex = "1";
     iframe.style.border = "none";
@@ -121,7 +95,7 @@ class IframeWindow {
       iframe.srcdoc = option.content?.con ?? "";
     }
 
-    /* ===== Resize Handle ===== */
+    // ===== Resize Handle =====
     const resize = document.createElement("div");
     Object.assign(resize.style, {
       position: "absolute",
@@ -136,8 +110,14 @@ class IframeWindow {
     win.append(bar, iframe, resize);
     body.appendChild(win);
 
-    /* ===== Drag ===== */
+    // ===== Focus =====
+    win.addEventListener("pointerdown", focus);
+    bar.addEventListener("pointerdown", focus);
+    iframe.addEventListener("pointerdown", focus);
+
+    // ===== Drag =====
     bar.addEventListener("pointerdown", e => {
+      if (e.target !== bar) return;   // ★ 重要
       if (state.maximized || state.minimized) return;
 
       const sx = e.clientX;
@@ -165,7 +145,7 @@ class IframeWindow {
       document.addEventListener("pointerup", up);
     });
 
-    /* ===== Resize ===== */
+    // ===== Resize =====
     resize.addEventListener("pointerdown", e => {
       if (state.maximized || state.minimized) return;
 
@@ -194,32 +174,32 @@ class IframeWindow {
       document.addEventListener("pointerup", up);
     });
 
-    /* ===== Minimize ===== */
+    // ===== Min / Max / Close =====
     btnMin.onclick = () => {
       focus();
       if (!state.minimized) {
         state.prevSize = state.h;
         resize.style.display = "none";
         iframe.style.display = "none";
-        state.h = BAR_HEIGHT;
+        win.style.height = BAR_HEIGHT + "px";
       } else {
         iframe.style.display = "block";
         resize.style.display = state.maximized ? "none" : "block";
-        state.h = state.prevSize;
+        win.style.height = state.prevSize + "px";
       }
       state.minimized = !state.minimized;
-      applyRect();
     };
 
-    /* ===== Maximize ===== */
     btnMax.onclick = () => {
       focus();
+      if (state.minimized) btnMin.onclick();
+
       if (!state.maximized) {
         state.prev = { ...state };
         state.x = 0;
         state.y = 0;
-        state.w = innerWidth;
-        state.h = innerHeight;
+        state.w = window.innerWidth;
+        state.h = window.innerHeight;
         resize.style.display = "none";
       } else {
         Object.assign(state, state.prev);
