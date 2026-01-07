@@ -5,8 +5,8 @@ class IframeWindow {
     const state = {
       x: option.pos?.[0] ?? 0,
       y: option.pos?.[1] ?? 0,
-      w: option.size?.w ?? 320,
-      h: option.size?.h ?? 220,
+      w: option.size?.[0] ?? 320,
+      h: option.size?.[1] ?? 220,
       maximized: false,
       prev: null
     };
@@ -83,9 +83,6 @@ class IframeWindow {
     });
 
     win.append(bar, iframe, resize);
-
-    win.width = `${state.w}px`;
-    win.height = `${state.h}px`;
 
     body.appendChild(win);
 
