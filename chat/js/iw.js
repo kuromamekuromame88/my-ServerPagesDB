@@ -177,6 +177,7 @@ class IframeWindow {
 
     // ===== Minimize =====
     btnMin.onclick = () => {
+      console.log("Minimize");
       focus();
       if (!state.minimized) {
         state.prevSize = state.h;
@@ -193,6 +194,7 @@ class IframeWindow {
 
     // ===== Maximize =====
     btnMax.onclick = () => {
+      console.log("Maximize");
       focus();
       if (state.minimized) btnMin.onclick();
 
@@ -211,7 +213,10 @@ class IframeWindow {
       applyRect();
     };
 
-    btnClose.onclick = () => win.remove();
+    btnClose.onclick = () => {
+      console.log("remove");
+      win.remove();
+    };
 
     return {
       el: win,
