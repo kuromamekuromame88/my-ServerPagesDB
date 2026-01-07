@@ -83,6 +83,10 @@ class IframeWindow {
     });
 
     win.append(bar, iframe, resize);
+
+    win.width = `${state.w}px`;
+    win.height = `${state.h}px`;
+
     body.appendChild(win);
 
     // ===== Drag =====
