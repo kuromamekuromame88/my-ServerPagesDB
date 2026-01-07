@@ -15,6 +15,7 @@ class IframeWindow {
       prevSize: null
     };
 
+    console.log("body:",document.body);
     const body = document.body;
 
     const win = document.createElement("div");
