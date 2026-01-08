@@ -34,11 +34,16 @@ class IframeWindow {
     }
 
     function applyRect() {
-      win.style.left   = state.x + "px";
-      win.style.top    = state.y + "px";
-      win.style.width  = state.w + "px";
-      win.style.height = state.h + "px";
+      win.style.left  = state.x + "px";
+      win.style.top   = state.y + "px";
+      win.style.width = state.w + "px";
+      if (state.minimized) {
+        win.style.height = BAR_HEIGHT + "px";
+      } else {
+        win.style.height = state.h + "px";
+      }
     }
+
 
     applyRect();
 
