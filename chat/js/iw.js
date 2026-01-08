@@ -152,12 +152,12 @@ class IframeWindow {
     const resize = document.createElement("div");
     Object.assign(resize.style, {
       position: "absolute",
-      right: "-16",
-      bottom: "-16",
-      width: "32px",
-      height: "32px",
+      right: "0",
+      bottom: "0",
+      width: "16px",
+      height: "16px",
       cursor: "nwse-resize",
-      touchAction: "none"
+      touchAction: "none",
     });
 
     win.append(bar, iframe, resize);
