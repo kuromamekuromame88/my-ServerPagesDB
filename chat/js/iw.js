@@ -182,8 +182,8 @@ class IframeWindow {
       bar.setPointerCapture(e.pointerId);
 
       const move = ev => {
-        console.log(oy);
-        if(oy<=0){
+        console.log(ev.clientY);
+        if(ev.clientY<0){
           state.y = 0
           return;
         }
