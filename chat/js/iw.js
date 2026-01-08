@@ -113,7 +113,7 @@ class IframeWindow {
           stroke="black" stroke-width="1.5"/>
       </svg>
     `;
-    btnClose.style.background = "#de7c7c";
+    btnClose.style.background = "#dedede";
     btnClose.style.border = "none";
     btnClose.style.outline = "none";
 
