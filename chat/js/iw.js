@@ -19,6 +19,7 @@ class IframeWindow {
 
     const win = document.createElement("div");
     win.setAttribute("id", `iw-${name}`);
+    console.log(win.id);
     Object.assign(win.style, {
       position: "fixed",
       background: "#fff",
@@ -69,7 +70,7 @@ class IframeWindow {
     const btnMin = document.createElement("button");
     btnMin.innerHTML = `<svg width="16" height="16"><line x1="3" y1="8" x2="13" y2="8" stroke="black"/></svg>`;
     const btnMax = document.createElement("button");
-    btnMax.innerHTML = `<svg width="16" height="16"><rect x="3" y="3" width="10" height="10" fill="none" stroke="black"/></svg>`;
+    btnMax.innerHTML = `<svg width="16" height="16"><rect x="3" y="3" width="8" height="8" fill="none" stroke="black"/></svg>`;
     const btnClose = document.createElement("button");
     btnClose.innerHTML = `<svg width="16" height="16"><line x1="4" y1="4" x2="12" y2="12" stroke="black"/><line x1="12" y1="4" x2="4" y2="12" stroke="black"/></svg>`;
 
