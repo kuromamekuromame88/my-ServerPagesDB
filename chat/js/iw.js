@@ -182,7 +182,7 @@ class IframeWindow {
       bar.setPointerCapture(e.pointerId);
 
       const move = ev => {
-        const maxX = window.innerWidth - state.w;
+        const maxX = window.innerWidth - 50;
         const maxY = window.innerHeight - 32;
         state.x = Math.min(Math.max(0, ox + (ev.clientX - sx)), maxX);
         state.y = Math.min(Math.max(0, oy+(ev.clientY-sy)), maxY);
