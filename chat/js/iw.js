@@ -152,8 +152,8 @@ class IframeWindow {
     const resize = document.createElement("div");
     Object.assign(resize.style, {
       position: "absolute",
-      right: "0",
-      bottom: "0",
+      right: "-16",
+      bottom: "-16",
       width: "32px",
       height: "32px",
       cursor: "nwse-resize",
@@ -231,57 +231,47 @@ class IframeWindow {
 
     // ===== Min / Max / Close =====
     btnMin.onclick = () => {
-  focus();
+      focus();
 
-  if (!state.minimized) {
-    state.prevSize = state.h;
-
-    resize.style.display = "none";
-    iframe.style.display = "none";
-
-    state.h = BAR_HEIGHT;        // ★ state を更新
-    applyRect();
-
-  } else {
-    iframe.style.display = "block";
-    resize.style.display = state.maximized ? "none" : "block";
-
-    state.h = state.prevSize;    // ★ state を復元
-    applyRect();
-  }
-
-  state.minimized = !state.minimized;
-};
-
+      if (!state.minimized) {
+        state.prevSize = state.h;
+        resize.style.display = "none";
+        iframe.style.display = "none";
+        state.h = BAR_HEIGHT;        // ★ state を更新
+        applyRect();
+      } else {
+        iframe.style.display = "block";
+        resize.style.display = state.maximized ? "none" : "block";
+        state.h = state.prevSize;    // ★ state を復元
+        applyRect();
+      }
+      state.minimized = !state.minimized;
+    };
 
     btnMax.onclick = () => {
-  focus();
-  if (state.minimized) btnMin.onclick();
-
-  if (!state.maximized) {
-    state.prev = {
-      x: state.x,
-      y: state.y,
-      w: state.w,
-      h: state.h
+      focus();
+      if (state.minimized) btnMin.onclick();
+      if (!state.maximized) {
+        state.prev = {
+          x: state.x,
+          y: state.y,
+          w: state.w,
+          h: state.h
+        };
+        state.x = 0;
+        state.y = 0;
+        state.w = window.innerWidth;
+        state.h = window.innerHeight;
+        resize.style.display = "none";
+      } else {
+        Object.assign(state, state.prev);
+        resize.style.display = "block";
+      }
+      state.maximized = !state.maximized;
+      applyRect();
     };
-    state.x = 0;
-    state.y = 0;
-    state.w = window.innerWidth;
-    state.h = window.innerHeight;
-    resize.style.display = "none";
-  } else {
-    Object.assign(state, state.prev);
-    resize.style.display = "block";
-  }
-
-  state.maximized = !state.maximized;
-  applyRect();
-};
-
 
     btnClose.onclick = () => win.remove();
-
     return { el: win, iframe, focus, close: () => win.remove() };
   }
 }
