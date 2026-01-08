@@ -202,7 +202,7 @@ class IframeWindow {
 
     // ===== Resize =====
     resize.addEventListener("pointerdown", e => {
-      if (state.maximized || state.minimized) return;
+      if (state.maximized) return;
 
       const sx = e.clientX;
       const sy = e.clientY;
