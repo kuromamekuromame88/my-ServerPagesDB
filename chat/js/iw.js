@@ -61,6 +61,8 @@ class IframeWindow {
     const title = document.createElement("span");
     title.textContent = name;
 
+
+
     const btnMin = document.createElement("button");
     //btnMin.textContent = "_";
     btnMin.innerHTML = `
@@ -71,6 +73,16 @@ class IframeWindow {
     btnMin.style.background = "#dedede";
     btnMin.style.border = "none";
     btnMin.style.outline = "none";
+
+    btnMin.addEventListener("pointerenter", () => {
+      btnMin.style.background = "#bebebe";
+    })
+
+    btnMin.addEventListener("pointerleave", () => {
+      btnMin.style.background = "#dedede";
+    });
+
+
 
     const btnMax = document.createElement("button");
     //btnMax.textContent = "□";
@@ -83,6 +95,9 @@ class IframeWindow {
     btnMax.style.background = "#dedede";
     btnMax.style.border = "none";
     btnMax.style.outline = "none";
+
+
+
 
     const btnClose = document.createElement("button");
     //btnClose.textContent = "×";
@@ -97,6 +112,9 @@ class IframeWindow {
     btnClose.style.background = "#de7c7c";
     btnClose.style.border = "none";
     btnClose.style.outline = "none";
+
+
+
 
     const btns = document.createElement("div");
     btns.append(btnMin, btnMax, btnClose);
