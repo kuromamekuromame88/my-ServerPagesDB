@@ -231,19 +231,28 @@ class IframeWindow {
 
     // ===== Min / Max / Close =====
     btnMin.onclick = () => {
-      focus();
-      if (!state.minimized) {
-        state.prevSize = state.h;
-        resize.style.display = "none";
-        iframe.style.display = "none";
-        win.style.height = BAR_HEIGHT + "px";
-      } else {
-        iframe.style.display = "block";
-        resize.style.display = state.maximized ? "none" : "block";
-        win.style.height = state.prevSize + "px";
-      }
-      state.minimized = !state.minimized;
-    };
+  focus();
+
+  if (!state.minimized) {
+    state.prevSize = state.h;
+
+    resize.style.display = "none";
+    iframe.style.display = "none";
+
+    state.h = BAR_HEIGHT;        // ★ state を更新
+    applyRect();
+
+  } else {
+    iframe.style.display = "block";
+    resize.style.display = state.maximized ? "none" : "block";
+
+    state.h = state.prevSize;    // ★ state を復元
+    applyRect();
+  }
+
+  state.minimized = !state.minimized;
+};
+
 
     btnMax.onclick = () => {
       focus();
