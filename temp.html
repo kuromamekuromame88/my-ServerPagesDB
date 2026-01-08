@@ -18,7 +18,7 @@ class IframeWindow {
     const body = document.body;
 
     const win = document.createElement("div");
-    win.id = `iw-${name}`;
+    win.setAttribute("id", `iw-${name}`);
     Object.assign(win.style, {
       position: "fixed",
       background: "#fff",
@@ -26,9 +26,7 @@ class IframeWindow {
       boxShadow: "0 6px 20px rgba(0,0,0,.2)",
       display: "flex",
       flexDirection: "column",
-      overflow: "hidden",
-      transition:
-        "left .2s ease, top .2s ease, width .2s ease, height .25s cubic-bezier(.4,0,.2,1)"
+      overflow: "hidden"
     });
 
     function focus() {
@@ -36,12 +34,16 @@ class IframeWindow {
     }
 
     function applyRect() {
-      win.style.left = state.x + "px";
-      win.style.top = state.y + "px";
+      win.style.left  = state.x + "px";
+      win.style.top   = state.y + "px";
       win.style.width = state.w + "px";
-      win.style.height =
-        state.minimized ? BAR_HEIGHT + "px" : state.h + "px";
+      if (state.minimized) {
+        win.style.height = BAR_HEIGHT + "px";
+      } else {
+        win.style.height = state.h + "px";
+      }
     }
+
 
     applyRect();
 
@@ -64,16 +66,11 @@ class IframeWindow {
     title.textContent = name;
 
     const btnMin = document.createElement("button");
-    btnMin.innerHTML =
-      `<svg width="16" height="16"><line x1="3" y1="8" x2="13" y2="8" stroke="black"/></svg>`;
-
+    btnMin.innerHTML = `<svg width="16" height="16"><line x1="3" y1="8" x2="13" y2="8" stroke="black"/></svg>`;
     const btnMax = document.createElement("button");
-    btnMax.innerHTML =
-      `<svg width="16" height="16"><rect x="3" y="3" width="10" height="10" fill="none" stroke="black"/></svg>`;
-
+    btnMax.innerHTML = `<svg width="16" height="16"><rect x="3" y="3" width="10" height="10" fill="none" stroke="black"/></svg>`;
     const btnClose = document.createElement("button");
-    btnClose.innerHTML =
-      `<svg width="16" height="16"><line x1="4" y1="4" x2="12" y2="12" stroke="black"/><line x1="12" y1="4" x2="4" y2="12" stroke="black"/></svg>`;
+    btnClose.innerHTML = `<svg width="16" height="16"><line x1="4" y1="4" x2="12" y2="12" stroke="black"/><line x1="12" y1="4" x2="4" y2="12" stroke="black"/></svg>`;
 
     [btnMin, btnMax, btnClose].forEach(b => {
       b.style.border = "none";
@@ -81,7 +78,6 @@ class IframeWindow {
       b.addEventListener("pointerdown", e => e.stopPropagation());
     });
 
-    //ホバー時の背景色変更
     [btnMin,btnMax].forEach(b =>{
       b.addEventListener("pointerenter", () => {
         b.style.background = "#cecece";
@@ -91,7 +87,6 @@ class IframeWindow {
       });
     });
 
-    //消去ボタンは赤で強調
     btnClose.addEventListener("pointerenter", () => {
       btnClose.style.background = "#de7c7c";
     });
@@ -111,13 +106,17 @@ class IframeWindow {
     function setContent(content) {
       if (!content) return;
       if (content.type === "web") {
+        // ★ srcdoc を完全に消す
         iframe.removeAttribute("srcdoc");
         iframe.src = content.con;
       } else {
+        // ★ src を完全に消す
         iframe.removeAttribute("src");
         iframe.srcdoc = content.con ?? "";
       }
     }
+
+
     setContent(option.content);
 
     // ===== Resize Handle =====
@@ -139,31 +138,25 @@ class IframeWindow {
     bar.addEventListener("pointerdown", e => {
       if (state.maximized) return;
 
-      win.style.transition = "none";
-
       const sx = e.clientX;
       const sy = e.clientY;
       const ox = state.x;
       const oy = state.y;
 
+      iframe.style.pointerEvents = "none";
       bar.setPointerCapture(e.pointerId);
 
       const move = ev => {
-        state.x = Math.min(
-          Math.max(0, ox + ev.clientX - sx),
-          window.innerWidth - state.w
-        );
-        state.y = Math.min(
-          Math.max(0, oy + ev.clientY - sy),
-          window.innerHeight - BAR_HEIGHT
-        );
+        const maxX = window.innerWidth - state.w;
+        const maxY = window.innerHeight - BAR_HEIGHT;
+        state.x = Math.min(Math.max(0, ox + ev.clientX - sx), maxX);
+        state.y = Math.min(Math.max(0, oy + ev.clientY - sy), maxY);
         applyRect();
       };
 
       const up = ev => {
+        iframe.style.pointerEvents = "auto";
         bar.releasePointerCapture(ev.pointerId);
-        win.style.transition =
-          "left .2s ease, top .2s ease, width .2s ease, height .25s cubic-bezier(.4,0,.2,1)";
         document.removeEventListener("pointermove", move);
         document.removeEventListener("pointerup", up);
       };
@@ -176,13 +169,12 @@ class IframeWindow {
     resize.addEventListener("pointerdown", e => {
       if (state.maximized) return;
 
-      win.style.transition = "none";
-
       const sx = e.clientX;
       const sy = e.clientY;
       const ow = state.w;
       const oh = state.h;
 
+      iframe.style.pointerEvents = "none";
       resize.setPointerCapture(e.pointerId);
 
       const move = ev => {
@@ -192,9 +184,8 @@ class IframeWindow {
       };
 
       const up = ev => {
+        iframe.style.pointerEvents = "auto";
         resize.releasePointerCapture(ev.pointerId);
-        win.style.transition =
-          "left .2s ease, top .2s ease, width .2s ease, height .25s cubic-bezier(.4,0,.2,1)";
         document.removeEventListener("pointermove", move);
         document.removeEventListener("pointerup", up);
       };
@@ -207,69 +198,77 @@ class IframeWindow {
     function minimize() {
       if (state.minimized) return;
       state.prevSize = state.h;
+      iframe.style.display = "none";
+      resize.style.display = "none";
+      win.style.height = BAR_HEIGHT + "px";
       state.minimized = true;
-      applyRect();
-
-      setTimeout(() => {
-        iframe.style.display = "none";
-        resize.style.display = "none";
-      }, 250);
     }
 
     function restore() {
-      iframe.style.display = "block";
-      resize.style.display = "block";
-
       if (state.minimized) {
+        iframe.style.display = "block";
+        win.style.height = state.prevSize + "px";
+        resize.style.display = state.maximized ? "none" : "block";
         state.minimized = false;
-        state.h = state.prevSize;
       }
-
       if (state.maximized) {
         Object.assign(state, state.prev);
+        resize.style.display = "block";
         state.maximized = false;
+        applyRect();
       }
-
-      applyRect();
     }
 
     function maximize() {
       if (state.maximized) return;
-      state.prev = { ...state };
+      state.prev = { x: state.x, y: state.y, w: state.w, h: state.h };
       state.x = 0;
       state.y = 0;
       state.w = window.innerWidth;
       state.h = window.innerHeight;
-      state.maximized = true;
       resize.style.display = "none";
+      state.maximized = true;
+      applyRect();
+    }
+
+    //API関数群
+    function clamp(v, min, max) {
+      return Math.min(Math.max(v, min), max);
+    }
+
+    function setSize(w, h) {
+      if (state.maximized) restore();
+      state.w = Math.max(200, w);
+      state.h = Math.max(120, h);
+      // 画面外にはみ出さないように
+      state.x = clamp(state.x, 0, window.innerWidth - state.w);
+      state.y = clamp(state.y, 0, window.innerHeight - BAR_HEIGHT);
+      applyRect();
+    }
+
+    function setPosition(x, y) {
+      state.x = clamp(x, 0, window.innerWidth - state.w);
+      state.y = clamp(y, 0, window.innerHeight - BAR_HEIGHT);
       applyRect();
     }
 
     btnMin.onclick = minimize;
-    btnMax.onclick = () => (state.maximized ? restore() : maximize());
+    btnMax.onclick = () => state.maximized ? restore() : maximize();
     btnClose.onclick = () => win.remove();
 
+    // ===== 公開API =====
     return {
       el: win,
       iframe,
       focus,
       close: () => win.remove(),
       setContent,
-      setTitle: t => (title.textContent = t),
+      setTitle: t => title.textContent = t,
       minimize,
       maximize,
       restore,
-      setSize(w, h) {
-        if (state.maximized) restore();
-        state.w = Math.max(200, w);
-        state.h = Math.max(120, h);
-        applyRect();
-      },
-      setPosition(x, y) {
-        state.x = x;
-        state.y = y;
-        applyRect();
-      }
+      setSize,
+      setPosition
     };
   }
 }

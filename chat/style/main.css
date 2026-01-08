@@ -181,8 +181,7 @@ body {
 
 
 
-
-
-span[id^="htmlElement_window_"] {
-  z-index: 1000000 !important;
+/*ウィンドウの角を丸くする*/
+span[id^="iw_"] {
+  border-radius: 12px;
 }
