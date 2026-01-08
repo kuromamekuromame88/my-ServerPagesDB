@@ -73,7 +73,8 @@ class IframeWindow {
     //btnMax.textContent = "□";
     btnMax.innerHTML = `
       <svg width="16" height="16" viewBox="0 0 16 16">
-        <line x1="3" y1="8" x2="13" y2="8" stroke="black" stroke-width="1.5"/>
+        <rect x="3" y="3" width="10" height="10"
+          fill="none" stroke="black" stroke-width="1.5"/>
       </svg>
     `;
 
@@ -81,7 +82,10 @@ class IframeWindow {
     //btnClose.textContent = "×";
     btnClose.innerHTML = `
       <svg width="16" height="16" viewBox="0 0 16 16">
-        <line x1="3" y1="8" x2="13" y2="8" stroke="black" stroke-width="1.5"/>
+        <line x1="4" y1="4" x2="12" y2="12"
+          stroke="black" stroke-width="1.5"/>
+        <line x1="12" y1="4" x2="4" y2="12"
+          stroke="black" stroke-width="1.5"/>
       </svg>
     `;
 
