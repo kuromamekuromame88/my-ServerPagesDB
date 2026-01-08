@@ -183,8 +183,9 @@ class IframeWindow {
 
       const move = ev => {
         const maxX = window.innerWidth - state.w;
+        const maxY = window.innerHeight - state.h;
         state.x = Math.min(Math.max(0, ox + (ev.clientX - sx)), maxX);
-        state.y = Math.max(0, oy+(ev.clientY-sy));
+        state.y = Math.min(Math.max(0, oy+(ev.clientY-sy)), maxY);
         applyRect();
       };
 
