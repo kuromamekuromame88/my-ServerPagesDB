@@ -68,6 +68,7 @@ class IframeWindow {
         <line x1="3" y1="8" x2="13" y2="8" stroke="black" stroke-width="1.5"/>
       </svg>
     `;
+    btnMin.style.background = "#dedede";
 
     const btnMax = document.createElement("button");
     //btnMax.textContent = "□";
@@ -77,6 +78,7 @@ class IframeWindow {
           fill="none" stroke="black" stroke-width="1.5"/>
       </svg>
     `;
+    btnMax.style.background = "#dedede";
 
     const btnClose = document.createElement("button");
     //btnClose.textContent = "×";
@@ -88,6 +90,7 @@ class IframeWindow {
           stroke="black" stroke-width="1.5"/>
       </svg>
     `;
+    btnClose.style.background = "#de7c7c";
 
     const btns = document.createElement("div");
     btns.append(btnMin, btnMax, btnClose);
