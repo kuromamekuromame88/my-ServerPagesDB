@@ -18,7 +18,7 @@ class IframeWindow {
     const body = document.body;
 
     const win = document.createElement("div");
-    win.id = `iw-${name}`;
+    win.setAttribute("id",`iw-${name}`);
     Object.assign(win.style, {
       position: "fixed",
       background: "#fff",
