@@ -18,8 +18,6 @@ class IframeWindow {
     const body = document.body;
 
     const win = document.createElement("div");
-    win.setAttribute("id", `iw-${name}`);
-    console.log(win.id);
     Object.assign(win.style, {
       position: "fixed",
       background: "#fff",
@@ -29,6 +27,8 @@ class IframeWindow {
       flexDirection: "column",
       overflow: "hidden"
     });
+
+    win.setAttribute("id", `iw-${name}`);
 
     function focus() {
       win.style.zIndex = ++IframeWindow.topZ;
