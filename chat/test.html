@@ -5,13 +5,13 @@
 <body>
 <script>
   const iw = new IframeWindow();
-  var windows =[];
-  var window = iw.win("page", {
+  var frames =[];
+  var frame = iw.win("page", {
     pos:[10,10],
     size:[1040,300],
     content:{type:"web",con:"https://example.com"}
   });
-  windows.push(window);
+  frames.push(frame);
 </script>
 </body>
 </html>
