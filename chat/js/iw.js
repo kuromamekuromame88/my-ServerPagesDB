@@ -64,7 +64,6 @@ class IframeWindow {
 
 
     const btnMin = document.createElement("button");
-    //btnMin.textContent = "_";
     btnMin.innerHTML = `
       <svg width="16" height="16" viewBox="0 0 16 16">
         <line x1="3" y1="8" x2="13" y2="8" stroke="black" stroke-width="1.5"/>
@@ -85,7 +84,6 @@ class IframeWindow {
 
 
     const btnMax = document.createElement("button");
-    //btnMax.textContent = "□";
     btnMax.innerHTML = `
       <svg width="16" height="16" viewBox="0 0 16 16">
         <rect x="3" y="3" width="8" height="8"
@@ -107,7 +105,6 @@ class IframeWindow {
 
 
     const btnClose = document.createElement("button");
-    //btnClose.textContent = "×";
     btnClose.innerHTML = `
       <svg width="16" height="16" viewBox="0 0 16 16">
         <line x1="4" y1="4" x2="12" y2="12"
@@ -183,6 +180,8 @@ class IframeWindow {
 
       iframe.style.pointerEvents = "none";
       bar.setPointerCapture(e.pointerId);
+
+      if(sy<=0) return;
 
       const move = ev => {
         state.x = ox + (ev.clientX - sx);
