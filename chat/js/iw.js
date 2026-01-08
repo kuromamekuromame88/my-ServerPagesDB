@@ -69,7 +69,7 @@ class IframeWindow {
 
     const btnMax = document.createElement("button");
     btnMax.innerHTML =
-      `<svg width="16" height="16"><rect x="3" y="3" width="10" height="10" fill="none" stroke="black"/></svg>`;
+      `<svg width="16" height="16"><rect x="3" y="3" width="8" height="8" fill="none" stroke="black"/></svg>`;
 
     const btnClose = document.createElement("button");
     btnClose.innerHTML =
