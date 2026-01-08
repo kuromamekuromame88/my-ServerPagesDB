@@ -182,6 +182,6 @@ body {
 
 
 /*ウィンドウの角を丸くする*/
-span[id^="iw_"] {
-  border-radius: 12px;
+div[id^="iw_"] {
+  border-radius: 10px;
 }

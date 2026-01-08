@@ -64,6 +64,7 @@ class IframeWindow {
 
     const title = document.createElement("span");
     title.textContent = name;
+    title.style.left = "20px";
 
     const btnMin = document.createElement("button");
     btnMin.innerHTML = `<svg width="16" height="16"><line x1="3" y1="8" x2="13" y2="8" stroke="black"/></svg>`;
