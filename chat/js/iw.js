@@ -70,10 +70,20 @@ class IframeWindow {
     `;
 
     const btnMax = document.createElement("button");
-    btnMax.textContent = "□";
+    //btnMax.textContent = "□";
+    btnMax.innerHTML = `
+      <svg width="16" height="16" viewBox="0 0 16 16">
+        <line x1="3" y1="8" x2="13" y2="8" stroke="black" stroke-width="1.5"/>
+      </svg>
+    `;
 
     const btnClose = document.createElement("button");
-    btnClose.textContent = "×";
+    //btnClose.textContent = "×";
+    btnClose.innerHTML = `
+      <svg width="16" height="16" viewBox="0 0 16 16">
+        <line x1="3" y1="8" x2="13" y2="8" stroke="black" stroke-width="1.5"/>
+      </svg>
+    `;
 
     const btns = document.createElement("div");
     btns.append(btnMin, btnMax, btnClose);
