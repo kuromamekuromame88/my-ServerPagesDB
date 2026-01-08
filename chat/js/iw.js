@@ -199,41 +199,58 @@ class IframeWindow {
     });
 
     // ===== Controls =====
-    function minimize() {
-      if (state.minimized) return;
-      state.prevSize = state.h;
-      iframe.style.display = "none";
-      resize.style.display = "none";
-      win.style.height = BAR_HEIGHT + "px";
-      state.minimized = true;
-    }
+    // ===== Controls =====
+function minimize() {
+  if (state.minimized) return;
 
-    function restore() {
-      if (state.minimized) {
-        iframe.style.display = "block";
-        win.style.height = state.prevSize + "px";
-        resize.style.display = state.maximized ? "none" : "block";
-        state.minimized = false;
-      }
-      if (state.maximized) {
-        Object.assign(state, state.prev);
-        resize.style.display = "block";
-        state.maximized = false;
-        applyRect();
-      }
-    }
+  state.prevSize = state.h;      // 高さを保存
+  state.minimized = true;
 
-    function maximize() {
-      if (state.maximized) return;
-      state.prev = { x: state.x, y: state.y, w: state.w, h: state.h };
-      state.x = 0;
-      state.y = 0;
-      state.w = window.innerWidth;
-      state.h = window.innerHeight;
-      resize.style.display = "none";
-      state.maximized = true;
-      applyRect();
-    }
+  iframe.style.display = "none";
+  resize.style.display = "none";
+
+  applyRect();                   // ← ここだけで表示更新
+}
+
+function restore() {
+  if (state.minimized) {
+    state.h = state.prevSize;    // ★ state.h を戻す
+    state.minimized = false;
+
+    iframe.style.display = "block";
+    resize.style.display = state.maximized ? "none" : "block";
+  }
+
+  if (state.maximized) {
+    Object.assign(state, state.prev);
+    state.maximized = false;
+    resize.style.display = "block";
+  }
+
+  applyRect();                   // ← 必ず最後に1回
+}
+
+function maximize() {
+  if (state.maximized) return;
+
+  state.prev = {
+    x: state.x,
+    y: state.y,
+    w: state.w,
+    h: state.h
+  };
+
+  state.x = 0;
+  state.y = 0;
+  state.w = window.innerWidth;
+  state.h = window.innerHeight;
+  state.maximized = true;
+
+  resize.style.display = "none";
+
+  applyRect();
+}
+
 
     //API関数群
     function clamp(v, min, max) {
