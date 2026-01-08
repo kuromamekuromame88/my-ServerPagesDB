@@ -35,15 +35,12 @@ class IframeWindow {
     }
 
     function applyRect() {
-      win.style.left  = state.x + "px";
-      win.style.top   = state.y + "px";
-      win.style.width = state.w + "px";
-      if (state.minimized) {
-        win.style.height = BAR_HEIGHT + "px";
-      } else {
-        win.style.height = state.h + "px";
-      }
-    }
+  win.style.left  = state.x + "px";
+  win.style.top   = state.y + "px";
+  win.style.width = state.w + "px";
+  win.style.height = (state.minimized ? BAR_HEIGHT : state.h) + "px";
+}
+
 
 
     applyRect();
@@ -199,22 +196,19 @@ class IframeWindow {
     });
 
     // ===== Controls =====
-    // ===== Controls =====
 function minimize() {
   if (state.minimized) return;
 
-  state.prevSize = state.h;      // 高さを保存
   state.minimized = true;
 
   iframe.style.display = "none";
   resize.style.display = "none";
 
-  applyRect();                   // ← ここだけで表示更新
+  applyRect();
 }
 
 function restore() {
   if (state.minimized) {
-    state.h = state.prevSize;    // ★ state.h を戻す
     state.minimized = false;
 
     iframe.style.display = "block";
@@ -227,8 +221,9 @@ function restore() {
     resize.style.display = "block";
   }
 
-  applyRect();                   // ← 必ず最後に1回
+  applyRect();
 }
+
 
 function maximize() {
   if (state.maximized) return;
