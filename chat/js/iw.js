@@ -77,6 +77,8 @@ class IframeWindow {
     [btnMin, btnMax, btnClose].forEach(b => {
       b.style.border = "none";
       b.style.background = "#dedede";
+      b.width = "20px";
+      b.height = "20px";
       b.addEventListener("pointerdown", e => e.stopPropagation());
     });
 
