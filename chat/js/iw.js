@@ -72,6 +72,22 @@ class IframeWindow {
       b.addEventListener("pointerdown", e => e.stopPropagation());
     });
 
+    [btnMin,btnMax].forEach(b =>{
+      b.addEventListener("pointerenter", () => {
+        b.style.background = "#cecece";
+      });
+      b.addEventListener("pointerleave", () => {
+        b.style.background = "#dedede";
+      });
+    });
+
+    btnClose.addEventListener("pointerenter", () => {
+      btnClose.style.background = "#de7c7c";
+    });
+    btnClose.addEventListener("pointerleave", () => {
+      btnClose.style.background = "#dedede";
+    });
+
     const btns = document.createElement("div");
     btns.append(btnMin, btnMax, btnClose);
     bar.append(title, btns);
