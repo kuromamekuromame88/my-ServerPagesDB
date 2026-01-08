@@ -88,7 +88,7 @@ class IframeWindow {
     //btnMax.textContent = "□";
     btnMax.innerHTML = `
       <svg width="16" height="16" viewBox="0 0 16 16">
-        <rect x="3" y="3" width="10" height="10"
+        <rect x="3" y="3" width="8" height="8"
           fill="none" stroke="black" stroke-width="1.5"/>
       </svg>
     `;
@@ -173,7 +173,7 @@ class IframeWindow {
 
     // ===== Drag =====
     bar.addEventListener("pointerdown", e => {
-      if (e.target !== bar) return;   // ★ 重要
+      if (e.target !== bar) return;
       if (state.maximized || state.minimized) return;
 
       const sx = e.clientX;
