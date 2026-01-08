@@ -181,9 +181,6 @@ class IframeWindow {
       iframe.style.pointerEvents = "none";
       bar.setPointerCapture(e.pointerId);
 
-      console.log(oy);
-      if(oy<=1) return;
-
       const move = ev => {
         console.log(oy);
         if(oy<=0){
