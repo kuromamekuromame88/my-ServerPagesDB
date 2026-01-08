@@ -185,6 +185,11 @@ class IframeWindow {
       if(oy<=1) return;
 
       const move = ev => {
+        console.log(oy);
+        if(oy<=0){
+          state.y = 0
+          return;
+        }
         state.x = ox + (ev.clientX - sx);
         state.y = oy + (ev.clientY - sy);
         applyRect();
