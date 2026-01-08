@@ -1,8 +1,6 @@
 class IframeWindow {
   static topZ = 1000000;
 
-  constructor() {}
-
   win(name, option = {}) {
     const BAR_HEIGHT = 32;
 
@@ -61,92 +59,40 @@ class IframeWindow {
     const title = document.createElement("span");
     title.textContent = name;
 
-
-
     const btnMin = document.createElement("button");
-    btnMin.innerHTML = `
-      <svg width="16" height="16" viewBox="0 0 16 16">
-        <line x1="3" y1="8" x2="13" y2="8" stroke="black" stroke-width="1.5"/>
-      </svg>
-    `;
-    btnMin.style.background = "#dedede";
-    btnMin.style.border = "none";
-    btnMin.style.outline = "none";
-
-    btnMin.addEventListener("pointerenter", () => {
-      btnMin.style.background = "#bebebe";
-    })
-
-    btnMin.addEventListener("pointerleave", () => {
-      btnMin.style.background = "#dedede";
-    });
-
-
-
+    btnMin.innerHTML = `<svg width="16" height="16"><line x1="3" y1="8" x2="13" y2="8" stroke="black"/></svg>`;
     const btnMax = document.createElement("button");
-    btnMax.innerHTML = `
-      <svg width="16" height="16" viewBox="0 0 16 16">
-        <rect x="3" y="3" width="8" height="8"
-          fill="none" stroke="black" stroke-width="1.5"/>
-      </svg>
-    `;
-    btnMax.style.background = "#dedede";
-    btnMax.style.border = "none";
-    btnMax.style.outline = "none";
-
-    btnMax.addEventListener("pointerenter", () => {
-      btnMax.style.background = "#bebebe";
-    })
-
-    btnMax.addEventListener("pointerleave", () => {
-      btnMax.style.background = "#dedede";
-    });
-
-
-
+    btnMax.innerHTML = `<svg width="16" height="16"><rect x="3" y="3" width="10" height="10" fill="none" stroke="black"/></svg>`;
     const btnClose = document.createElement("button");
-    btnClose.innerHTML = `
-      <svg width="16" height="16" viewBox="0 0 16 16">
-        <line x1="4" y1="4" x2="12" y2="12"
-          stroke="black" stroke-width="1.5"/>
-        <line x1="12" y1="4" x2="4" y2="12"
-          stroke="black" stroke-width="1.5"/>
-      </svg>
-    `;
-    btnClose.style.background = "#dedede";
-    btnClose.style.border = "none";
-    btnClose.style.outline = "none";
+    btnClose.innerHTML = `<svg width="16" height="16"><line x1="4" y1="4" x2="12" y2="12" stroke="black"/><line x1="12" y1="4" x2="4" y2="12" stroke="black"/></svg>`;
 
-    btnClose.addEventListener("pointerenter", () => {
-      btnClose.style.background = "#de7c7c";
-    })
-
-    btnClose.addEventListener("pointerleave", () => {
-      btnClose.style.background = "#dedede";
+    [btnMin, btnMax, btnClose].forEach(b => {
+      b.style.border = "none";
+      b.style.background = "#dedede";
+      b.addEventListener("pointerdown", e => e.stopPropagation());
     });
-
-
-
 
     const btns = document.createElement("div");
     btns.append(btnMin, btnMax, btnClose);
     bar.append(title, btns);
-
-    // ★ ボタンのイベントは上に伝えない
-    [btnMin, btnMax, btnClose].forEach(btn => {
-      btn.addEventListener("pointerdown", e => e.stopPropagation());
-    });
 
     // ===== iframe =====
     const iframe = document.createElement("iframe");
     iframe.style.flex = "1";
     iframe.style.border = "none";
 
-    if (option.content?.type === "web") {
-      iframe.src = option.content.con;
-    } else {
-      iframe.srcdoc = option.content?.con ?? "";
+    function setContent(content) {
+      if (!content) return;
+      if (content.type === "web") {
+        iframe.srcdoc = "";
+        iframe.src = content.con;
+      } else {
+        iframe.src = "";
+        iframe.srcdoc = content.con ?? "";
+      }
     }
+
+    setContent(option.content);
 
     // ===== Resize Handle =====
     const resize = document.createElement("div");
@@ -157,20 +103,14 @@ class IframeWindow {
       width: "16px",
       height: "16px",
       cursor: "nwse-resize",
-      touchAction: "none",
+      touchAction: "none"
     });
 
     win.append(bar, iframe, resize);
     body.appendChild(win);
 
-    // ===== Focus =====
-    win.addEventListener("pointerdown", focus);
-    bar.addEventListener("pointerdown", focus);
-    iframe.addEventListener("pointerdown", focus);
-
     // ===== Drag =====
     bar.addEventListener("pointerdown", e => {
-      if (e.target !== bar) return;
       if (state.maximized) return;
 
       const sx = e.clientX;
@@ -183,9 +123,9 @@ class IframeWindow {
 
       const move = ev => {
         const maxX = window.innerWidth - state.w;
-        const maxY = window.innerHeight - 32;
-        state.x = Math.min(Math.max(0, ox + (ev.clientX - sx)), maxX);
-        state.y = Math.min(Math.max(0, oy+(ev.clientY-sy)), maxY);
+        const maxY = window.innerHeight - BAR_HEIGHT;
+        state.x = Math.min(Math.max(0, ox + ev.clientX - sx), maxX);
+        state.y = Math.min(Math.max(0, oy + ev.clientY - sy), maxY);
         applyRect();
       };
 
@@ -213,8 +153,8 @@ class IframeWindow {
       resize.setPointerCapture(e.pointerId);
 
       const move = ev => {
-        state.w = Math.max(200, ow + (ev.clientX - sx));
-        state.h = Math.max(120, oh + (ev.clientY - sy));
+        state.w = Math.max(200, ow + ev.clientX - sx);
+        state.h = Math.max(120, oh + ev.clientY - sy);
         applyRect();
       };
 
@@ -229,49 +169,58 @@ class IframeWindow {
       document.addEventListener("pointerup", up);
     });
 
-    // ===== Min / Max / Close =====
-    btnMin.onclick = () => {
-      focus();
+    // ===== Controls =====
+    function minimize() {
+      if (state.minimized) return;
+      state.prevSize = state.h;
+      iframe.style.display = "none";
+      resize.style.display = "none";
+      win.style.height = BAR_HEIGHT + "px";
+      state.minimized = true;
+    }
 
-      if (!state.minimized) {
-        state.prevSize = state.h;
-        resize.style.display = "none";
-        iframe.style.display = "none";
-        state.h = BAR_HEIGHT;        // ★ state を更新
-        applyRect();
-      } else {
+    function restore() {
+      if (state.minimized) {
         iframe.style.display = "block";
+        win.style.height = state.prevSize + "px";
         resize.style.display = state.maximized ? "none" : "block";
-        state.h = state.prevSize;    // ★ state を復元
-        applyRect();
+        state.minimized = false;
       }
-      state.minimized = !state.minimized;
-    };
-
-    btnMax.onclick = () => {
-      focus();
-      if (state.minimized) btnMin.onclick();
-      if (!state.maximized) {
-        state.prev = {
-          x: state.x,
-          y: state.y,
-          w: state.w,
-          h: state.h
-        };
-        state.x = 0;
-        state.y = 0;
-        state.w = window.innerWidth;
-        state.h = window.innerHeight;
-        resize.style.display = "none";
-      } else {
+      if (state.maximized) {
         Object.assign(state, state.prev);
         resize.style.display = "block";
+        state.maximized = false;
+        applyRect();
       }
-      state.maximized = !state.maximized;
-      applyRect();
-    };
+    }
 
+    function maximize() {
+      if (state.maximized) return;
+      state.prev = { x: state.x, y: state.y, w: state.w, h: state.h };
+      state.x = 0;
+      state.y = 0;
+      state.w = window.innerWidth;
+      state.h = window.innerHeight;
+      resize.style.display = "none";
+      state.maximized = true;
+      applyRect();
+    }
+
+    btnMin.onclick = minimize;
+    btnMax.onclick = () => state.maximized ? restore() : maximize();
     btnClose.onclick = () => win.remove();
-    return { el: win, iframe, focus, close: () => win.remove() };
+
+    // ===== 公開API =====
+    return {
+      el: win,
+      iframe,
+      focus,
+      close: () => win.remove(),
+      setContent,
+      setTitle: t => title.textContent = t,
+      minimize,
+      maximize,
+      restore
+    };
   }
 }
