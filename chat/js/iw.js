@@ -84,13 +84,16 @@ class IframeWindow {
     function setContent(content) {
       if (!content) return;
       if (content.type === "web") {
-        iframe.srcdoc = "";
+        // ★ srcdoc を完全に消す
+        iframe.removeAttribute("srcdoc");
         iframe.src = content.con;
       } else {
-        iframe.src = "";
+        // ★ src を完全に消す
+        iframe.removeAttribute("src");
         iframe.srcdoc = content.con ?? "";
       }
     }
+
 
     setContent(option.content);
 
