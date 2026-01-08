@@ -182,9 +182,6 @@ body {
 
 
 
-div[id^="jsFrame_fixed_"] {
-  z-index: 1000000 !important;
-}
 
 span[id^="htmlElement_window_"] {
   z-index: 1000000 !important;
