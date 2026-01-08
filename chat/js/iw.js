@@ -96,6 +96,13 @@ class IframeWindow {
     btnMax.style.border = "none";
     btnMax.style.outline = "none";
 
+    btnMax.addEventListener("pointerenter", () => {
+      btnMax.style.background = "#bebebe";
+    })
+
+    btnMax.addEventListener("pointerleave", () => {
+      btnMax.style.background = "#dedede";
+    });
 
 
 
@@ -112,6 +119,14 @@ class IframeWindow {
     btnClose.style.background = "#de7c7c";
     btnClose.style.border = "none";
     btnClose.style.outline = "none";
+
+    btnClose.addEventListener("pointerenter", () => {
+      btnClose.style.background = "#de7c7c";
+    })
+
+    btnClose.addEventListener("pointerleave", () => {
+      btnClose.style.background = "#dedede";
+    });
 
 
 
