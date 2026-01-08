@@ -2,11 +2,13 @@ const iw = new IframeWindow();//IframeWindowオブジェクトを作る
 const frames = [];
 
 function createWindow(title, url, x, y, width, height){
-  const frame = iw.win(title, {
-    pos:[x,y],
-    size:[width,height],
-    content:{type:"web",con:url}
-  });
+  const frame = iw.win(
+    title, {
+      pos:[x,y],
+      size:[width,height],
+      content:{type:"web",con:url}
+    }
+  );
   frames.push(frame);
 }
 
