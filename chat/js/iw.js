@@ -154,8 +154,8 @@ class IframeWindow {
       position: "absolute",
       right: "0",
       bottom: "0",
-      width: "16px",
-      height: "16px",
+      width: "32px",
+      height: "32px",
       cursor: "nwse-resize",
       touchAction: "none"
     });
