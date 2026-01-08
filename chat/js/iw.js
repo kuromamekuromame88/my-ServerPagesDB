@@ -255,23 +255,30 @@ class IframeWindow {
 
 
     btnMax.onclick = () => {
-      focus();
-      if (state.minimized) btnMin.onclick();
+  focus();
+  if (state.minimized) btnMin.onclick();
 
-      if (!state.maximized) {
-        state.prev = { ...state };
-        state.x = 0;
-        state.y = 0;
-        state.w = window.innerWidth;
-        state.h = window.innerHeight;
-        resize.style.display = "none";
-      } else {
-        Object.assign(state, state.prev);
-        resize.style.display = "block";
-      }
-      state.maximized = !state.maximized;
-      applyRect();
+  if (!state.maximized) {
+    state.prev = {
+      x: state.x,
+      y: state.y,
+      w: state.w,
+      h: state.h
     };
+    state.x = 0;
+    state.y = 0;
+    state.w = window.innerWidth;
+    state.h = window.innerHeight;
+    resize.style.display = "none";
+  } else {
+    Object.assign(state, state.prev);
+    resize.style.display = "block";
+  }
+
+  state.maximized = !state.maximized;
+  applyRect();
+};
+
 
     btnClose.onclick = () => win.remove();
 
