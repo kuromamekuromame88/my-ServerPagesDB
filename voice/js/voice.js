@@ -55,7 +55,7 @@ function requestSkyWayToken() {
   ws.send(JSON.stringify({
     app: "voice",
     type: "request-token",
-    userId: userID
+    userID: userID
   }));
 }
 
