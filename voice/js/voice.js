@@ -1,15 +1,16 @@
 
 
 // ライブラリ読み込み（★token は読み込まない）
-import {
+/*import {
   SkyWayContext
 } from "https://cdn.jsdelivr.net/npm/@skyway-sdk/core@2.2.1/dist/index.js";
 
 import {
   SkyWayRoom
 } from "https://cdn.jsdelivr.net/npm/@skyway-sdk/room@2.2.1/dist/index.js";
+*/
 
-
+const { /*nowInSec, SkyWayAuthToken,*/ SkyWayContext, SkyWayRoom/*, SkyWayStreamFactory, uuidV4*/ } = skyway_room;
 
 /* ===============================
    ユーザーID
