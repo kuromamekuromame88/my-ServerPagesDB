@@ -1,13 +1,9 @@
 
 
-//ライブラリ読み込み
+// ライブラリ読み込み（★token は読み込まない）
 import {
   SkyWayContext
 } from "https://cdn.jsdelivr.net/npm/@skyway-sdk/core@2.2.1/dist/index.js";
-
-import {
-  SkyWayAuthToken
-} from "https://cdn.jsdelivr.net/npm/@skyway-sdk/token@2.0.2/dist/skyway_token-2.0.2.js";
 
 import {
   SkyWayRoom
@@ -50,51 +46,51 @@ let skywayContext = null;
 let skywayRoom = null;
 let skywayMember = null;
 
+let skywayToken = null;
+
 //初期化関数
 async function initSkyWay(force = false) {
   if (skywayContext && !force) return;
+  if (!skywayToken) throw new Error("SkyWay token is missing");
 
   skywayContext?.dispose?.();
   skywayContext = null;
 
-  skywayContext = await SkyWayContext.Create({
-    token: SkyWayAuthToken({
-      jti: crypto.randomUUID(),
-      iat: Math.floor(Date.now() / 1000),
-      exp: Math.floor(Date.now() / 1000) + 60 * 60,
-      scope: {
-        app: {
-          id: "be40f660-e970-4016-9b1f-b05af9b4bc94",
-          turn: true,
-          actions: ["read"],
-          channels: [{
-            id: "*",
-            name: "*",
-            actions: ["write"],
-            members: [{
-              id: "*",
-              name: "*",
-              actions: ["write"],
-              publication: { actions: ["write"] },
-              subscription: { actions: ["write"] }
-            }]
-          }]
-        }
-      }
-    }).encode("Fm7ENj7/tWi9z+86e87iEibtb+8PKW3s7j4ezWOBHpQ=")
-  });
+  skywayContext = await SkyWayContext.Create(skywayToken);
+}
+
+function requestSkyWayToken() {
+  ws.send(JSON.stringify({
+    type: "request-token",
+    userId: userID
+  }));
 }
 
 
 async function joinSkyWayGroup(groupId) {
   if (callState.mode !== "idle") return;
-  if (skywayRoom || skywayMember) return; // ★追加
-
+  if (skywayRoom || skywayMember) return;
 
   callState.mode = "group";
   callState.groupId = groupId;
 
   await startMedia();
+
+  // ★ token がなければ要求
+  if (!skywayToken) {
+    requestSkyWayToken();
+
+    // token が来るまで待つ
+    await new Promise(resolve => {
+      const timer = setInterval(() => {
+        if (skywayToken) {
+          clearInterval(timer);
+          resolve();
+        }
+      }, 50);
+    });
+  }
+
   await initSkyWay();
 
   skywayRoom = await SkyWayRoom.FindOrCreate(
@@ -124,6 +120,7 @@ async function joinSkyWayGroup(groupId) {
 
   setCallStatus("グループ通話中");
 }
+
 
 
 
@@ -470,6 +467,12 @@ function connectWebSocket(){
     if(msg.type === "group-leave-user"){
       if (callState.mode !== "group" || msg.leave === userID) return;
       removeRemoteVideo(msg.leave);
+    }
+
+    if (msg.type === "skyway-token") {
+      skywayToken = msg.token;
+      console.log("SkyWay token received");
+      return;
     }
 
   };
