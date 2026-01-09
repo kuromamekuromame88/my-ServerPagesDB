@@ -62,6 +62,7 @@ async function initSkyWay(force = false) {
 
 function requestSkyWayToken() {
   ws.send(JSON.stringify({
+    app: "voice",
     type: "request-token",
     userId: userID
   }));
