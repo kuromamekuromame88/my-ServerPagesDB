@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>重要語句クイズ</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    section {
+      background: #ffffff;
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+
+    input[type="text"], textarea {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 8px;
+      margin-top: 4px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      margin-top: 8px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: none;
+      background: #222;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    button.small {
+      font-size: 0.85em;
+      margin-right: 4px;
+    }
+
+    button:hover {
+      opacity: 0.85;
+    }
+
+    .quiz-box {
+      font-size: 1.1em;
+      margin: 10px 0;
+    }
+
+    .result {
+      margin-top: 8px;
+      font-weight: bold;
+    }
+
+    .item {
+      border-bottom: 1px solid #ddd;
+      padding: 6px 0;
+    }
+  </style>
+</head>
+<body>
+
+<h1>重要語句クイズ</h1>
+
+<section>
+  <h2>① 語句を登録・編集</h2>
+
+  <input type="hidden" id="editIndex" value="-1">
+
+  <label>
+    重要語句
+    <input id="wordInput" type="text">
+  </label>
+
+  <label>
+    意味
+    <textarea id="meaningInput" rows="3"></textarea>
+  </label>
+
+  <button onclick="saveItem()">保存</button>
+  <button onclick="resetForm()">新規入力</button>
+</section>
+
+<section>
+  <h2>② 問題一覧（編集・削除）</h2>
+  <div id="itemList"></div>
+</section>
+
+<section>
+  <h2>③ クイズ</h2>
+
+  <div class="quiz-box" id="quizMeaning">
+    「次の問題」を押してください
+  </div>
+
+  <input id="answerInput" type="text" placeholder="語句を入力">
+
+  <button onclick="checkAnswer()">答える</button>
+  <button onclick="nextQuiz()">次の問題</button>
+
+  <div class="result" id="result"></div>
+</section>
+
+<section>
+  <h2>④ ファイル操作</h2>
+
+  <button onclick="saveToFile()">問題を保存</button>
+  <input type="file" accept=".json" onchange="loadFromFile(event)">
+</section>
+
+<script>
+  let items = [];
+  let currentIndex = -1;
+
+  function saveItem() {
+    const word = wordInput.value.trim();
+    const meaning = meaningInput.value.trim();
+    const index = Number(editIndex.value);
+
+    if (!word || !meaning) {
+      alert("語句と意味を入力してください");
+      return;
+    }
+
+    if (index === -1) {
+      items.push({ word, meaning });
+    } else {
+      items[index] = { word, meaning };
+    }
+
+    resetForm();
+    renderList();
+  }
+
+  function resetForm() {
+    wordInput.value = "";
+    meaningInput.value = "";
+    editIndex.value = -1;
+  }
+
+  function renderList() {
+    itemList.innerHTML = "";
+
+    items.forEach((item, i) => {
+      const div = document.createElement("div");
+      div.className = "item";
+
+      div.innerHTML = `
+        <strong>${item.word}</strong>：${item.meaning}<br>
+        <button class="small" onclick="editItem(${i})">編集</button>
+        <button class="small" onclick="deleteItem(${i})">削除</button>
+      `;
+
+      itemList.appendChild(div);
+    });
+  }
+
+  function editItem(index) {
+    wordInput.value = items[index].word;
+    meaningInput.value = items[index].meaning;
+    editIndex.value = index;
+  }
+
+  function deleteItem(index) {
+    if (!confirm("削除しますか？")) return;
+    items.splice(index, 1);
+    renderList();
+  }
+
+  function nextQuiz() {
+    if (items.length === 0) {
+      alert("問題がありません");
+      return;
+    }
+
+    currentIndex = Math.floor(Math.random() * items.length);
+    quizMeaning.textContent = "意味： " + items[currentIndex].meaning;
+    answerInput.value = "";
+    result.textContent = "";
+  }
+
+  function checkAnswer() {
+    if (currentIndex === -1) return;
+
+    const answer = answerInput.value.trim();
+    const correct = items[currentIndex].word;
+
+    if (answer === correct) {
+      result.textContent = "正解！";
+      result.style.color = "green";
+    } else {
+      result.textContent = "不正解… 正解は「" + correct + "」";
+      result.style.color = "red";
+    }
+  }
+
+  function saveToFile() {
+    const blob = new Blob(
+      [JSON.stringify(items, null, 2)],
+      { type: "application/json" }
+    );
+
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "quiz-data.json";
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
+
+  function loadFromFile(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        items = JSON.parse(reader.result);
+        renderList();
+        resetForm();
+        alert("読み込み完了");
+      } catch {
+        alert("ファイル形式が正しくありません");
+      }
+    };
+    reader.readAsText(file);
+  }
+</script>
+
+</body>
+</html>
