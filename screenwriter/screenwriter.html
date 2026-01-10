@@ -205,7 +205,7 @@
     
         UserList = data.devices;
         while(a < data.devices.length){
-          ListHTML.push(`<b>${data.devices[a]}　</b><button onclick="load(${data.devices[a]})">読み込み</button><br>`);  
+          ListHTML.push(`<b>${data.devices[a]}　</b><button onclick="load('${data.devices[a]}');">読み込み</button><br>`);  
           a++;
         }
         deviceListElement.innerHTML = ListHTML.toString().replace(/,/g,"");
