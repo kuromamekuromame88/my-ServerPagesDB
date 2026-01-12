@@ -14,7 +14,7 @@ body{
 
 .past{
   height: max-content;
-  background-color: rgb(212, 255, 254);
+  background-color: rgb(212, 248, 255);
   border-radius: 15px;
   padding-bottom: 20px;
 }
@@ -23,14 +23,13 @@ body{
   height: 50vh;
   padding: 15px;
   margin: 20px;
-  background-color: rgb(212, 255, 250);
+  background-color: rgb(212, 255, 236);
   border-radius: 15px;
   box-shadow: 6px rgba(0,0,0,0.1);
 }
 
 .future{
   height: 50vh;
-  /*padding: 15px;*/
   margin: 20px;
   background-color: rgb(215, 255, 212);
   border-radius: 15px;
