@@ -8,12 +8,14 @@ body{
   height: 50vh;
   background-color:aliceblue;
   border-radius: 15px;
+  padding-bottom: 20px;
 }
 
 .past{
   height: max-content;
   background-color: rgb(240, 241, 255);
   border-radius: 15px;
+  padding-bottom: 20px;
 }
 
 .past .summary{
