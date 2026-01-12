@@ -1,12 +1,11 @@
 
 body{
   background-color: #ffffff;
-  justify-content: center;
+  margin: auto;
 }
 
 .now{
   height: 50vh;
-  width: 90vw;
   background-color:rgb(212, 235, 255);
   border-radius: 15px;
   padding-bottom: 20px;
@@ -15,7 +14,6 @@ body{
 
 .past{
   height: max-content;
-  width: 90vw;
   background-color: rgb(212, 255, 254);
   border-radius: 15px;
   padding-bottom: 20px;
@@ -32,7 +30,6 @@ body{
 
 .future{
   height: 50vh;
-  width: 90vw;
   /*padding: 15px;*/
   margin: 20px;
   background-color: rgb(215, 255, 212);
