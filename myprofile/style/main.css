@@ -7,7 +7,6 @@ body{
   height: 50vh;
   background-color:aliceblue;
   border-radius: 15px;
-  box-shadow: 6px rgba(0,0,0,0.1);
 }
 
 .past{
@@ -18,6 +17,8 @@ body{
   height: 50vh;
   padding: 15px;
   background-color: azure;
+  border-radius: 15px;
+  box-shadow: 6px rgba(0,0,0,0.1);
 }
 
 .future{
