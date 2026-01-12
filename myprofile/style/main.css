@@ -1,7 +1,7 @@
 
 body{
   background-color: #ffffff;
-  padding: 20px;
+  
 }
 
 .now{
@@ -21,6 +21,7 @@ body{
 
 .summary{
   height: 50vh;
+  width: 80vw;
   padding: 15px;
   margin: 20px;
   background-color: azure;
