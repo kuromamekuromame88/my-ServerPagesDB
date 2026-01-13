@@ -378,7 +378,6 @@ async function clipcopy(text){
 function mcopy(id){
   if(!id) return;
   const content = chatContainer.querySelector(`[id="${id}"]`).getElementsByClassName("hide_text")[0]?.innerText;
-  if(typeof content !== "String") return;
   (async () => {
     await clipcopy(content);
   })();
