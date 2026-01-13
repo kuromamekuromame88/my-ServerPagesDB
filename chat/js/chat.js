@@ -568,6 +568,7 @@ function connectWebSocket() {
         ${createdAt ? `<div style="font-size:12px;color:gray;">${createdAt}</div>` : ""}
         <div style="font-size:10px;opacity:0.5;" class="comid">#${id? id: ''}</div>
         ${displayID === userID && id ? `<div class="message_remove"><button class="remove_button" onclick="msgdel(${id})">削除</button>`:""}
+        <div class="message_copy"><button class="copy_button" onclick="mcopy(${id})">コピー</button></div>
       `;
           
       //<div style="font-size:10px;opacity:0.5;" class="read">既読:${/*read? read: ''*/}</div>
@@ -642,7 +643,7 @@ function connectWebSocket() {
         ${createdAt ? `<div style="font-size:12px;color:gray;">${createdAt}</div>` : ""}
         <div style="font-size:10px;opacity:0.5;" class="comid">#${id? id: ''}</div>
         ${displayID === userID && id ? `<div class="message_remove"><button class="remove_button" onclick="msgdel(${id})">削除</button></div>`:""}
-        <div class="message_copy"><button class="copy-button" onclick="mcopy(${id})">コピー</button></div>
+        <div class="message_copy"><button class="copy_button" onclick="mcopy(${id})">コピー</button></div>
       `;
       
       notifyNewMessage();
