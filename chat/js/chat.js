@@ -375,11 +375,13 @@ async function clipcopy(text){
   }
 }
 
-async function mcopy(id){
+function mcopy(id){
   if(!id) return;
   const content = chatContainer.querySelector(`[id="${id}"]`).getElementsByClassName("hide_text")[0]?.innerText;
   if(typeof content !== "String") return;
-  await clipcopy(content);
+  (async () => {
+    await clipcopy(content);
+  })();
 }
     
 function msgdel(id){
