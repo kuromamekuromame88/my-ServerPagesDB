@@ -364,6 +364,23 @@ async function CheckImgDel(id){
     return false;
   }
 }
+
+async function clipcopy(text){
+  try{
+    if(!text) return;
+    await navigator.clipboard.writeText(text);
+    alert('📋 コピーしました！');
+  }catch(e){
+    alert('❌ コピーに失敗しました: '+e.message);
+  }
+}
+
+async function mcopy(id){
+  if(!id) return;
+  const content = chatContainer.querySelector(`[id="${id}"]`).getElementsByClassName("hide_text")[0]?.innerText;
+  if(typeof content !== "String") return;
+  await clipcopy(content);
+}
     
 function msgdel(id){
   //console.log("id:", id);
@@ -625,6 +642,7 @@ function connectWebSocket() {
         ${createdAt ? `<div style="font-size:12px;color:gray;">${createdAt}</div>` : ""}
         <div style="font-size:10px;opacity:0.5;" class="comid">#${id? id: ''}</div>
         ${displayID === userID && id ? `<div class="message_remove"><button class="remove_button" onclick="msgdel(${id})">削除</button></div>`:""}
+        <div class="message_copy"><button class="copy-button" onclick="mcopy(${id})">コピー</button></div>
       `;
       
       notifyNewMessage();

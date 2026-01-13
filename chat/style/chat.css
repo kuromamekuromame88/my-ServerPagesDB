@@ -187,6 +187,22 @@
       background-color: #111;
     }
 
+    .copy_button{
+      margin-left: 5px;
+      margin-top: 5px;
+      padding: 5px 10px;
+      border: none;
+      background-color: #333;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .copy_button:hover {
+      background-color: #111;
+    }
+
     .chat-container img {
       max-width: 100%; /* 親要素の幅を超えない */
       height: auto;    /* 縦横比を維持 */
