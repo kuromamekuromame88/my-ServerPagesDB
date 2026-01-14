@@ -91,10 +91,10 @@ openBoard.onclick = () => {
 // ------------------- ニックネーム & userID -------------------
 let nickname = localStorage.getItem("nickname");
 
-function generateUserID() {
+function generateUserID(key=5) {
   const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
   let id = "";
-  for (let i = 0; i < 5; i++) id += chars[Math.floor(Math.random() * chars.length)];
+  for (let i = 0; i < key; i++) id += chars[Math.floor(Math.random() * chars.length)];
   return id;
 }
 
@@ -696,6 +696,14 @@ saveUsername.onclick = () => {
   nickname = name;
   localStorage.removeItem("muted");
   showChatUI();
+  if(ws){
+    ws.send(JSON.stringify({
+      app:"webchat",
+      type:"regist",
+      nickname:nickname,
+      pass:"PASSWORD"
+    }));
+  }
 };
 
 //-------------------画像アップロード----------------
