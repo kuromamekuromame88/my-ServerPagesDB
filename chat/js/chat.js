@@ -403,7 +403,7 @@ function msgdel(id){
 }
 
 function qdel(id){
-  chatContainer.querySelector(`[id="${id}"]`).remove();
+  chatContainer.querySelector(`[id="${id}"]`)?.remove();
 }
 
 let RUID;
@@ -696,14 +696,19 @@ saveUsername.onclick = () => {
   nickname = name;
   localStorage.removeItem("muted");
   showChatUI();
+  let PASSWORD;
+  while(!PASSWORD){
+    PASSWORD = prompt("パスワードを設定してください。");
+  }
   if(ws){
     ws.send(JSON.stringify({
       app:"webchat",
       type:"regist",
       nickname:nickname,
-      pass:"PASSWORD"
+      pass:PASSWORD
     }));
   }
+
 };
 
 //-------------------画像アップロード----------------
@@ -895,6 +900,12 @@ async function sendRegistPing() {
   try {
     await fetch(url, { method: "GET" });
     //console.log("Regist ping sent:", url);
+    if(false){
+      ws.send({
+        app: "webchat",
+        type: "ping"
+      });
+    }
   } catch (e) {
     console.warn("Regist ping failed:", e);
   }
