@@ -694,7 +694,7 @@ function createGroupItem(group) {
   /* ===== グループ名 ===== */
   const groupName = document.createElement("div");
   groupName.className = "group-name";
-  groupName.textContent = group.name;
+  groupName.textContent = group.name +" | "+ group.id;
 
   const callButton = document.createElement("button");
   callButton.className = "group-call startCall";
