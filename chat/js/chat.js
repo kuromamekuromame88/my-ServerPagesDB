@@ -42,6 +42,9 @@ const newNicknameInput = document.getElementById("newNicknameInput");
 const changeNickname = document.getElementById("changeNickname");
 const cancelNicknameChange = document.getElementById("cancelNicknameChange");
 
+const currentpasswordInput = document.getElementById("currentpasswordInput");
+const newpasswordInput = document.getElementById("newpasswordInput");
+const changepassword = document.getElementById("changepassword");
 
 let wr = new URL(window.location.href);
 const params = new URLSearchParams(wr.search);
@@ -694,12 +697,8 @@ saveUsername.onclick = () => {
   if (!name) return alert("ニックネームを入力してください");
   localStorage.setItem("nickname", name);
   nickname = name;
-  localStorage.removeItem("muted");
-  showChatUI();
-  let PASSWORD;
-  while(!PASSWORD){
-    PASSWORD = prompt("パスワードを設定してください。");
-  }
+
+  if(PASSWORD === "") return alert("パスワードを入力してください。");
   if(ws){
     ws.send(JSON.stringify({
       app:"webchat",
@@ -708,6 +707,9 @@ saveUsername.onclick = () => {
       pass:PASSWORD
     }));
   }
+  localStorage.removeItem("muted");
+  showChatUI();
+  const PASSWORD = document.getElementById("passwordInput").value.trim();
 
 };
 
@@ -879,6 +881,25 @@ changeNickname.onclick = () => {
   nickname = newName;
   nicknameChangeModal.style.display = "none";
 };
+
+
+//パスワード変更用
+
+changepassword.onclick = () => {
+  const currentpass = currentpasswordInput.value.trim();
+  const newpass = newpasswordInput.value.trim();
+  if (!currentpass || !newpass) return alert("現在のパスワードと新しいパスワードを入力してください");
+
+  ws.send(JSON.stringify({
+    app: "webchat",
+    type: "changepass",
+    user: userID,
+    cpass: currentpass,
+    npass: newpass
+  }));
+
+  alert("パスワード変更リクエストを送信しました。");
+}
 
 
 //定期登録系

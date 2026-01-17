@@ -176,6 +176,7 @@
     <p>※ユーザーに関する情報はローカルに保存されます</p>
     <p>※近いうちにサーバーに保存するように変更します</p>
     <input type="text" id="usernameInput" placeholder="ニックネーム">
+    <input type="text" id="passwordInput" placeholder="パスワード">
     <button id="saveUsername">登録</button>
   </div>
 
@@ -186,6 +187,17 @@
       <input type="text" id="newNicknameInput" placeholder="新しいニックネーム">
       <button id="changeNickname">変更</button>
       <button id="cancelNicknameChange" style="background:#999;">キャンセル</button>
+    </div>
+    <div id="passwordChangeBox" class="nickname-change-box">
+      <h3>パスワード確認</h3>
+      <span>
+        ※前バージョンにすでに登録されていたユーザーは、
+        <br>
+        パスワードがPASSWORDに設定しています。ここで変更してください。
+      </span>
+      <input type="NowPassword" id="currentPasswordInput" placeholder="現在のパスワード">
+      <input type="newPassword" id="newPasswordInput" placeholder="新しいパスワード">
+      <button id="changePassword">変更</button>
     </div>
   </div>
 
