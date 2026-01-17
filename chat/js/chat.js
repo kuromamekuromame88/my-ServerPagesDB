@@ -898,7 +898,7 @@ changePassword.onclick = () => {
   ws.send(JSON.stringify({
     app: "webchat",
     type: "changepass",
-    user: userID,
+    userID: userID,
     cpass: currentpass,
     npass: newpass
   }));
