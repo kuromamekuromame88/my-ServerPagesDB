@@ -44,7 +44,7 @@ const cancelNicknameChange = document.getElementById("cancelNicknameChange");
 
 const currentpasswordInput = document.getElementById("currentpasswordInput");
 const newpasswordInput = document.getElementById("newpasswordInput");
-const changepassword = document.getElementById("changepassword");
+const changePassword = document.getElementById("changePassword");
 
 let wr = new URL(window.location.href);
 const params = new URLSearchParams(wr.search);
@@ -885,7 +885,7 @@ changeNickname.onclick = () => {
 
 //パスワード変更用
 
-changepassword.onclick = () => {
+changePassword.onclick = () => {
   const currentpass = currentpasswordInput.value.trim();
   const newpass = newpasswordInput.value.trim();
   if (!currentpass || !newpass) return alert("現在のパスワードと新しいパスワードを入力してください");
