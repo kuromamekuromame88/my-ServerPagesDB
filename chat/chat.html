@@ -164,7 +164,7 @@
       <button id="openChat" title="チャット">💬</button>
       <button id="openBoard" title="メタバース">🗺️</button>
       <button id="toggleUserList" style="display: none;">👤 ユーザー</button>
-      <button id="openNicknameChange">✏️ ニックネーム変更</button>
+      <button id="openUserSettingsChange" title="設定">⚙️設定</button>
     </div>
   </div>
 
@@ -173,7 +173,7 @@
   <div id="usernameSetup" class="username-setup">
     <h2>ニックネームを入力してください（後で変更可）</h2>
     <p>※他人になりすますなよ</p>
-    <p>※ユーザーに関する情報はローカルに保存されます</p>
+    <p>※現時点でユーザーに関する情報はローカルに保存されます</p>
     <p>※近いうちにサーバーに保存するように変更します</p>
     <input type="text" id="usernameInput" placeholder="ニックネーム">
     <input type="text" id="passwordInput" placeholder="パスワード">
@@ -181,19 +181,17 @@
   </div>
 
   <!-- ニックネーム変更モーダル -->
-  <div id="nicknameChangeModal">
-    <div id="nicknameChangeBox" class="nickname-change-box">
+  <div id="UserSettingsChangeModal">
+    <div id="UserSettingsChangeBox" class="UserSettings-change-box">
       <h3>ニックネーム変更</h3>
       <input type="text" id="newNicknameInput" placeholder="新しいニックネーム">
       <button id="changeNickname">変更</button>
       <button id="cancelNicknameChange" style="background:#999;">キャンセル</button>
-    <!--</div>
-    <div id="passwordChangeBox" class="nickname-change-box">-->
       <h3>パスワード確認</h3>
       <span>
         ※前バージョンにすでに登録されていたユーザーは、
         <br>
-        パスワードがPASSWORDに設定しています。ここで変更してください。
+        パスワードをPASSWORDに設定しています。ここで変更してください。
       </span>
       <input type="NowPassword" id="currentPasswordInput" placeholder="現在のパスワード">
       <input type="newPassword" id="newPasswordInput" placeholder="新しいパスワード">

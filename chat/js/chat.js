@@ -36,8 +36,8 @@ const chatUI = document.getElementById("chatUI");
 const usernameInput = document.getElementById("usernameInput");
 const saveUsername = document.getElementById("saveUsername");
 
-const openNicknameChange = document.getElementById("openNicknameChange");
-const nicknameChangeModal = document.getElementById("nicknameChangeModal");
+const openUserSettingsChange = document.getElementById("openUserSettingsChange");
+const UserSettingsChangeModal = document.getElementById("UserSettingsChangeModal");
 const newNicknameInput = document.getElementById("newNicknameInput");
 const changeNickname = document.getElementById("changeNickname");
 const cancelNicknameChange = document.getElementById("cancelNicknameChange");
@@ -861,13 +861,13 @@ messageInput.addEventListener("keydown", (e) => {
 });
 
 // ------------------- ニックネーム変更UI -------------------
-openNicknameChange.onclick = () => {
+openUserSettingsChange.onclick = () => {
   newNicknameInput.value = nickname;
-  nicknameChangeModal.style.display = "flex";
+  UserSettingsChangeModal.style.display = "flex";
 };
 
 cancelNicknameChange.onclick = () => {
-  nicknameChangeModal.style.display = "none";
+  UserSettingsChangeModal.style.display = "none";
 };
 
 newNicknameInput.addEventListener("keypress", (e) => {
@@ -879,7 +879,7 @@ changeNickname.onclick = () => {
   if (!newName) return alert("ニックネームを入力してください");
   localStorage.setItem("nickname", newName);
   nickname = newName;
-  nicknameChangeModal.style.display = "none";
+  UserSettingsChangeModal.style.display = "none";
 };
 
 
