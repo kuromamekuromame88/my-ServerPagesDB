@@ -860,7 +860,11 @@ messageInput.addEventListener("keydown", (e) => {
   }
 });
 
-// ------------------- ニックネーム変更UI -------------------
+// ------------------- ユーザー設定変更UI -------------------
+UserSettingsChangeModal.onclick = (e) => {
+  if (e.target === UserSettingsChangeModal) UserSettingsChangeModal.style.display = "none";
+}
+
 openUserSettingsChange.onclick = () => {
   newNicknameInput.value = nickname;
   UserSettingsChangeModal.style.display = "flex";
