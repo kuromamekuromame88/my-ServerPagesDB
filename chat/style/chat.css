@@ -234,7 +234,7 @@
       padding: 20px;
       border-radius: 10px;
       width: 500px;
-      height: 250px;
+      height: calc(40vh);
       overflow-x: hidden;
       overflow-y: auto;
     }
