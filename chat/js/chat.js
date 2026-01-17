@@ -42,8 +42,8 @@ const newNicknameInput = document.getElementById("newNicknameInput");
 const changeNickname = document.getElementById("changeNickname");
 const cancelNicknameChange = document.getElementById("cancelNicknameChange");
 
-const currentpasswordInput = document.getElementById("currentpasswordInput");
-const newpasswordInput = document.getElementById("newpasswordInput");
+const currentPasswordInput = document.getElementById("currentPasswordInput");
+const newPasswordInput = document.getElementById("newPasswordInput");
 const changePassword = document.getElementById("changePassword");
 
 let wr = new URL(window.location.href);
@@ -890,8 +890,8 @@ changeNickname.onclick = () => {
 //パスワード変更用
 
 changePassword.onclick = () => {
-  const currentpass = currentpasswordInput.value.trim();
-  const newpass = newpasswordInput.value.trim();
+  const currentpass = currentPasswordInput.value.trim();
+  const newpass = newPasswordInput.value.trim();
   if (!currentpass || !newpass) return alert("現在のパスワードと新しいパスワードを入力してください");
   if (currentpass === newpass) return alert("新しいパスワードは現在のパスワードと異なる必要があります。");
 
