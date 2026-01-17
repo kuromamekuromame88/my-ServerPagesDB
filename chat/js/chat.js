@@ -889,6 +889,7 @@ changepassword.onclick = () => {
   const currentpass = currentpasswordInput.value.trim();
   const newpass = newpasswordInput.value.trim();
   if (!currentpass || !newpass) return alert("現在のパスワードと新しいパスワードを入力してください");
+  if (currentpass === newpass) return alert("新しいパスワードは現在のパスワードと異なる必要があります。");
 
   ws.send(JSON.stringify({
     app: "webchat",
