@@ -88,7 +88,9 @@ openBoard.onclick = () => {
 
   boardUI.style.display = "block";
   // resize Pixi app so canvas fits new layout
-  app.resize();
+
+  //次に実装するまで保留
+  //app.resize();
 };
 
 // ------------------- ニックネーム & userID -------------------
