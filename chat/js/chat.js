@@ -699,8 +699,8 @@ saveUsername.onclick = () => {
   if (!name) return alert("ニックネームを入力してください");
   localStorage.setItem("nickname", name);
   nickname = name;
-
-  if(PASSWORD === "") return alert("パスワードを入力してください。");
+  const PASSWORD = document.getElementById("passwordInput").value.trim();
+  if(!PASSWORD) return alert("パスワードを入力してください。");
   if(ws){
     ws.send(JSON.stringify({
       app:"webchat",
@@ -715,8 +715,6 @@ saveUsername.onclick = () => {
   }
   localStorage.removeItem("muted");
   showChatUI();
-  const PASSWORD = document.getElementById("passwordInput").value.trim();
-
 };
 
 //-------------------画像アップロード----------------
