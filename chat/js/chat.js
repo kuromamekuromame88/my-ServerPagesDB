@@ -705,9 +705,13 @@ saveUsername.onclick = () => {
     ws.send(JSON.stringify({
       app:"webchat",
       type:"regist",
+      userID:userID,
       nickname:nickname,
       pass:PASSWORD
     }));
+  }else{
+    alert("WebSocketに接続されていません。しばらく待ってからもう一度お試しください。");
+    return;
   }
   localStorage.removeItem("muted");
   showChatUI();
