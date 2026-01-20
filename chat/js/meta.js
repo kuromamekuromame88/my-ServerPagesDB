@@ -5,29 +5,31 @@ const TILE_SIZE = 16;
 const CHUNK_SIZE = 16;
 const ERA_HEIGHT = 150;
 
-const metaUI = document.getElementById("metacanvas");
-const canvas = document.getElementById("metaCanvasElement");
-
 /* ===============================
-   Pixi.js 初期化
+   Pixi.js 初期化（フルスクリーン）
 ================================ */
+const containerDiv = document.getElementById("metacanvas");
+
 const app = new PIXI.Application({
-  view: canvas,
-  width: canvas.width,
-  height: canvas.height,
+  resizeTo: window,
   backgroundColor: 0x000000,
 });
 
+containerDiv.appendChild(app.view);
+
+/* ===============================
+   ワールドコンテナ
+================================ */
 const world = new PIXI.Container();
 app.stage.addChild(world);
 
 /* ===============================
-   カメラ
+   カメラ（論理座標）
 ================================ */
 const camera = {
   x: 0,
-  y: 0,
-  speed: 5,
+  y: 0, // 上に行くほど増える
+  speed: 6,
 };
 
 /* ===============================
@@ -53,7 +55,7 @@ const TILE_COLOR = {
 };
 
 /* ===============================
-   ノイズ関数（軽量）
+   ノイズ
 ================================ */
 function hash(x, y) {
   return Math.abs(Math.sin(x * 127.1 + y * 311.7) * 43758.5453) % 1;
@@ -79,7 +81,7 @@ function getBiome(x, era) {
 }
 
 /* ===============================
-   タイル生成
+   タイル生成（論理座標）
 ================================ */
 function generateTile(x, y) {
   const era = getEra(y);
@@ -117,9 +119,14 @@ function chunkKey(cx, cy) {
 }
 
 function generateChunk(cx, cy) {
-  const container = new PIXI.Container();
-  container.x = cx * CHUNK_SIZE * TILE_SIZE;
-  container.y = cy * CHUNK_SIZE * TILE_SIZE;
+  const chunk = new PIXI.Container();
+
+  const worldX = cx * CHUNK_SIZE * TILE_SIZE;
+  const worldY = cy * CHUNK_SIZE * TILE_SIZE;
+
+  // ★ yを反転して描画
+  chunk.x = worldX;
+  chunk.y = -worldY;
 
   for (let ly = 0; ly < CHUNK_SIZE; ly++) {
     for (let lx = 0; lx < CHUNK_SIZE; lx++) {
@@ -132,31 +139,33 @@ function generateChunk(cx, cy) {
       g.beginFill(TILE_COLOR[tile]);
       g.drawRect(0, 0, TILE_SIZE, TILE_SIZE);
       g.endFill();
-      g.x = lx * TILE_SIZE;
-      g.y = ly * TILE_SIZE;
 
-      container.addChild(g);
+      g.x = lx * TILE_SIZE;
+      g.y = -ly * TILE_SIZE; // ★ ここも反転
+
+      chunk.addChild(g);
     }
   }
 
-  world.addChild(container);
-  chunkMap.set(chunkKey(cx, cy), container);
+  world.addChild(chunk);
+  chunkMap.set(chunkKey(cx, cy), chunk);
 }
 
 /* ===============================
    チャンクロード
 ================================ */
 function updateChunks() {
-  const viewWidth = app.screen.width;
-  const viewHeight = app.screen.height;
+  const vw = app.screen.width;
+  const vh = app.screen.height;
 
-  const startX = Math.floor((-camera.x) / (CHUNK_SIZE * TILE_SIZE)) - 1;
-  const startY = Math.floor((-camera.y) / (CHUNK_SIZE * TILE_SIZE)) - 1;
-  const endX = startX + Math.ceil(viewWidth / (CHUNK_SIZE * TILE_SIZE)) + 2;
-  const endY = startY + Math.ceil(viewHeight / (CHUNK_SIZE * TILE_SIZE)) + 2;
+  const left = Math.floor((-camera.x) / (CHUNK_SIZE * TILE_SIZE)) - 1;
+  const right = left + Math.ceil(vw / (CHUNK_SIZE * TILE_SIZE)) + 2;
 
-  for (let cy = startY; cy <= endY; cy++) {
-    for (let cx = startX; cx <= endX; cx++) {
+  const bottom = Math.floor((camera.y) / (CHUNK_SIZE * TILE_SIZE)) - 1;
+  const top = bottom + Math.ceil(vh / (CHUNK_SIZE * TILE_SIZE)) + 2;
+
+  for (let cy = bottom; cy <= top; cy++) {
+    for (let cx = left; cx <= right; cx++) {
       const key = chunkKey(cx, cy);
       if (!chunkMap.has(key)) {
         generateChunk(cx, cy);
