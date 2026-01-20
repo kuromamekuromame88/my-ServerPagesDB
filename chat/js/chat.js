@@ -85,12 +85,10 @@ openBoard.onclick = () => {
   roomMenu.style.display = "none";
   document.getElementById("userStatusBar").style.display = "none";
 
-
   metaUI.style.display = "block";
   // resize Pixi app so canvas fits new layout
 
-  //次に実装するまで保留
-  app.resize();
+  //app.resize();
 };
 
 // ------------------- ニックネーム & userID -------------------
