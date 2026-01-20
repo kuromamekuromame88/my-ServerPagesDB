@@ -5,7 +5,8 @@ const TILE_SIZE = 16;
 const CHUNK_SIZE = 16;
 const ERA_HEIGHT = 150;
 
-const canvas = document.getElementById("metacanvas");
+const metaUI = document.getElementById("metacanvas");
+const canvas = document.getElementById("metaCanvasElement");
 
 /* ===============================
    Pixi.js 初期化
