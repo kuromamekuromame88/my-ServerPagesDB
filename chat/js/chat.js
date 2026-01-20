@@ -96,18 +96,8 @@ openBoard.onclick = () => {
 // ------------------- ニックネーム & userID -------------------
 let nickname = localStorage.getItem("nickname");
 
-function generateUserID(key=5) {
-  const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  let id = "";
-  for (let i = 0; i < key; i++) id += chars[Math.floor(Math.random() * chars.length)];
-  return id;
-}
-
 let userID = localStorage.getItem("userID");
-if (!userID) {
-  userID = generateUserID();
-  localStorage.setItem("userID", userID);
-}
+
 
 function getFullUsername() {
   return nickname + "|" + userID;
@@ -713,6 +703,18 @@ saveUsername.onclick = () => {
     alert("WebSocketに接続されていません。しばらく待ってからもう一度お試しください。");
     return;
   }
+
+  function generateUserID(key=5) {
+    const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    let id = "";
+    for (let i = 0; i < key; i++) id += chars[Math.floor(Math.random() * chars.length)];
+    return id;
+  }
+  if (!userID) {
+    userID = generateUserID();
+    localStorage.setItem("userID", userID);
+  }
+
   localStorage.removeItem("muted");
   showChatUI();
 };
@@ -916,7 +918,7 @@ changePassword.onclick = () => {
 // ------------------- mute用 定期登録 API -------------------
 async function sendRegistPing() {
   // ネットワーク状態チェック
-  if (!navigator.onLine) return;
+  if (!navigator.onLine || !userID) return;
 
   // WebSocket 状態チェック（OPEN のときだけ送る）
   if (!ws || ws.readyState !== WebSocket.OPEN) return;
@@ -954,6 +956,8 @@ const roomListDiv = document.querySelector(".room-menu .room-list");
 let renderedChannelIds = new Set();
 
 async function updateChannelListUI() {
+  // ネットワーク状態チェック
+  if (!navigator.onLine) return;
   try {
     const res = await fetch(channelAPI);
     const channels = await res.json();  
@@ -1016,6 +1020,8 @@ function detectStatus(lastTime) {
 
 // UI更新関数
 async function updateUserStatus() {
+  // ネットワーク状態チェック
+  if (!navigator.onLine || !userID) return;
   try {
     const res = await fetch(userAPI);
     const users = await res.json();

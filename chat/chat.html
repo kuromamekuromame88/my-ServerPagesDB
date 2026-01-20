@@ -169,15 +169,22 @@
   </div>
 
 
-  <!-- ニックネーム初回登録UI -->
+  <!-- 初回登録UI -->
   <div id="usernameSetup" class="username-setup">
-    <h2>ニックネームを入力してください（後で変更可）</h2>
+    <h2>ニックネームとパスワードを入力してください（後で変更可）</h2>
     <p>※他人になりすますなよ</p>
     <p>※現時点でユーザーに関する情報はローカルに保存されます</p>
     <p>※近いうちにサーバーに保存するように変更します</p>
     <input type="text" id="usernameInput" placeholder="ニックネーム">
     <input type="text" id="passwordInput" placeholder="パスワード">
     <button id="saveUsername">登録</button>
+  </div>
+
+  <div id="loginUI" class="login-ui" style="display:none;"><!-- 一旦非表示-->
+    <h2>ニックネームとパスワードを入力してください</h2>
+    <input type="text" id="loginUsernameInput" placeholder="ニックネーム">
+    <input type="text" id="loginPasswordInput" placeholder="パスワード">
+    <button id="loginButton">ログイン</button>
   </div>
 
   <!-- ニックネーム変更モーダル -->
