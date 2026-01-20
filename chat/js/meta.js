@@ -81,7 +81,7 @@ function getBiome(x, era) {
 }
 
 /* ===============================
-   タイル生成（論理座標）
+   タイル生成（厚み強化版）
 ================================ */
 function generateTile(x, y) {
   const era = getEra(y);
@@ -90,21 +90,44 @@ function generateTile(x, y) {
   // 宇宙層
   if (era >= 4) return TILE.AIR;
 
+  // 地表高さ
   const surface =
     era * ERA_HEIGHT +
-    Math.floor(noise(x * 0.05, era) * 10);
+    Math.floor(noise(x * 0.05, era) * 12);
 
+  // 空中
   if (y > surface) return TILE.AIR;
 
-  if (y === surface) {
+  const depth = surface - y;
+
+  /* ---------- 地表 ---------- */
+  if (depth === 0) {
     if (biome === "forest" || biome === "plain") return TILE.GRASS;
     if (biome === "rock") return TILE.STONE;
     if (biome === "water") return TILE.SAND;
   }
 
-  if (y > surface - 3) return TILE.DIRT;
+  /* ---------- 表土層 ---------- */
+  const soilDepth = 4 + era; // 時代で厚く
+  if (depth <= soilDepth) {
+    return TILE.DIRT;
+  }
 
-  if (noise(x * 0.2, y * 0.2) > 0.97) return TILE.ORE;
+  /* ---------- 地層 ---------- */
+  const layerDepth = soilDepth + 12 + era * 2;
+  if (depth <= layerDepth) {
+    return TILE.STONE;
+  }
+
+  /* ---------- 深層（鉱石） ---------- */
+  const oreChance =
+    0.02 +
+    depth * 0.0008 +
+    noise(x * 0.3, y * 0.3) * 0.03;
+
+  if (Math.random() < oreChance) {
+    return TILE.ORE;
+  }
 
   return TILE.STONE;
 }
@@ -124,9 +147,8 @@ function generateChunk(cx, cy) {
   const worldX = cx * CHUNK_SIZE * TILE_SIZE;
   const worldY = cy * CHUNK_SIZE * TILE_SIZE;
 
-  // ★ yを反転して描画
   chunk.x = worldX;
-  chunk.y = -worldY;
+  chunk.y = -worldY; // y反転
 
   for (let ly = 0; ly < CHUNK_SIZE; ly++) {
     for (let lx = 0; lx < CHUNK_SIZE; lx++) {
@@ -141,7 +163,7 @@ function generateChunk(cx, cy) {
       g.endFill();
 
       g.x = lx * TILE_SIZE;
-      g.y = -ly * TILE_SIZE; // ★ ここも反転
+      g.y = -ly * TILE_SIZE;
 
       chunk.addChild(g);
     }
