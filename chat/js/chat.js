@@ -75,7 +75,7 @@ openChat.onclick = () => {
   roomMenu.style.display = "block";
   document.getElementById("userStatusBar").style.display = "block";
 
-  boardUI.style.display = "none";
+  metaUI.style.display = "none";
 };
 
 openBoard.onclick = () => {
@@ -86,7 +86,7 @@ openBoard.onclick = () => {
   document.getElementById("userStatusBar").style.display = "none";
 
 
-  boardUI.style.display = "block";
+  metaUI.style.display = "block";
   // resize Pixi app so canvas fits new layout
 
   //次に実装するまで保留
