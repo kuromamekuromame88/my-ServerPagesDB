@@ -1021,7 +1021,7 @@ function detectStatus(lastTime) {
 // UI更新関数
 async function updateUserStatus() {
   // ネットワーク状態チェック
-  if (!navigator.onLine || !userID) return;
+  if (!navigator.onLine) return;
   try {
     const res = await fetch(userAPI);
     const users = await res.json();
