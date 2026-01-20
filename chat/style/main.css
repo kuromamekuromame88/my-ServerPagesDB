@@ -3,6 +3,7 @@ body {
   padding-top: 60px;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   background-color: #f8f8f8;
+  overflow:hidden;
 }
 
 /* ----------------- top-bar ----------------- */
