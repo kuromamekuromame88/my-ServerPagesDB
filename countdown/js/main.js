@@ -52,7 +52,7 @@ function updateText() {
 async function init() {
   // 校章スプライト読み込み
   const texture = await PIXI.Assets.load(
-    'https://tool-webs.onrender.com/countdown/schoolLogo.png'
+    'https://tool-webs.onrender.com/countdown/img/schoolLogo.png'
   );
 
   const logo = new PIXI.Sprite(texture);
