@@ -28,8 +28,8 @@ const style = new PIXI.TextStyle({
 
 const countdown = new PIXI.Text(`卒業まであと${diffDays}日`, style);
 countdown.anchor.set(0.5);
-countdown.x = app.renderer.width*0.8;
-countdown.y = app.renderer.height*0.8;
+countdown.x = app.renderer.width*0.5;
+countdown.y = app.renderer.height*0.5;
 app.stage.addChild(countdown);
 
 let clickCount = 0;
@@ -49,8 +49,8 @@ countdown.on('pointerdown', () => {
 }
 );
 window.addEventListener('resize', () => {
-  countdown.x = app.renderer.width*0.8;
-  countdown.y = app.renderer.height*0.8;
+  countdown.x = app.renderer.width*0.5;
+  countdown.y = app.renderer.height*0.5;
 }
 );
 
@@ -58,10 +58,12 @@ window.addEventListener('resize', () => {
 countdown.text = `卒業まであと${diffDays}日`;
 
 
-app.ticker.add(() => {
+app.ticker.add((e) => {
   today = new Date();
   diffTime = graduationDate - today;
   diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  countdown.text = `卒業まであと${diffDays}日`;
+  countdown.text = `卒業まであと${diffDays}日。`;
+
+ console.log(e);
   
 });
