@@ -4,7 +4,7 @@ const countdown = document.getElementById('countdown');
 
 //Pixi.jsで卒業カウントダウン風クリッカーゲームを作る
 
-const containerDiv = document.getElementById("middlediv");
+const containerDiv = document.getElementById("container");
 
 const app = new PIXI.Application({
   resizeTo: window,
