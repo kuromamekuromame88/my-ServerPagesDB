@@ -20,15 +20,16 @@ const app = new PIXI.Application({
 containerDiv.appendChild(app.view);
 
 const style = new PIXI.TextStyle({
-    fontFamily: 'Arial',
-    fontSize: 36,
-    fill: 'white',
-    align: 'center',
-    });
+  fontFamily: 'Arial',
+  fontSize: 36,
+  fill: 'white',
+  align: 'center',
+});
+
 const clickText = new PIXI.Text('Click Me!', style);
 clickText.anchor.set(0.5);
-clickText.x = app.renderer.width / 2;
-clickText.y = app.renderer.height / 2;
+clickText.x = app.renderer.width / 10;
+clickText.y = app.renderer.height / 2 + app.renderer.height / 4;
 app.stage.addChild(clickText);
 
 let clickCount = 0;
