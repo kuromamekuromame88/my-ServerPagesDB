@@ -64,6 +64,10 @@ app.ticker.add((e) => {
   diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   countdown.text = `卒業まであと${diffDays}日。`;
 
- console.log(e);
+  if(e > 100){
+    countdown.text = `ついに卒業！。`;
+  }else{
+    countdown.text = `卒業まであと${diffDays}日。`;
+  }
   
 });
