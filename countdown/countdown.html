@@ -4,6 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Countdown Page</title>
+
+    <!-- Pixi.js（追加） -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.4.0/pixi.min.js"></script>
+
     <style>
       body {
         margin: 0;
@@ -18,26 +22,29 @@
       .leftdiv {
         display: flex;
         flex: 3;
-        background-color: #f0f0f0;
+        background-color: #7ebbf0;
       }
 
       .middlediv {
         display: flex;
         flex: 3;
-        background-color: #d0d0d0;
+        background-color: #7ebbf0;
       }
 
       .rightdiv {
         display: flex;
         flex: 3;
-        background-color: #b0b0b0;
+        background-color: #7ebbf0;
       }
     </style>
             
   </head>
   <body>
     <div class="leftdiv"></div>
-    <div class="middlediv"></div>
+    <div class="middlediv">
+      <canvas id="clicker"></canvas>
+    </div>
     <div class="rightdiv"></div>
+    <script src="https://tool-webs.onrender.com/countdown/js/main.js"></script>
   </body>
 </html>
