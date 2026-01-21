@@ -1,11 +1,11 @@
 const left = document.getElementById('leftdiv');
 const right = document.getElementById('rightdiv');
 
-const today = new Date();
+let today = new Date();
 const graduationDate = new Date('2026-03-17T00:00:00');
 
-const diffTime = graduationDate - today;
-const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+let diffTime = graduationDate - today;
+let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
 alert(`卒業まであと${diffDays}日`);
 //Pixi.jsで卒業カウントダウン風クリッカーゲームを作る
@@ -26,33 +26,42 @@ const style = new PIXI.TextStyle({
   align: 'center',
 });
 
-const clickText = new PIXI.Text('Click Me!', style);
-clickText.anchor.set(0.5);
-clickText.x = app.renderer.width / 10;
-clickText.y = app.renderer.height / 2 + app.renderer.height / 4;
-app.stage.addChild(clickText);
+const countdown = new PIXI.Text(`卒業まであと${diffDays}日`, style);
+countdown.anchor.set(0.5);
+countdown.x = app.renderer.width*0.8;
+countdown.y = app.renderer.height*0.8;
+app.stage.addChild(countdown);
 
 let clickCount = 0;
 let countdownValue = 10;
 
-clickText.interactive = true;
-clickText.buttonMode = true;
+countdown.interactive = true;
+countdown.buttonMode = true;
 
-clickText.on('pointerdown', () => {
-    clickCount++;
-    countdownValue--;
-    clickText.text = `Countdown: ${countdownValue}`
-    if (countdownValue <= 0) {
-        clickText.text = 'You Win!';
-        clickText.interactive = false;
-    }
+countdown.on('pointerdown', () => {
+  clickCount++;
+  countdownValue--;
+  countdown.text = `卒業まであと${diffDays}日`
+  if (countdownValue <= 0) {
+    countdown.text = 'You Win!';
+    countdown.interactive = false;
+  }
 }
 );
 window.addEventListener('resize', () => {
-    clickText.x = app.renderer.width / 2;
-    clickText.y = app.renderer.height / 2;
+  countdown.x = app.renderer.width*0.8;
+  countdown.y = app.renderer.height*0.8;
 }
 );
 
 // 初期カウントダウン表示
-clickText.text = `Countdown: ${countdownValue}`;
+countdown.text = `卒業まであと${diffDays}日`;
+
+
+app.ticker.add(() => {
+  today = new Date();
+  diffTime = graduationDate - today;
+  diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  countdown.text = `卒業まであと${diffDays}日`;
+  
+});
