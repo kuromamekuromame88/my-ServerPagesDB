@@ -1,6 +1,5 @@
-const left = document.getElementById('left');
-const right = document.getElementById('right');
-const countdown = document.getElementById('countdown');
+const left = document.getElementById('leftdiv');
+const right = document.getElementById('rightdiv');
 
 //Pixi.jsで卒業カウントダウン風クリッカーゲームを作る
 
@@ -34,7 +33,7 @@ clickText.buttonMode = true;
 clickText.on('pointerdown', () => {
     clickCount++;
     countdownValue--;
-    countdown.textContent = `Countdown: ${countdownValue}`;
+    clickText.text = `Countdown: ${countdownValue}`
     if (countdownValue <= 0) {
         clickText.text = 'You Win!';
         clickText.interactive = false;
@@ -48,4 +47,4 @@ window.addEventListener('resize', () => {
 );
 
 // 初期カウントダウン表示
-countdown.textContent = `Countdown: ${countdownValue}`;
+clickText.text = `Countdown: ${countdownValue}`;
