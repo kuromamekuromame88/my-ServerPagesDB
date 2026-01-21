@@ -1,9 +1,42 @@
 <!DOCTYPE html>
 <html lang="ja">
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Countdown Page</title>
+    <style>
+      body {
+        margin: 0;
+        height: 100vh;
+        display: flex;
+      }
+      
+      .leftdiv, .middlediv, .rightdiv {
+        height: 100%;
+      }
 
+      .leftdiv {
+        display: flex;
+        flex: 3;
+        background-color: #f0f0f0;
+      }
+
+      .middlediv {
+        display: flex;
+        flex: 3;
+        background-color: #d0d0d0;
+      }
+
+      .rightdiv {
+        display: flex;
+        flex: 3;
+        background-color: #b0b0b0;
+      }
+            
   </head>
   <body>
-    カウントダウン用のページ
+    <div class="leftdiv"></div>
+    <div class="middlediv"></div>
+    <div class="rightdiv"></div>
   </body>
 </html>
