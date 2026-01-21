@@ -1,6 +1,13 @@
 const left = document.getElementById('leftdiv');
 const right = document.getElementById('rightdiv');
 
+const today = new Date();
+const graduationDate = new Date('2024-03-17T00:00:00');
+
+const diffTime = graduationDate - today;
+const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+alert(`<h2>卒業まであと</h2><h1>${diffDays}日</h1>`);
 //Pixi.jsで卒業カウントダウン風クリッカーゲームを作る
 
 const containerDiv = document.getElementById("container");
