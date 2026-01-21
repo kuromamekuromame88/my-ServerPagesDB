@@ -41,29 +41,51 @@ function updateText() {
   } else {
     countdown.text =
       `卒業まであと ${diffDays} 日\n` +
-      `思い出を集めよう\n` +
       `思い出数：${clickCount}`;
   }
+
   countdown.x = app.renderer.width / 2;
-  countdown.y = app.renderer.height / 2;
+  countdown.y = app.renderer.height * 0.75;
 }
 
-// ===== クリック処理 =====
-countdown.interactive = true;
-countdown.buttonMode = true;
+// ===== 非同期初期化 =====
+async function init() {
+  // 校章スプライト読み込み
+  const texture = await PIXI.Assets.load(
+    'https://tool-webs.onrender.com/countdown/schoolLogo.png'
+  );
 
-countdown.on('pointerdown', () => {
-  clickCount++;
+  const logo = new PIXI.Sprite(texture);
+  logo.anchor.set(0.5);
+  logo.x = app.renderer.width / 2;
+  logo.y = app.renderer.height * 0.4;
+  logo.scale.set(0.6);
+
+  // クリック可能にする
+  logo.interactive = true;
+  logo.buttonMode = true;
+
+  logo.on('pointerdown', () => {
+    clickCount++;
+    updateText();
+  });
+
+  app.stage.addChild(logo);
+
+  // リサイズ対応
+  window.addEventListener('resize', () => {
+    logo.x = app.renderer.width / 2;
+    logo.y = app.renderer.height * 0.4;
+    updateText();
+  });
+
   updateText();
-});
+}
 
-// ===== リサイズ対応 =====
-window.addEventListener('resize', updateText);
+// ===== 起動 =====
+init();
 
-// ===== 初期表示 =====
-updateText();
-
-// ===== 1分ごとに日数だけ更新（軽量） =====
+// ===== 1分ごとに日数更新 =====
 setInterval(() => {
   diffDays = getDiffDays();
   updateText();
