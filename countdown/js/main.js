@@ -14,7 +14,7 @@ const containerDiv = document.getElementById("container");
 
 const app = new PIXI.Application({
   resizeTo: window,
-  backgroundColor: 0x7ebbf0,
+  backgroundColor: 0x95c0ec,
 });
 
 containerDiv.appendChild(app.view);
