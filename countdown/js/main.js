@@ -59,7 +59,7 @@ async function init() {
   logo.anchor.set(0.5);
   logo.x = app.renderer.width / 2;
   logo.y = app.renderer.height * 0.4;
-  logo.scale.set(0.6);
+  logo.scale.set(0.2);
 
   // クリック可能にする
   logo.interactive = true;
