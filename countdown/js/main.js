@@ -1,167 +1,193 @@
 const containerDiv = document.getElementById("container");
 
-// ===== 状態 =====
-const STATE_INTRO = 0;
-const STATE_CLICKER = 1;
-
-let mode = STATE_INTRO;
-
 // ===== 卒業日 =====
 const graduationDate = new Date('2026-03-17T00:00:00');
 
+// ===== 思い出写真 =====
+const photoStages = [
+  { count: 50, url: "https://tool-webs.onrender.com/countdown/img/50.png" }
+  /*{ count: 30, url: "https://example.com/photo2.jpg" },
+  { count: 60, url: "https://example.com/photo3.jpg" },*/
+];
+
+let currentPhotoIndex = -1;
+
+// ===== 日数計算 =====
 function getDiffDays() {
   const today = new Date();
-  const diffTime = graduationDate - today;
-  return Math.max(0, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
+  return Math.max(
+    0,
+    Math.ceil((graduationDate - today) / (1000 * 60 * 60 * 24))
+  );
 }
 
 let diffDays = getDiffDays();
-
-// ===== クリッカー関連 =====
 let clickCount = 0;
-let autoPower = 0; // 自動増加量（/秒）
+let gameStarted = false;
 
-// ===== Pixi =====
+// ===== Pixi 初期化 =====
 const app = new PIXI.Application({
   resizeTo: window,
   backgroundColor: 0x95c0ec,
 });
 containerDiv.appendChild(app.view);
 
-// ===== テキスト =====
-const mainStyle = new PIXI.TextStyle({
-  fontFamily: 'Arial',
-  fontSize: 36,
-  fill: 'white',
-  align: 'center',
-});
+// ===== 背景写真 =====
+const backgroundSprite = new PIXI.Sprite();
+backgroundSprite.alpha = 0;
+app.stage.addChild(backgroundSprite);
 
-const subStyle = new PIXI.TextStyle({
-  fontFamily: 'Arial',
-  fontSize: 22,
-  fill: 'white',
-  align: 'center',
-});
+// ===== 雲レイヤー =====
+const clouds = [];
 
-// 残り日数（常時）
-const daysText = new PIXI.Text('', mainStyle);
-daysText.anchor.set(0.5);
-app.stage.addChild(daysText);
+function createCloud() {
+  const cloud = new PIXI.Graphics();
+  cloud.beginFill(0xffffff, 0.8);
+  cloud.drawEllipse(0, 0, 60, 30);
+  cloud.drawEllipse(40, -10, 50, 25);
+  cloud.drawEllipse(-40, -10, 50, 25);
+  cloud.endFill();
 
-// 思い出数
-const scoreText = new PIXI.Text('', subStyle);
-scoreText.anchor.set(0.5);
-app.stage.addChild(scoreText);
+  cloud.x = -100;
+  cloud.y = Math.random() * app.screen.height * 0.4;
+  cloud.speed = 0.2 + Math.random() * 0.4;
+  cloud.scale.set(0.5 + Math.random() * 0.7);
 
-// ===== 校章 =====
-let logo;
+  app.stage.addChild(cloud);
+  clouds.push(cloud);
+}
 
 // ===== 桜 =====
 const petals = [];
 
-// ===== テキスト更新 =====
-function updateTexts() {
-  daysText.text = `卒業まであと ${diffDays} 日`;
-  daysText.x = app.renderer.width / 2;
-  daysText.y = app.renderer.height * 0.15;
+function createPetal() {
+  const p = new PIXI.Graphics();
+  p.beginFill(0xffc0cb);
+  p.drawEllipse(0, 0, 6, 4);
+  p.endFill();
 
-  scoreText.text =
-    `思い出数：${Math.floor(clickCount)}\n` +
-    `自動増加：${autoPower}/秒`;
+  p.x = Math.random() * app.screen.width;
+  p.y = -10;
+  p.speed = 1 + Math.random() * 2;
+  p.rotationSpeed = (Math.random() - 0.5) * 0.05;
 
-  scoreText.x = app.renderer.width / 2;
-  scoreText.y = app.renderer.height * 0.75;
+  app.stage.addChild(p);
+  petals.push(p);
 }
 
-// ===== 桜生成 =====
-function spawnPetal(x, strong = false) {
-  const g = new PIXI.Graphics();
-  g.beginFill(0xffa2b5);
-  g.drawEllipse(0, 0, 8, 4);
-  g.endFill();
+// ===== テキスト =====
+const textStyle = new PIXI.TextStyle({
+  fontFamily: "Arial",
+  fontSize: 36,
+  fill: "white",
+  align: "center",
+  dropShadow: true,
+  dropShadowBlur: 4,
+});
 
-  g.x = x;
-  g.y = -10;
-  g.vy = (strong ? 2.5 : 1) + Math.random() * 2;
-  g.vx = (Math.random() - 0.5) * 0.6;
-  g.rotationSpeed = (Math.random() - 0.5) * 0.03;
+const countdown = new PIXI.Text("", textStyle);
+countdown.anchor.set(0.5);
+countdown.alpha = 0;
+app.stage.addChild(countdown);
 
-  app.stage.addChild(g);
-  petals.push(g);
+// ===== 更新 =====
+function updateText() {
+  countdown.text =
+    diffDays <= 0
+      ? `🎓 ついに卒業！\n思い出数：${clickCount}`
+      : `卒業まであと ${diffDays} 日\n思い出数：${clickCount}`;
+
+  countdown.x = app.screen.width / 2;
+  countdown.y = app.screen.height * 0.75;
 }
 
-// ===== 初期化 =====
-async function init() {
-  const texture = await PIXI.Assets.load(
-    'https://tool-webs.onrender.com/countdown/img/schoolLogo.png'
-  );
+// ===== 背景切替 =====
+async function updateBackground() {
+  for (let i = photoStages.length - 1; i >= 0; i--) {
+    if (clickCount >= photoStages[i].count && i !== currentPhotoIndex) {
+      const tex = await PIXI.Assets.load(photoStages[i].url);
+      backgroundSprite.texture = tex;
+      backgroundSprite.width = app.screen.width;
+      backgroundSprite.height = app.screen.height;
+      backgroundSprite.alpha = 0;
 
-  logo = new PIXI.Sprite(texture);
-  logo.anchor.set(0.5);
-  logo.scale.set(0.2);
-  logo.x = app.renderer.width / 2;
-  logo.y = app.renderer.height * 0.4;
-  logo.interactive = true;
-  logo.buttonMode = true;
+      app.ticker.add(function fade() {
+        backgroundSprite.alpha += 0.02;
+        if (backgroundSprite.alpha >= 1) {
+          app.ticker.remove(fade);
+        }
+      });
 
-  logo.on('pointerdown', () => {
-    if (mode === STATE_INTRO) {
-      mode = STATE_CLICKER;
-    } else {
-      clickCount++;
-
-      // 一定数で自動増加解放
-      if (clickCount === 20) autoPower = 1;
-      if (clickCount === 100) autoPower = 3;
-      if (clickCount === 300) autoPower = 6;
-
-      for (let i = 0; i < 6; i++) {
-        spawnPetal(
-          logo.x + (Math.random() - 0.5) * app.renderer.width,
-          true
-        );
-      }
+      currentPhotoIndex = i;
+      break;
     }
-    updateTexts();
+  }
+}
+
+// ===== アニメーションループ =====
+app.ticker.add(() => {
+  // 雲
+  if (clouds.length < 6 && Math.random() < 0.01) createCloud();
+  clouds.forEach((c, i) => {
+    c.x += c.speed;
+    if (c.x > app.screen.width + 150) {
+      app.stage.removeChild(c);
+      clouds.splice(i, 1);
+    }
   });
 
-  app.stage.addChild(logo);
-  updateTexts();
-}
-
-// ===== アニメーション =====
-app.ticker.add((delta) => {
-  // 常時桜
-  if (Math.random() < 0.05) {
-    spawnPetal(Math.random() * app.renderer.width);
-  }
-
-  // 自動増加（クリッカー中のみ）
-  if (mode === STATE_CLICKER && autoPower > 0) {
-    clickCount += autoPower * (delta / 60);
-  }
-
-  // 桜落下
-  for (let i = petals.length - 1; i >= 0; i--) {
-    const p = petals[i];
-    p.y += p.vy;
-    p.x += p.vx;
+  // 桜
+  if (petals.length < 50) createPetal();
+  petals.forEach((p, i) => {
+    p.y += p.speed;
     p.rotation += p.rotationSpeed;
-
-    if (p.y > app.renderer.height + 20) {
+    if (p.y > app.screen.height + 10) {
       app.stage.removeChild(p);
       petals.splice(i, 1);
     }
-  }
-
-  updateTexts();
+  });
 });
+
+// ===== 初期化 =====
+async function init() {
+  const tex = await PIXI.Assets.load(
+    "https://tool-webs.onrender.com/countdown/img/schoolLogo.png"
+  );
+
+  const logo = new PIXI.Sprite(tex);
+  logo.anchor.set(0.5);
+  logo.x = app.screen.width / 2;
+  logo.y = app.screen.height * 0.4;
+  logo.scale.set(0.2);
+  logo.interactive = true;
+  logo.buttonMode = true;
+
+  logo.on("pointerdown", () => {
+    if (!gameStarted) {
+      gameStarted = true;
+      return;
+    }
+    clickCount++;
+    updateText();
+    updateBackground();
+  });
+
+  app.stage.addChild(logo);
+
+  // テキストフェードイン
+  app.ticker.add(function fadeIn() {
+    countdown.alpha += 0.02;
+    if (countdown.alpha >= 1) app.ticker.remove(fadeIn);
+  });
+
+  updateText();
+}
+
+// ===== 起動 =====
+init();
 
 // ===== 日数更新 =====
 setInterval(() => {
   diffDays = getDiffDays();
-  updateTexts();
+  updateText();
 }, 60000);
-
-// ===== 起動 =====
-init();
