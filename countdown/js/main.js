@@ -75,7 +75,7 @@ function updateMessage() {
 
   startText.x = app.renderer.width - 16;
   startText.y = app.renderer.height - 16;
-  Memory.x = startText.x - 64;
+  Memory.x = app.renderer.width - 16 - startText.width - Memory.width;
   Memory.y = app.renderer.height - 16;
 }
 
