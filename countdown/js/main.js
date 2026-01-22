@@ -3,16 +3,28 @@ const containerDiv = document.getElementById("container");
 // ===== 卒業日 =====
 const graduationDate = new Date('2026-03-17T00:00:00');
 
-// ===== 思い出写真 =====
+// ===== 写真ステージ =====
 const photoStages = [
-  { count: 50, url: "https://tool-webs.onrender.com/countdown/img/50.jpg" }
-  /*{ count: 30, url: "https://example.com/photo2.jpg" },
-  { count: 60, url: "https://example.com/photo3.jpg" },*/
+  {
+    count: 10,
+    url: "https://tool-webs.onrender.com/countdown/img/50.jpg",
+    mode: "frame",
+  }/*,
+  {
+    count: 30,
+    url: "https://example.com/photo2.jpg",
+    mode: "frame",
+  },
+  {
+    count: 60,
+    url: "https://example.com/photo3.jpg",
+    mode: "background",
+  },*/
 ];
 
 let currentPhotoIndex = -1;
 
-// ===== 日数計算 =====
+// ===== 日数 =====
 function getDiffDays() {
   const today = new Date();
   return Math.max(
@@ -25,7 +37,7 @@ let diffDays = getDiffDays();
 let clickCount = 0;
 let gameStarted = false;
 
-// ===== Pixi 初期化 =====
+// ===== Pixi =====
 const app = new PIXI.Application({
   resizeTo: window,
   backgroundColor: 0x95c0ec,
@@ -37,29 +49,31 @@ const backgroundSprite = new PIXI.Sprite();
 backgroundSprite.alpha = 0;
 app.stage.addChild(backgroundSprite);
 
-// ===== 雲レイヤー =====
+// ===== フォトフレーム用コンテナ =====
+const photoLayer = new PIXI.Container();
+app.stage.addChild(photoLayer);
+
+// ===== 雲 =====
 const clouds = [];
-
 function createCloud() {
-  const cloud = new PIXI.Graphics();
-  cloud.beginFill(0xffffff, 0.8);
-  cloud.drawEllipse(0, 0, 60, 30);
-  cloud.drawEllipse(40, -10, 50, 25);
-  cloud.drawEllipse(-40, -10, 50, 25);
-  cloud.endFill();
+  const g = new PIXI.Graphics();
+  g.beginFill(0xffffff, 0.8);
+  g.drawEllipse(0, 0, 60, 30);
+  g.drawEllipse(40, -10, 50, 25);
+  g.drawEllipse(-40, -10, 50, 25);
+  g.endFill();
 
-  cloud.x = -100;
-  cloud.y = Math.random() * app.screen.height * 0.4;
-  cloud.speed = 0.2 + Math.random() * 0.4;
-  cloud.scale.set(0.5 + Math.random() * 0.7);
+  g.x = -150;
+  g.y = Math.random() * app.screen.height * 0.4;
+  g.speed = 0.2 + Math.random() * 0.4;
+  g.scale.set(0.5 + Math.random() * 0.7);
 
-  app.stage.addChild(cloud);
-  clouds.push(cloud);
+  app.stage.addChild(g);
+  clouds.push(g);
 }
 
 // ===== 桜 =====
 const petals = [];
-
 function createPetal() {
   const p = new PIXI.Graphics();
   p.beginFill(0xffc0cb);
@@ -80,7 +94,6 @@ const textStyle = new PIXI.TextStyle({
   fontFamily: "Arial",
   fontSize: 36,
   fill: "white",
-  align: "center",
   dropShadow: true,
   dropShadowBlur: 4,
 });
@@ -90,7 +103,6 @@ countdown.anchor.set(0.5);
 countdown.alpha = 0;
 app.stage.addChild(countdown);
 
-// ===== 更新 =====
 function updateText() {
   countdown.text =
     diffDays <= 0
@@ -101,22 +113,79 @@ function updateText() {
   countdown.y = app.screen.height * 0.75;
 }
 
-// ===== 背景切替 =====
-async function updateBackground() {
+// ===== フォトフレーム作成 =====
+function createPhotoFrame(texture) {
+  const frame = new PIXI.Container();
+
+  const maxW = app.screen.width * 0.35;
+  const maxH = app.screen.height * 0.35;
+
+  const scale = Math.min(
+    maxW / texture.width,
+    maxH / texture.height,
+    1
+  );
+
+  const photo = new PIXI.Sprite(texture);
+  photo.scale.set(scale);
+  photo.anchor.set(0.5);
+
+  const border = new PIXI.Graphics();
+  border.lineStyle(6, 0xffffff);
+  border.drawRect(
+    -photo.width / 2,
+    -photo.height / 2,
+    photo.width,
+    photo.height
+  );
+
+  frame.addChild(border);
+  frame.addChild(photo);
+
+  frame.x = Math.random() * (app.screen.width - photo.width) + photo.width / 2;
+  frame.y = Math.random() * (app.screen.height * 0.5) + photo.height / 2;
+  frame.rotation = (Math.random() - 0.5) * 0.1;
+  frame.alpha = 0;
+
+  photoLayer.addChild(frame);
+
+  app.ticker.add(function fade() {
+    frame.alpha += 0.02;
+    if (frame.alpha >= 1) app.ticker.remove(fade);
+  });
+}
+
+// ===== 背景表示 =====
+function setBackground(texture) {
+  const scale = Math.max(
+    app.screen.width / texture.width,
+    app.screen.height / texture.height
+  );
+
+  backgroundSprite.texture = texture;
+  backgroundSprite.scale.set(scale);
+  backgroundSprite.x = app.screen.width / 2;
+  backgroundSprite.y = app.screen.height / 2;
+  backgroundSprite.anchor.set(0.5);
+  backgroundSprite.alpha = 0;
+
+  app.ticker.add(function fade() {
+    backgroundSprite.alpha += 0.02;
+    if (backgroundSprite.alpha >= 1) app.ticker.remove(fade);
+  });
+}
+
+// ===== 写真更新 =====
+async function updatePhotos() {
   for (let i = photoStages.length - 1; i >= 0; i--) {
     if (clickCount >= photoStages[i].count && i !== currentPhotoIndex) {
       const tex = await PIXI.Assets.load(photoStages[i].url);
-      backgroundSprite.texture = tex;
-      backgroundSprite.width = app.screen.width;
-      backgroundSprite.height = app.screen.height;
-      backgroundSprite.alpha = 0;
 
-      app.ticker.add(function fade() {
-        backgroundSprite.alpha += 0.02;
-        if (backgroundSprite.alpha >= 1) {
-          app.ticker.remove(fade);
-        }
-      });
+      if (photoStages[i].mode === "background") {
+        setBackground(tex);
+      } else {
+        createPhotoFrame(tex);
+      }
 
       currentPhotoIndex = i;
       break;
@@ -124,24 +193,22 @@ async function updateBackground() {
   }
 }
 
-// ===== アニメーションループ =====
+// ===== ループ =====
 app.ticker.add(() => {
-  // 雲
   if (clouds.length < 6 && Math.random() < 0.01) createCloud();
   clouds.forEach((c, i) => {
     c.x += c.speed;
-    if (c.x > app.screen.width + 150) {
+    if (c.x > app.screen.width + 200) {
       app.stage.removeChild(c);
       clouds.splice(i, 1);
     }
   });
 
-  // 桜
   if (petals.length < 50) createPetal();
   petals.forEach((p, i) => {
     p.y += p.speed;
     p.rotation += p.rotationSpeed;
-    if (p.y > app.screen.height + 10) {
+    if (p.y > app.screen.height + 20) {
       app.stage.removeChild(p);
       petals.splice(i, 1);
     }
@@ -156,9 +223,9 @@ async function init() {
 
   const logo = new PIXI.Sprite(tex);
   logo.anchor.set(0.5);
+  logo.scale.set(0.2);
   logo.x = app.screen.width / 2;
   logo.y = app.screen.height * 0.4;
-  logo.scale.set(0.2);
   logo.interactive = true;
   logo.buttonMode = true;
 
@@ -169,24 +236,21 @@ async function init() {
     }
     clickCount++;
     updateText();
-    updateBackground();
+    updatePhotos();
   });
 
   app.stage.addChild(logo);
 
-  // テキストフェードイン
-  app.ticker.add(function fadeIn() {
+  app.ticker.add(function fade() {
     countdown.alpha += 0.02;
-    if (countdown.alpha >= 1) app.ticker.remove(fadeIn);
+    if (countdown.alpha >= 1) app.ticker.remove(fade);
   });
 
   updateText();
 }
 
-// ===== 起動 =====
 init();
 
-// ===== 日数更新 =====
 setInterval(() => {
   diffDays = getDiffDays();
   updateText();
