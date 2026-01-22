@@ -59,7 +59,7 @@ function updateMessage() {
 // ===== 桜生成 =====
 function spawnPetal(x, strong = false) {
   const g = new PIXI.Graphics();
-  g.beginFill(0xffb7c5);
+  g.beginFill(0xffa2b5);
   g.drawEllipse(0, 0, 8, 4);
   g.endFill();
 
