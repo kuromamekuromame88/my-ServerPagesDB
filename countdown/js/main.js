@@ -16,7 +16,10 @@ function getDiffDays() {
 }
 
 let diffDays = getDiffDays();
+
+// ===== クリッカー関連 =====
 let clickCount = 0;
+let autoPower = 0; // 自動増加量（/秒）
 
 // ===== Pixi =====
 const app = new PIXI.Application({
@@ -26,17 +29,29 @@ const app = new PIXI.Application({
 containerDiv.appendChild(app.view);
 
 // ===== テキスト =====
-const style = new PIXI.TextStyle({
+const mainStyle = new PIXI.TextStyle({
   fontFamily: 'Arial',
   fontSize: 36,
   fill: 'white',
   align: 'center',
 });
 
-const message = new PIXI.Text('', style);
-message.anchor.set(0.5);
-message.alpha = 0;
-app.stage.addChild(message);
+const subStyle = new PIXI.TextStyle({
+  fontFamily: 'Arial',
+  fontSize: 22,
+  fill: 'white',
+  align: 'center',
+});
+
+// 残り日数（常時）
+const daysText = new PIXI.Text('', mainStyle);
+daysText.anchor.set(0.5);
+app.stage.addChild(daysText);
+
+// 思い出数
+const scoreText = new PIXI.Text('', subStyle);
+scoreText.anchor.set(0.5);
+app.stage.addChild(scoreText);
 
 // ===== 校章 =====
 let logo;
@@ -44,16 +59,18 @@ let logo;
 // ===== 桜 =====
 const petals = [];
 
-// ===== メッセージ更新 =====
-function updateMessage() {
-  if (mode === STATE_INTRO) {
-    message.text = `卒業まであと ${diffDays} 日`;
-  } else {
-    message.text = `思い出数：${clickCount}`;
-  }
+// ===== テキスト更新 =====
+function updateTexts() {
+  daysText.text = `卒業まであと ${diffDays} 日`;
+  daysText.x = app.renderer.width / 2;
+  daysText.y = app.renderer.height * 0.15;
 
-  message.x = app.renderer.width / 2;
-  message.y = app.renderer.height * 0.7;
+  scoreText.text =
+    `思い出数：${Math.floor(clickCount)}\n` +
+    `自動増加：${autoPower}/秒`;
+
+  scoreText.x = app.renderer.width / 2;
+  scoreText.y = app.renderer.height * 0.75;
 }
 
 // ===== 桜生成 =====
@@ -90,34 +107,41 @@ async function init() {
   logo.on('pointerdown', () => {
     if (mode === STATE_INTRO) {
       mode = STATE_CLICKER;
-      message.alpha = 1;
-      updateMessage();
     } else {
       clickCount++;
-      updateMessage();
+
+      // 一定数で自動増加解放
+      if (clickCount === 20) autoPower = 1;
+      if (clickCount === 100) autoPower = 3;
+      if (clickCount === 300) autoPower = 6;
+
       for (let i = 0; i < 6; i++) {
-        spawnPetal(logo.x + (Math.random() - 0.5) * app.renderer.width, true);
+        spawnPetal(
+          logo.x + (Math.random() - 0.5) * app.renderer.width,
+          true
+        );
       }
     }
+    updateTexts();
   });
 
   app.stage.addChild(logo);
-  updateMessage();
+  updateTexts();
 }
 
 // ===== アニメーション =====
-app.ticker.add(() => {
-  // フェードイン
-  if (mode === STATE_INTRO && message.alpha < 1) {
-    message.alpha += 0.01;
-  }
-
+app.ticker.add((delta) => {
   // 常時桜
   if (Math.random() < 0.05) {
     spawnPetal(Math.random() * app.renderer.width);
   }
 
-  // 落下処理
+  // 自動増加（クリッカー中のみ）
+  if (mode === STATE_CLICKER && autoPower > 0) {
+    clickCount += autoPower * (delta / 60);
+  }
+
+  // 桜落下
   for (let i = petals.length - 1; i >= 0; i--) {
     const p = petals[i];
     p.y += p.vy;
@@ -129,12 +153,14 @@ app.ticker.add(() => {
       petals.splice(i, 1);
     }
   }
+
+  updateTexts();
 });
 
 // ===== 日数更新 =====
 setInterval(() => {
   diffDays = getDiffDays();
-  if (mode === STATE_INTRO) updateMessage();
+  updateTexts();
 }, 60000);
 
 // ===== 起動 =====
