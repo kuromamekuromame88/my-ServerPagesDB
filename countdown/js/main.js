@@ -54,6 +54,13 @@ startText.interactive = true;
 startText.buttonMode = true;
 app.stage.addChild(startText);
 
+// ===== 右下ボタン2 =====
+const Memory = new PIXI.Text('思い出', buttonStyle);
+Memory.anchor.set(1, 1);
+Memory.interactive = true;
+Memory.buttonMode = true;
+app.stage.addChild(Memory);
+
 // ===== 校章スプライト =====
 let logo;
 
@@ -68,6 +75,8 @@ function updateMessage() {
 
   startText.x = app.renderer.width - 16;
   startText.y = app.renderer.height - 16;
+  Memory.x = startText.x - 64;
+  Memory.y = app.renderer.height - 16;
 }
 
 // ===== 桜生成 =====
@@ -129,10 +138,12 @@ app.ticker.add(() => {
   if (mode === STATE_TRANSITION) {
     message.alpha -= 0.01;
     startText.alpha -= 0.01;
+    Memory.alpha -= 0.01;
 
     if (message.alpha <= 0) {
       message.visible = false;
       startText.visible = false;
+      Memory.visible = false;
       logo.visible = true;
       mode = STATE_CLICKER;
     }
