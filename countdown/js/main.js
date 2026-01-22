@@ -104,7 +104,7 @@ async function init() {
 
     clickCount++;
     for (let i = 0; i < 5; i++) {
-      spawnPetal(logo.x + (Math.random() - 0.5) * 100);
+      spawnPetal(logo.x + (Math.random() - 0.5) * 200);
     }
   });
 
