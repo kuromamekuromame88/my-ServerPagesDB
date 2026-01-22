@@ -127,8 +127,8 @@ startText.on('pointerdown', () => {
 app.ticker.add(() => {
   // フェードアウト
   if (mode === STATE_TRANSITION) {
-    message.alpha -= 0.03;
-    startText.alpha -= 0.03;
+    message.alpha -= 0.02;
+    startText.alpha -= 0.02;
 
     if (message.alpha <= 0) {
       message.visible = false;
