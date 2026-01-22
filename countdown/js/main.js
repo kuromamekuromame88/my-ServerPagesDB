@@ -1,13 +1,12 @@
 const containerDiv = document.getElementById("container");
 
-// ===== 状態定義 =====
-const STATE_COUNTDOWN = 0;
-const STATE_TRANSITION = 1;
-const STATE_CLICKER = 2;
+// ===== 状態 =====
+const STATE_INTRO = 0;
+const STATE_CLICKER = 1;
 
-let mode = STATE_COUNTDOWN;
+let mode = STATE_INTRO;
 
-// ===== 卒業日設定 =====
+// ===== 卒業日 =====
 const graduationDate = new Date('2026-03-17T00:00:00');
 
 function getDiffDays() {
@@ -19,68 +18,46 @@ function getDiffDays() {
 let diffDays = getDiffDays();
 let clickCount = 0;
 
-// ===== Pixi.js 初期化 =====
+// ===== Pixi =====
 const app = new PIXI.Application({
   resizeTo: window,
   backgroundColor: 0x95c0ec,
 });
-
 containerDiv.appendChild(app.view);
 
-// ===== テキストスタイル =====
-const mainStyle = new PIXI.TextStyle({
+// ===== テキスト =====
+const style = new PIXI.TextStyle({
   fontFamily: 'Arial',
   fontSize: 36,
   fill: 'white',
   align: 'center',
 });
 
-const buttonStyle = new PIXI.TextStyle({
-  fontFamily: 'Arial',
-  fontSize: 18,
-  fill: '#ffffff',
-  align: 'right',
-});
-
-// ===== メインメッセージ =====
-const message = new PIXI.Text('', mainStyle);
+const message = new PIXI.Text('', style);
 message.anchor.set(0.5);
+message.alpha = 0;
 app.stage.addChild(message);
 
-// ===== 右下ボタン =====
-const startText = new PIXI.Text('北中クリッカー', buttonStyle);
-startText.anchor.set(1, 1);
-startText.interactive = true;
-startText.buttonMode = true;
-app.stage.addChild(startText);
-
-// ===== 右下ボタン2 =====
-const Memory = new PIXI.Text('思い出', buttonStyle);
-Memory.anchor.set(1, 1);
-Memory.interactive = true;
-Memory.buttonMode = true;
-app.stage.addChild(Memory);
-
-// ===== 校章スプライト =====
+// ===== 校章 =====
 let logo;
 
-// ===== 桜管理 =====
+// ===== 桜 =====
 const petals = [];
 
 // ===== メッセージ更新 =====
 function updateMessage() {
-  message.text = `卒業まであと ${diffDays} 日`;
-  message.x = app.renderer.width / 2;
-  message.y = app.renderer.height / 2;
+  if (mode === STATE_INTRO) {
+    message.text = `卒業まであと ${diffDays} 日`;
+  } else {
+    message.text = `思い出数：${clickCount}`;
+  }
 
-  startText.x = app.renderer.width - 16;
-  startText.y = app.renderer.height - 16;
-  Memory.x = app.renderer.width - 16 - startText.width - Memory.width;
-  Memory.y = app.renderer.height - 16;
+  message.x = app.renderer.width / 2;
+  message.y = app.renderer.height * 0.7;
 }
 
 // ===== 桜生成 =====
-function spawnPetal(x) {
+function spawnPetal(x, strong = false) {
   const g = new PIXI.Graphics();
   g.beginFill(0xffb7c5);
   g.drawEllipse(0, 0, 8, 4);
@@ -88,9 +65,9 @@ function spawnPetal(x) {
 
   g.x = x;
   g.y = -10;
-  g.vy = 1 + Math.random() * 2;
-  g.vx = (Math.random() - 0.5) * 0.5;
-  g.rotationSpeed = (Math.random() - 0.5) * 0.02;
+  g.vy = (strong ? 2.5 : 1) + Math.random() * 2;
+  g.vx = (Math.random() - 0.5) * 0.6;
+  g.rotationSpeed = (Math.random() - 0.5) * 0.03;
 
   app.stage.addChild(g);
   petals.push(g);
@@ -98,58 +75,49 @@ function spawnPetal(x) {
 
 // ===== 初期化 =====
 async function init() {
-  updateMessage();
-
   const texture = await PIXI.Assets.load(
     'https://tool-webs.onrender.com/countdown/img/schoolLogo.png'
   );
 
   logo = new PIXI.Sprite(texture);
   logo.anchor.set(0.5);
+  logo.scale.set(0.2);
   logo.x = app.renderer.width / 2;
   logo.y = app.renderer.height * 0.4;
-  logo.scale.set(0.2);
-  logo.visible = false;
-
   logo.interactive = true;
   logo.buttonMode = true;
 
   logo.on('pointerdown', () => {
-    if (mode !== STATE_CLICKER) return;
-
-    clickCount++;
-    for (let i = 0; i < 6; i++) {
-      spawnPetal(logo.x + (Math.random() - 0.5) * app.renderer.width);
+    if (mode === STATE_INTRO) {
+      mode = STATE_CLICKER;
+      message.alpha = 1;
+      updateMessage();
+    } else {
+      clickCount++;
+      updateMessage();
+      for (let i = 0; i < 6; i++) {
+        spawnPetal(logo.x + (Math.random() - 0.5) * 120, true);
+      }
     }
   });
 
   app.stage.addChild(logo);
+  updateMessage();
 }
-
-// ===== ボタン動作 =====
-startText.on('pointerdown', () => {
-  if (mode !== STATE_COUNTDOWN) return;
-  mode = STATE_TRANSITION;
-});
 
 // ===== アニメーション =====
 app.ticker.add(() => {
-  // フェードアウト
-  if (mode === STATE_TRANSITION) {
-    message.alpha -= 0.01;
-    startText.alpha -= 0.01;
-    Memory.alpha -= 0.01;
-
-    if (message.alpha <= 0) {
-      message.visible = false;
-      startText.visible = false;
-      Memory.visible = false;
-      logo.visible = true;
-      mode = STATE_CLICKER;
-    }
+  // フェードイン
+  if (mode === STATE_INTRO && message.alpha < 1) {
+    message.alpha += 0.01;
   }
 
-  // 桜落下
+  // 常時桜
+  if (Math.random() < 0.05) {
+    spawnPetal(Math.random() * app.renderer.width);
+  }
+
+  // 落下処理
   for (let i = petals.length - 1; i >= 0; i--) {
     const p = petals[i];
     p.y += p.vy;
@@ -166,7 +134,7 @@ app.ticker.add(() => {
 // ===== 日数更新 =====
 setInterval(() => {
   diffDays = getDiffDays();
-  if (mode === STATE_COUNTDOWN) updateMessage();
+  if (mode === STATE_INTRO) updateMessage();
 }, 60000);
 
 // ===== 起動 =====
