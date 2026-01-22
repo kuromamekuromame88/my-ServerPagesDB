@@ -27,34 +27,37 @@ const app = new PIXI.Application({
 
 containerDiv.appendChild(app.view);
 
-// ===== テキスト =====
-const style = new PIXI.TextStyle({
+// ===== テキストスタイル =====
+const mainStyle = new PIXI.TextStyle({
   fontFamily: 'Arial',
   fontSize: 36,
   fill: 'white',
   align: 'center',
 });
 
-const message = new PIXI.Text('', style);
+const buttonStyle = new PIXI.TextStyle({
+  fontFamily: 'Arial',
+  fontSize: 18,
+  fill: '#ffffff',
+  align: 'right',
+});
+
+// ===== メインメッセージ =====
+const message = new PIXI.Text('', mainStyle);
 message.anchor.set(0.5);
 app.stage.addChild(message);
 
-// ===== 隠しボタン（透明） =====
-const secretButton = new PIXI.Graphics();
-secretButton.beginFill(0xffffff, 0.001); // ほぼ透明
-secretButton.drawRect(-100, -50, 200, 100);
-secretButton.endFill();
-secretButton.anchor?.set?.(0.5);
-secretButton.x = app.renderer.width / 2;
-secretButton.y = app.renderer.height * 0.85;
-secretButton.interactive = true;
-secretButton.buttonMode = true;
-app.stage.addChild(secretButton);
+// ===== 右下ボタン =====
+const startText = new PIXI.Text('北中クリッカー', buttonStyle);
+startText.anchor.set(1, 1);
+startText.interactive = true;
+startText.buttonMode = true;
+app.stage.addChild(startText);
 
 // ===== 校章スプライト =====
 let logo;
 
-// ===== 桜の花びら管理 =====
+// ===== 桜管理 =====
 const petals = [];
 
 // ===== メッセージ更新 =====
@@ -62,6 +65,9 @@ function updateMessage() {
   message.text = `卒業まであと ${diffDays} 日`;
   message.x = app.renderer.width / 2;
   message.y = app.renderer.height / 2;
+
+  startText.x = app.renderer.width - 16;
+  startText.y = app.renderer.height - 16;
 }
 
 // ===== 桜生成 =====
@@ -103,33 +109,36 @@ async function init() {
     if (mode !== STATE_CLICKER) return;
 
     clickCount++;
-    for (let i = 0; i < 5; i++) {
-      spawnPetal(logo.x + (Math.random() - 0.5) * app.renderer.width);
+    for (let i = 0; i < 6; i++) {
+      spawnPetal(logo.x + (Math.random() - 0.5) * 120);
     }
   });
 
   app.stage.addChild(logo);
 }
 
-// ===== 隠しボタン動作 =====
-secretButton.on('pointerdown', () => {
+// ===== ボタン動作 =====
+startText.on('pointerdown', () => {
   if (mode !== STATE_COUNTDOWN) return;
   mode = STATE_TRANSITION;
 });
 
-// ===== アニメーションループ =====
+// ===== アニメーション =====
 app.ticker.add(() => {
   // フェードアウト
   if (mode === STATE_TRANSITION) {
     message.alpha -= 0.03;
+    startText.alpha -= 0.03;
+
     if (message.alpha <= 0) {
       message.visible = false;
+      startText.visible = false;
       logo.visible = true;
       mode = STATE_CLICKER;
     }
   }
 
-  // 桜の落下処理
+  // 桜落下
   for (let i = petals.length - 1; i >= 0; i--) {
     const p = petals[i];
     p.y += p.vy;
