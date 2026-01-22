@@ -96,7 +96,7 @@ async function init() {
       clickCount++;
       updateMessage();
       for (let i = 0; i < 6; i++) {
-        spawnPetal(logo.x + (Math.random() - 0.5) * 120, true);
+        spawnPetal(logo.x + (Math.random() - 0.5) * app.renderer.width, true);
       }
     }
   });
