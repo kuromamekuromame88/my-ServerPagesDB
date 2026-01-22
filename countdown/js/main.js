@@ -5,7 +5,7 @@ const graduationDate = new Date('2026-03-17T00:00:00');
 
 // ===== 思い出写真 =====
 const photoStages = [
-  { count: 50, url: "https://tool-webs.onrender.com/countdown/img/50.png" }
+  { count: 50, url: "https://tool-webs.onrender.com/countdown/img/50.jpg" }
   /*{ count: 30, url: "https://example.com/photo2.jpg" },
   { count: 60, url: "https://example.com/photo3.jpg" },*/
 ];
