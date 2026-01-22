@@ -23,6 +23,8 @@ window.onresize = () => {
         userStatusBar.classList.remove('open');
       }
     });
+  }else{
+    toggleUserListBtn.style.display = 'none';
   }
 }
 
