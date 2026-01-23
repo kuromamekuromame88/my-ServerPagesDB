@@ -204,7 +204,7 @@ async function init() {
 
   const logo = new PIXI.Sprite(logoTex);
   logo.anchor.set(0.5);
-  logo.scale.set(0.8);
+  logo.scale.set(0.4);
   logo.x = app.screen.width / 2;
   logo.y = app.screen.height * 0.4;
   logo.interactive = true;
