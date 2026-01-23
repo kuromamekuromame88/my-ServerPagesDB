@@ -199,7 +199,7 @@ async function init() {
 
   // 校章
   const logoTex = await PIXI.Assets.load(
-    "https://tool-webs.onrender.com/countdown/img/schoolLogo.png"
+    "https://tool-webs.onrender.com/countdown/img/schoolLogo2.png"
   );
 
   const logo = new PIXI.Sprite(logoTex);
