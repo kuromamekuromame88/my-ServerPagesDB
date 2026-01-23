@@ -3,23 +3,22 @@ const containerDiv = document.getElementById("container");
 // ===== 卒業日 =====
 const graduationDate = new Date('2026-03-17T00:00:00');
 
+// ===== デフォルト背景 =====
+const DEFAULT_BACKGROUND_URL =
+  "https://tool-webs.onrender.com/countdown/img/background.webp";
+
 // ===== 写真ステージ =====
 const photoStages = [
   {
     count: 10,
     url: "https://tool-webs.onrender.com/countdown/img/50.jpg",
     mode: "frame",
-  }/*,
-  {
-    count: 30,
-    url: "https://example.com/photo2.jpg",
-    mode: "frame",
   },
-  {
-    count: 60,
-    url: "https://example.com/photo3.jpg",
-    mode: "background",
-  },*/
+  // {
+  //   count: 30,
+  //   url: "...",
+  //   mode: "background",
+  // },
 ];
 
 let currentPhotoIndex = -1;
@@ -44,33 +43,15 @@ const app = new PIXI.Application({
 });
 containerDiv.appendChild(app.view);
 
-// ===== 背景写真 =====
+// ===== 背景 =====
 const backgroundSprite = new PIXI.Sprite();
+backgroundSprite.anchor.set(0.5);
 backgroundSprite.alpha = 0;
 app.stage.addChild(backgroundSprite);
 
-// ===== フォトフレーム用コンテナ =====
+// ===== フォトフレームレイヤ =====
 const photoLayer = new PIXI.Container();
 app.stage.addChild(photoLayer);
-
-// ===== 雲 =====
-const clouds = [];
-function createCloud() {
-  const g = new PIXI.Graphics();
-  g.beginFill(0xffffff, 0.8);
-  g.drawEllipse(0, 0, 60, 30);
-  g.drawEllipse(40, -10, 50, 25);
-  g.drawEllipse(-40, -10, 50, 25);
-  g.endFill();
-
-  g.x = -150;
-  g.y = Math.random() * app.screen.height * 0.4;
-  g.speed = 0.2 + Math.random() * 0.4;
-  g.scale.set(0.5 + Math.random() * 0.7);
-
-  app.stage.addChild(g);
-  clouds.push(g);
-}
 
 // ===== 桜 =====
 const petals = [];
@@ -113,7 +94,7 @@ function updateText() {
   countdown.y = app.screen.height * 0.75;
 }
 
-// ===== フォトフレーム作成 =====
+// ===== フォトフレーム =====
 function createPhotoFrame(texture) {
   const frame = new PIXI.Container();
 
@@ -127,8 +108,8 @@ function createPhotoFrame(texture) {
   );
 
   const photo = new PIXI.Sprite(texture);
-  photo.scale.set(scale);
   photo.anchor.set(0.5);
+  photo.scale.set(scale);
 
   const border = new PIXI.Graphics();
   border.lineStyle(6, 0xffffff);
@@ -142,8 +123,10 @@ function createPhotoFrame(texture) {
   frame.addChild(border);
   frame.addChild(photo);
 
-  frame.x = Math.random() * (app.screen.width - photo.width) + photo.width / 2;
-  frame.y = Math.random() * (app.screen.height * 0.5) + photo.height / 2;
+  frame.x =
+    Math.random() * (app.screen.width - photo.width) + photo.width / 2;
+  frame.y =
+    Math.random() * (app.screen.height * 0.5) + photo.height / 2;
   frame.rotation = (Math.random() - 0.5) * 0.1;
   frame.alpha = 0;
 
@@ -155,7 +138,7 @@ function createPhotoFrame(texture) {
   });
 }
 
-// ===== 背景表示 =====
+// ===== 背景設定（cover） =====
 function setBackground(texture) {
   const scale = Math.max(
     app.screen.width / texture.width,
@@ -166,9 +149,8 @@ function setBackground(texture) {
   backgroundSprite.scale.set(scale);
   backgroundSprite.x = app.screen.width / 2;
   backgroundSprite.y = app.screen.height / 2;
-  backgroundSprite.anchor.set(0.5);
-  backgroundSprite.alpha = 0;
 
+  backgroundSprite.alpha = 0;
   app.ticker.add(function fade() {
     backgroundSprite.alpha += 0.02;
     if (backgroundSprite.alpha >= 1) app.ticker.remove(fade);
@@ -195,33 +177,32 @@ async function updatePhotos() {
 
 // ===== ループ =====
 app.ticker.add(() => {
-  if (clouds.length < 6 && Math.random() < 0.01) createCloud();
-  clouds.forEach((c, i) => {
-    c.x += c.speed;
-    if (c.x > app.screen.width + 200) {
-      app.stage.removeChild(c);
-      clouds.splice(i, 1);
-    }
-  });
-
   if (petals.length < 50) createPetal();
-  petals.forEach((p, i) => {
+
+  for (let i = petals.length - 1; i >= 0; i--) {
+    const p = petals[i];
     p.y += p.speed;
     p.rotation += p.rotationSpeed;
+
     if (p.y > app.screen.height + 20) {
       app.stage.removeChild(p);
       petals.splice(i, 1);
     }
-  });
+  }
 });
 
 // ===== 初期化 =====
 async function init() {
-  const tex = await PIXI.Assets.load(
+  // デフォルト背景
+  const bgTex = await PIXI.Assets.load(DEFAULT_BACKGROUND_URL);
+  setBackground(bgTex);
+
+  // 校章
+  const logoTex = await PIXI.Assets.load(
     "https://tool-webs.onrender.com/countdown/img/schoolLogo.png"
   );
 
-  const logo = new PIXI.Sprite(tex);
+  const logo = new PIXI.Sprite(logoTex);
   logo.anchor.set(0.5);
   logo.scale.set(0.2);
   logo.x = app.screen.width / 2;
@@ -251,6 +232,7 @@ async function init() {
 
 init();
 
+// ===== 日数更新 =====
 setInterval(() => {
   diffDays = getDiffDays();
   updateText();
