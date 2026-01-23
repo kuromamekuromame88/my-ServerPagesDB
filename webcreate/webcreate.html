@@ -31,7 +31,28 @@
   color: white;
 }
 
+main {
+  display: flex;
+  margin-top: 60px; /* top-barの高さ分のマージンを追加 */
+  height: calc(100vh - 60px); /* top-barの高さを引いた高さに設定 */
+}
 
+/* エディター関連 */
+.content {
+    flex: 1;
+    background-color: #f0f0f0;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.editor {
+    flex: 1;
+    width: 300px;
+    background-color: #e0e0e0;
+    border-left: 1px solid #ccc;
+    display: flex;
+    flex-direction: column;
+}
 
 /* -- UI系 -- */
 .switchViewMode button{
