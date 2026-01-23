@@ -218,6 +218,7 @@ async function init() {
     clickCount++;
     updateText();
     updatePhotos();
+    createPetal();
   });
 
   app.stage.addChild(logo);
