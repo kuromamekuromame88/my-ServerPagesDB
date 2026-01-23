@@ -88,7 +88,7 @@ function updateText() {
   countdown.text =
     diffDays <= 0
       ? `🎓 ついに卒業！\n思い出数：${clickCount}`
-      : `卒業まであと ${diffDays} 日\n思い出数：${clickCount}`;
+      : `卒業まであと ${diffDays} 日\n思い出: ${clickCount}`;
 
   countdown.x = app.screen.width / 2;
   countdown.y = app.screen.height * 0.75;
