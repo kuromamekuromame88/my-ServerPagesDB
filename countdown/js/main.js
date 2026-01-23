@@ -146,7 +146,7 @@ function setBackground(texture) {
   );
 
   backgroundSprite.texture = texture;
-  backgroundSprite.scale.set(scale);
+  backgroundSprite.scale.set(scale * 0.8);
   backgroundSprite.x = app.screen.width / 2;
   backgroundSprite.y = app.screen.height / 2;
 
