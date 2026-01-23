@@ -30,6 +30,20 @@
   text-decoration: none;
   color: white;
 }
+
+
+
+/* -- UI系 -- */
+.switchViewMode button{
+    width: 20px;
+    height: 20px;
+    background-color: #222;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 20px;
+}
+
     </style>
   </head>
   <body>
@@ -37,6 +51,17 @@
       <a href="/" class="logo">tool-webs</a>
     </header>
 
-
+    <main>
+      <div class="content">
+        <div class="switchViewMode">
+            <button id="UIEditBtn">✏</button>
+            <button id="TrueViewBtn">📋️</button>
+        </div>
+      </div>
+      <div class="editor">
+        <div class="toolbar">
+        </div>
+      </div>
+    </main>
   </body>
 </html>
