@@ -18,5 +18,3 @@ window.addEventListener("load", () => {
 function preview() {
   document.querySelector(".maincontent iframe").srcdoc = editor.getValue();
 }
-
-}
