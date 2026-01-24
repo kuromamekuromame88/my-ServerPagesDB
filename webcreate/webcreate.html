@@ -20,8 +20,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closetag.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
 
-
-
+    <!-- メインロジック -->
     <script src="https://tool-webs.onrender.com/webcreate/js/main.js"></script>
 
     <style>
@@ -169,12 +168,12 @@ main {
 
     </style>
     <script>
-//main.jsの中身はこの様になっています。ここに表示しているだけです。
-/*let editor;
+    
+let editor;
 
 window.addEventListener("load", () => {
   editor = CodeMirror.fromTextArea(
-    document.getElementById("codeEditor"),
+    document.getElementById("mirror"),
     {
       mode: "htmlmixed",
       lineNumbers: true,
@@ -184,12 +183,15 @@ window.addEventListener("load", () => {
       matchBrackets: true
     }
   );
+
+  editor.on("change", preview);
 });
 
 function preview() {
   document.querySelector(".maincontent iframe").srcdoc = editor.getValue();
 }
-*/
+
+
     </script>
   </head>
   <body>
@@ -212,7 +214,7 @@ function preview() {
           <button id="changeToHTML" title="HTMLエディタへ移動">✏</button>
           <button id="changeToUISettings" title="選択されたUIの設定変更">📋️</button>
         </div>
-        <textarea id="codeEditor"></textarea>
+        <textarea id="mirror"><!DOCTYPE html>
       </div>
     </main>
   </body>
