@@ -171,34 +171,7 @@ main {
 
     </style>
     <script>
-    
-let editor;
-
-window.addEventListener("load", () => {
-  editor = CodeMirror.fromTextArea(
-    document.getElementById("mirror"),
-    {
-      mode: "htmlmixed",
-      lineNumbers: true,
-      tabSize: 2,
-      indentUnit: 2,
-      autoCloseTags: true,
-      matchBrackets: true,
-      autoCloseBrackets: true
-
-    }
-  );
-
-  editor.on("change", preview);
-
-  preview();
-});
-
-function preview() {
-  document.getElementById("previewFrame").srcdoc = editor.getValue();
-}
-
-
+    //ソースはmain.jsに移動しました
     </script>
   </head>
   <body>
