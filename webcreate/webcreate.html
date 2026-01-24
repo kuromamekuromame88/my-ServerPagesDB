@@ -59,9 +59,12 @@ main {
 
 /* エディター関連 */
 .content {
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  height: calc(100vh - 60px);
   display: flex;
   flex-direction: column;
-  flex: 1;
   gap: 30px;
   background-color: #f0f0f0;
   width: 50vw;
@@ -112,11 +115,15 @@ main {
 
 
 .editor {
-    flex: 1;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    height: calc(100vh - 60px);
     width: 50vw;
     background-color: #e0e0e0;
     border-left: 1px solid #ccc;
     display: flex;
+    gap: 40px;
     flex-direction: column;
 }
 
