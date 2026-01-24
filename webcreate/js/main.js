@@ -1,5 +1,6 @@
 
-document.onload = () => { const editor = CodeMirror.fromTextArea(
+document.onload = () => {
+const editor = CodeMirror.fromTextArea(
   document.getElementById("codeEditor"),
   {
     mode: "htmlmixed",
