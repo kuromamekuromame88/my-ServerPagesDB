@@ -1,7 +1,7 @@
 
 let editor;
 
-function initEditor(){
+window.addEventListener("load", () => {
   editor = CodeMirror.fromTextArea(
     document.getElementById("codeEditor"),
     {
@@ -13,4 +13,10 @@ function initEditor(){
       matchBrackets: true
     }
   );
+});
+
+function preview() {
+  document.querySelector(".maincontent iframe").srcdoc = editor.getValue();
+}
+
 }
