@@ -19,6 +19,8 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closetag.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+
 
     <!-- メインロジック -->
     <script src="https://tool-webs.onrender.com/webcreate/js/main.js"></script>
@@ -180,15 +182,19 @@ window.addEventListener("load", () => {
       tabSize: 2,
       indentUnit: 2,
       autoCloseTags: true,
-      matchBrackets: true
+      matchBrackets: true,
+      autoCloseBrackets: true
+
     }
   );
 
   editor.on("change", preview);
+
+  preview();
 });
 
 function preview() {
-  document.querySelector(".maincontent iframe").srcdoc = editor.getValue();
+  document.getElementById("previewFrame").srcdoc = editor.getValue();
 }
 
 
@@ -214,7 +220,7 @@ function preview() {
           <button id="changeToHTML" title="HTMLエディタへ移動">✏</button>
           <button id="changeToUISettings" title="選択されたUIの設定変更">📋️</button>
         </div>
-        <textarea id="mirror"><!DOCTYPE html>
+        <textarea id="mirror"></textarea>
       </div>
     </main>
   </body>
