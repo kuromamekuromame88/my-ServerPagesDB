@@ -121,6 +121,7 @@ main {
 }
 
 .toolbar{
+  flex: 2;
   position: relative;
   padding-top: 10px;
   padding-bottom: 10px;
@@ -129,6 +130,7 @@ main {
   top: 20px;
   left: 30px;
   width: 85%;
+  max-height: 40px;
   display: flex;
   background-color: #ddd;
   flex-direction: row;
@@ -146,6 +148,14 @@ main {
   font-size: 20px;
   text-align: center;
   cursor: pointer;
+}
+
+#codeEditor {
+  flex: 8;
+  margin: 20px;
+  border: none;
+  border-radius: 10px;
+  resize: none;
 }
     </style>
   </head>
