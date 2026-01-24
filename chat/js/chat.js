@@ -98,6 +98,17 @@ let nickname = localStorage.getItem("nickname");
 
 let userID = localStorage.getItem("userID");
 
+if (!userID || userID == "null") {
+  function generateUserID() {
+    const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    let id = "";
+    for (let i = 0; i < 5; i++) id += chars[Math.floor(Math.random() * chars.length)];
+    return id;
+  }
+  userID = generateUserID();
+  localStorage.setItem("userID", userID);
+}
+
 
 function getFullUsername() {
   return nickname + "|" + userID;
