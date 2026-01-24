@@ -1,4 +1,5 @@
-const editor = CodeMirror.fromTextArea(
+
+body.onload = () => { const editor = CodeMirror.fromTextArea(
   document.getElementById("codeEditor"),
   {
     mode: "htmlmixed",
@@ -9,3 +10,4 @@ const editor = CodeMirror.fromTextArea(
     matchBrackets: true
   }
 );
+};
