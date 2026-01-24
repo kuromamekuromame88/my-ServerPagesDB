@@ -54,11 +54,12 @@ main {
 
 /* エディター関連 */
 .content {
-    display: flex;
-    flex: 1;
-    background-color: #f0f0f0;
-    width: 50vw;
-    overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  background-color: #f0f0f0;
+  width: 50vw;
+  overflow-y: auto;
 }
 
 /*ページプレビューと編集のdiv表示用*/
@@ -72,20 +73,20 @@ main {
 
 /* -- UI系 -- */
 .switchViewMode{
-    flex: 2;
-    position: relative;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    padding-left: 20px;
-    padding-right: 20px;
-    top: 20px;
-    left: 30px;
-    width: 85%;
-    display: flex;
-    background-color: #ddd;
-    flex-direction: row;
-    gap: 10px;
-    border-radius: 20px;
+  flex: 2;
+  position: relative;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+  top: 20px;
+  left: 30px;
+  width: 85%;
+  display: flex;
+  background-color: #ddd;
+  flex-direction: row;
+  gap: 10px;
+  border-radius: 20px;
 }
 
 .switchViewMode button{
