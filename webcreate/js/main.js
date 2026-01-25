@@ -1,4 +1,4 @@
-/*
+
 let editor;
 
 let Editmode = false;
@@ -49,4 +49,3 @@ window.addEventListener("load", () => {
   TrueViewBtn.onclick = showPage;
   UIEditBtn.onclick = hidePage;
 });
-*/

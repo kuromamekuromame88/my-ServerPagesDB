@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Webページエディター</title>
 
+<!-- CodeMirror -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
 
@@ -17,6 +18,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
 
+<script src="https://tool-webs.onrender.com/webcreate/js/main.js"></script>
 <style>
 body {
   margin: 0;
@@ -25,7 +27,7 @@ body {
 
 .top-bar {
   position: fixed;
-  inset: 0 0 auto 0;
+  top: 0; left: 0; right: 0;
   height: 60px;
   background: #222;
   display: flex;
@@ -34,10 +36,36 @@ body {
   z-index: 1000;
 }
 
-.top-bar a {
-  color: white;
-  text-decoration: none;
+.top-bar a{
+  font-size: 1.2em;
   font-weight: bold;
+  text-decoration: none;
+  padding: 10px;
+  border-radius: 12px;
+  background:#222;
+  color: white;
+}
+
+.top-bar a:hover{
+  background:#444;
+}
+
+.nav-ui{
+  position: absolute;
+  top: 10px;
+  right: 20px;
+}
+
+.nav-ui input{
+  border: none;
+  border-radius: 6px;
+  padding: 5px;
+  width: 20vw;
+  background-color: #444;
+  color: #fff;
+  font-size: 1.2em;
+  font-weight: bold;
+  text-align: center;
 }
 
 main {
@@ -52,8 +80,9 @@ main {
 }
 
 .content {
-  padding: 20px;
   background: #f0f0f0;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .maincontent {
@@ -64,7 +93,30 @@ main {
   overflow: hidden;
 }
 
-iframe {
+.tool-box {
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.tool-box button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background-color: #222;
+  color: white;
+  font-size: 1em;
+  cursor: pointer;
+}
+
+.tool-box button:hover {
+  background-color: #444;
+}
+
+iframe, #EditFrame {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -73,84 +125,90 @@ iframe {
   transition: opacity .2s;
 }
 
+#EditFrame {
+  pointer-events: none;
+  opacity: 0;
+}
+
 .editor {
-  padding: 20px;
   background: #e0e0e0;
   display: flex;
   flex-direction: column;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .CodeMirror {
   flex: 1;
   border-radius: 12px;
-}
-
-.tool-box {
-  height: 60px;
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-}
-
-button {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 8px;
-  background: #222;
-  color: #fff;
-  cursor: pointer;
+  font-size: 14px;
 }
 </style>
 
 <script>
+//main.jsの中身
+//main.js側のコードを実行させるために、これはサンプルであるためコメントアウトしています。
+/*
 let editor;
-let editMode = false;
+
+let Editmode = false;
+
+const TrueViewBtn = document.getElementById("TrueViewBtn");
+const UIEditBtn = document.getElementById("UIEditBtn");
+
+function preview() {
+  document.getElementById("previewFrame").srcdoc = editor.getValue();
+  document.getElementById("EditFrame").srcdoc = editor.getValue();
+}
+
+function showPage() {
+  previewFrame.style.opacity = 1;
+  previewFrame.style.pointerEvents = "auto";
+  EditFrame.style.opacity = 0;
+  EditFrame.style.pointerEvents = "none";
+  Editmode = false;
+  TrueViewBtn.style.borderBottom = "5px solid #fff";
+  UIEditBtn.style.borderBottom = "none";
+}
+
+function hidePage() {
+  previewFrame.style.opacity = 0;
+  previewFrame.style.pointerEvents = "none";
+  EditFrame.style.opacity = 1;
+  EditFrame.style.pointerEvents = "auto";
+  Editmode = true;
+  TrueViewBtn.style.borderBottom = "5px solid #fff";
+  UIEditBtn.style.borderBottom = "none";
+}
 
 window.addEventListener("load", () => {
-  const previewFrame = document.getElementById("previewFrame");
-  const editFrame = document.getElementById("EditFrame");
-
   editor = CodeMirror.fromTextArea(mirror, {
     mode: "htmlmixed",
     lineNumbers: true,
+    tabSize: 2,
+    indentUnit: 2,
     autoCloseTags: true,
+    matchBrackets: true,
     autoCloseBrackets: true
   });
 
-  function render() {
-    previewFrame.srcdoc = editor.getValue();
-    editFrame.srcdoc = editor.getValue();
-  }
+  editor.on("change", preview);
+  preview();
+  showPage();
 
-  function showPreview() {
-    previewFrame.style.opacity = 1;
-    previewFrame.style.pointerEvents = "auto";
-    editFrame.style.opacity = 0;
-    editFrame.style.pointerEvents = "none";
-    editMode = false;
-  }
-
-  function showEdit() {
-    previewFrame.style.opacity = 0;
-    previewFrame.style.pointerEvents = "none";
-    editFrame.style.opacity = 1;
-    editFrame.style.pointerEvents = "auto";
-    editMode = true;
-  }
-
-  editor.on("change", render);
-  render();
-  showPreview();
-
-  UIEditBtn.onclick = showEdit;
-  TrueViewBtn.onclick = showPreview;
+  TrueViewBtn.onclick = showPage;
+  UIEditBtn.onclick = hidePage;
 });
+*/
 </script>
 </head>
 
 <body>
 <header class="top-bar">
   <a href="/">tool-webs</a>
+  <div class="nav-ui">
+    <input type="text" id="PageTitle" class="PageTitle" placeholder="ページのタイトルを入力" value="新規ページ">
+  </div>
 </header>
 
 <main>
@@ -166,14 +224,16 @@ window.addEventListener("load", () => {
   </div>
 
   <div class="editor">
-<textarea id="mirror">
+    <textarea id="mirror">
+<!-- これはサンプルページのHTMLです。 -->
 <!DOCTYPE html>
 <html lang="ja">
-<body>
-  <h1>Hello, World!</h1>
-</body>
+  <body>
+    <h1>Hello, World!</h1>
+    <br>
+  </body>
 </html>
-</textarea>
+    </textarea>
   </div>
 </main>
 </body>
