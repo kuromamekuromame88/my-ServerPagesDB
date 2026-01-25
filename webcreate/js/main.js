@@ -10,6 +10,7 @@ const prev = document.getElementById("previewFrame");
 const Edit = document.getElementById("EditFrame");
 
 function preview() {
+  console.log("preview!");
   prev.srcdoc = editor.getValue();
 
   Edit.srcdoc = editor.getValue();
@@ -17,11 +18,11 @@ function preview() {
   EditPage.forEach((e) => {
     e.addEventListener("mouseover", () => {
       e.style.border = "5px solid #000";
-      e.stopPropagation();
+      //e.stopPropagation();
     });
     e.addEventListener("mouseout", () => {
       e.style.border = "none";
-      e.stopPropagation();
+      //e.stopPropagation();
     });
     e.addEventListener("click", () => {
       console.log(e);
