@@ -37,6 +37,20 @@ body {
   z-index: 1000;
 }
 
+.top-bar a{
+  font-size: 1.2em;
+  font-weight: bold;
+  text-decoration: none;
+  padding: 10 20;
+  border-radius: 12px;
+  background:#222;
+  color: white;
+}
+
+.top-bar a:hover{
+  background:#444;
+}
+
 main {
   margin-top: 60px;
   height: calc(100vh - 60px);
@@ -140,7 +154,7 @@ window.addEventListener("load", () => {
 
 <body>
 <header class="top-bar">
-  <span>tool-webs</span>
+  <a href="/">tool-webs</a>
   <input type="text" class="PageTitle" placeholder="ページのタイトルを入力">
 </header>
 
