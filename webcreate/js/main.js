@@ -13,7 +13,7 @@ function preview() {
   prev.srcdoc = editor.getValue();
 
   Edit.srcdoc = editor.getValue();
-  let EditPage = Edit.contentDocument.querySelector("*");
+  let EditPage = Edit.contentDocument.querySelectorAll("*");
   console.log(EditPage);
   EditPage.forEach((e) => {
     e.addEventListener("mouseover", () => {
