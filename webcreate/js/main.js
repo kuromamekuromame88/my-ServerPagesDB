@@ -7,8 +7,6 @@ function preview() {
   document.getElementById("EditFrame").innerHTML = editor.getValue();
 }
 
-
-
 function showPage() {
   previewFrame.style.opacity = 1;
   previewFrame.style.pointerEvents = "auto";
