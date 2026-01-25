@@ -93,6 +93,29 @@ main {
   overflow: hidden;
 }
 
+.tool-box {
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.tool-box button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background-color: #222;
+  color: white;
+  font-size: 1em;
+  cursor: pointer;
+}
+
+.tool-box button:hover {
+  background-color: #444;
+}
+
 iframe, .EditFrame {
   position: absolute;
   inset: 0;
@@ -183,8 +206,10 @@ window.addEventListener("load", () => {
       <iframe id="previewFrame"></iframe>
       <div class="EditFrame" id="EditFrame"></div>
     </div>
-    <button id="UIEditBtn">UI編集</button>
-    <button id="TrueViewBtn">プレビュー</button>
+    <div class="tool-box">
+      <button id="UIEditBtn">UI編集</button>
+      <button id="TrueViewBtn">プレビュー</button>
+    </div>
   </div>
 
   <div class="editor">
