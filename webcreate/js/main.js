@@ -27,8 +27,8 @@ function hidePage() {
   EditFrame.style.opacity = 1;
   EditFrame.style.pointerEvents = "auto";
   Editmode = true;
-  TrueViewBtn.style.border = "5px solid #ffcc00";
-  UIEditBtn.style.border = "none";
+  UIEditBtn.style.border = "5px solid #ffcc00";
+  TrueViewBtn.style.border = "none";
 }
 
 window.addEventListener("load", () => {
