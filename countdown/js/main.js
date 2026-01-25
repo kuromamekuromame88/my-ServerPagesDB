@@ -31,6 +31,7 @@ function getDiffDays() {
 
 let diffDays = getDiffDays();
 let clickCount = 0;
+let targetPetalCount = 0;
 let gameStarted = false;
 
 // ===== Pixi =====
@@ -46,12 +47,13 @@ backgroundSprite.anchor.set(0.5);
 backgroundSprite.alpha = 0;
 app.stage.addChild(backgroundSprite);
 
-// ===== フォトフレームレイヤ =====
+// ===== フォトレイヤ =====
 const photoLayer = new PIXI.Container();
 app.stage.addChild(photoLayer);
 
 // ===== 桜 =====
 const petals = [];
+
 function createPetal() {
   const p = new PIXI.Graphics();
   p.beginFill(0xffc0cb);
@@ -59,9 +61,9 @@ function createPetal() {
   p.endFill();
 
   p.x = Math.random() * app.screen.width;
-  p.y = -10;
-  p.speed = 1 + Math.random() * 2;
-  p.rotationSpeed = (Math.random() - 0.5) * 0.05;
+  p.y = Math.random() * app.screen.height;
+  p.speed = 0.5 + Math.random() * 1.5;
+  p.rotationSpeed = (Math.random() - 0.5) * 0.03;
 
   app.stage.addChild(p);
   petals.push(p);
@@ -98,11 +100,7 @@ function createPhotoFrame(texture) {
   const maxW = app.screen.width * 0.35;
   const maxH = app.screen.height * 0.35;
 
-  const scale = Math.min(
-    maxW / texture.width,
-    maxH / texture.height,
-    1
-  );
+  const scale = Math.min(maxW / texture.width, maxH / texture.height, 1);
 
   const photo = new PIXI.Sprite(texture);
   photo.anchor.set(0.5);
@@ -110,20 +108,13 @@ function createPhotoFrame(texture) {
 
   const border = new PIXI.Graphics();
   border.lineStyle(6, 0xffffff);
-  border.drawRect(
-    -photo.width / 2,
-    -photo.height / 2,
-    photo.width,
-    photo.height
-  );
+  border.drawRect(-photo.width / 2, -photo.height / 2, photo.width, photo.height);
 
   frame.addChild(border);
   frame.addChild(photo);
 
-  frame.x =
-    Math.random() * (app.screen.width - photo.width) + photo.width / 2;
-  frame.y =
-    Math.random() * (app.screen.height * 0.5) + photo.height / 2;
+  frame.x = Math.random() * (app.screen.width - photo.width) + photo.width / 2;
+  frame.y = Math.random() * (app.screen.height * 0.5) + photo.height / 2;
   frame.rotation = (Math.random() - 0.5) * 0.1;
   frame.alpha = 0;
 
@@ -154,7 +145,7 @@ function setBackground(texture) {
   });
 }
 
-// ===== 写真更新（安定版） =====
+// ===== 写真更新 =====
 async function updatePhotos() {
   while (
     currentPhotoIndex < photoStages.length &&
@@ -162,16 +153,28 @@ async function updatePhotos() {
   ) {
     const stage = photoStages[currentPhotoIndex];
     const tex = await PIXI.Assets.load(stage.url);
-
-    if (stage.mode === "background") {
-      setBackground(tex);
-    } else {
-      createPhotoFrame(tex);
-    }
-
+    createPhotoFrame(tex);
     currentPhotoIndex++;
   }
 }
+
+// ===== ループ =====
+app.ticker.add(() => {
+  // 花びら数を常にクリック数に合わせる
+  while (petals.length < targetPetalCount) {
+    createPetal();
+  }
+
+  petals.forEach((p) => {
+    p.y += p.speed;
+    p.rotation += p.rotationSpeed;
+
+    if (p.y > app.screen.height + 10) {
+      p.y = -10;
+      p.x = Math.random() * app.screen.width;
+    }
+  });
+});
 
 // ===== 初期化 =====
 async function init() {
@@ -196,9 +199,9 @@ async function init() {
       return;
     }
     clickCount++;
+    targetPetalCount = clickCount;
     updateText();
     updatePhotos();
-    createPetal();
   });
 
   app.stage.addChild(logo);
