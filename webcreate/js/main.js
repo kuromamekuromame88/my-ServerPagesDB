@@ -6,9 +6,19 @@ let Editmode = false;
 const TrueViewBtn = document.getElementById("TrueViewBtn");
 const UIEditBtn = document.getElementById("UIEditBtn");
 
+const preview = document.getElementById("previewFrame"); 
+const Edit = document.getElementById("EditFrame");
+
 function preview() {
-  document.getElementById("previewFrame").srcdoc = editor.getValue();
-  document.getElementById("EditFrame").srcdoc = editor.getValue();
+  preview.srcdoc = editor.getValue();
+
+  Edit.srcdoc = editor.getValue();
+  const EditPage = Edit.contentDocument;
+  EditPage.querySelector("*").forEach((e) => {
+    e.addEventListener("click", () => {
+      console.log(e);
+    });
+  });
 }
 
 function showPage() {
