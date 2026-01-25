@@ -116,7 +116,7 @@ main {
   background-color: #444;
 }
 
-iframe, .EditFrame {
+iframe, #EditFrame {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -125,8 +125,7 @@ iframe, .EditFrame {
   transition: opacity .2s;
 }
 
-.EditFrame {
-  background: rgba(0,0,0,0.05);
+#EditFrame {
   pointer-events: none;
   opacity: 0;
 }
@@ -204,7 +203,7 @@ window.addEventListener("load", () => {
   <div class="content">
     <div class="maincontent">
       <iframe id="previewFrame"></iframe>
-      <div class="EditFrame" id="EditFrame"></div>
+      <iframe id="EditFrame"></iframe>
     </div>
     <div class="tool-box">
       <button id="UIEditBtn">UI編集</button>

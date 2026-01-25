@@ -4,7 +4,7 @@ let Editmode = false;
 
 function preview() {
   document.getElementById("previewFrame").srcdoc = editor.getValue();
-  document.getElementById("EditFrame").innerHTML = editor.getValue();
+  document.getElementById("EditFrame").srcdoc = editor.getValue();
 }
 
 function showPage() {
