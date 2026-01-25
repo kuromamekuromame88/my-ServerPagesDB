@@ -1,201 +1,161 @@
 <!DOCTYPE html>
 <html lang="ja">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Webページエディター</title>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Webページエディター</title>
 
-    <!-- jsなど -->
+<!-- CodeMirror -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
 
-    <!-- CodeMirror 本体 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/xml/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/css/css.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/htmlmixed/htmlmixed.min.js"></script>
 
-    <!-- HTML 用モード -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/xml/xml.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/css/css.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/htmlmixed/htmlmixed.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closetag.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closetag.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
-
-
-    <!-- メインロジック -->
-    <script src="https://tool-webs.onrender.com/webcreate/js/main.js"></script>
-
-    <style>
-
+<style>
 body {
-  margin: 0px;
-  padding: 0px;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  margin: 0;
+  font-family: Helvetica, Arial, sans-serif;
 }
-        /* ----------------- top-bar ----------------- */
 
 .top-bar {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  top: 0; left: 0; right: 0;
   height: 60px;
-  background-color: #222;
-  color: white;
+  background: #222;
+  color: #fff;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   padding: 0 20px;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.3);
   z-index: 1000;
 }
 
-.top-bar .logo {
-  font-size: 1.2em;
-  font-weight: bold;
-  text-decoration: none;
-  color: white;
-}
-
 main {
-  margin-top: 60px; /* top-barの高さ分のマージンを追加 */
-  height: calc(100vh - 60px); /* top-barの高さを引いた高さに設定 */
-}
-
-/* エディター関連 */
-.content {
-  position: absolute;
-  left: 0px;
-  top: 60px;
+  margin-top: 60px;
   height: calc(100vh - 60px);
   display: flex;
-  flex-direction: column;
-  gap: 30px;
-  background-color: #f0f0f0;
+}
+
+.content, .editor {
   width: 50vw;
-  overflow-y: auto;
+  height: 100%;
 }
 
-/*ページプレビューと編集のdiv表示用*/
+.content {
+  background: #f0f0f0;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
 .maincontent {
-  flex: 9;
-  background-color: #fff;
   position: relative;
-  left: 30px;
-  width: 90%;
-  height : calc(100% - 40px);
-  border-radius: 20px;
+  height: calc(100% - 60px);
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
 }
 
-
-/* -- UI系 -- */
-.ViewModebar{
-  flex: 1;
-  position: relative;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  padding-left: 20px;
-  padding-right: 20px;
-  top: 20px;
-  left: 30px;
-  width: 85%;
-  max-height: 40px;
-  display: flex;
-  background-color: #ddd;
-  flex-direction: row;
-  gap: 10px;
-  border-radius: 20px;
-}
-
-.ViewModebar button{
-  width: 40px;
-  height: 40px;
-  background-color: #222;
-  color: #fff;
+iframe, .EditFrame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   border: none;
-  border-radius: 10px;
-  font-size: 20px;
-  text-align: center;
-  cursor: pointer;
+  transition: opacity .2s;
 }
 
+.EditFrame {
+  background: rgba(0,0,0,0.05);
+  pointer-events: none;
+  opacity: 0;
+}
 
 .editor {
-  position: absolute;
-  right: 0px;
-  top: 60px;
-  height: calc(100vh - 60px);;
-  width: 50vw;
-  background-color: #e0e0e0;
-  border-left: 1px solid #ccc;
+  background: #e0e0e0;
   display: flex;
-  gap: 40px;
   flex-direction: column;
-}
-
-.toolbar{
-  flex: 2;
-  position: relative;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  padding-left: 20px;
-  padding-right: 20px;
-  top: 20px;
-  left: 30px;
-  width: 85%;
-  max-height: 40px;
-  display: flex;
-  background-color: #ddd;
-  flex-direction: row;
-  gap: 10px;
-  border-radius: 20px !important;
-}
-
-.toolbar button{
-  width: 40px;
-  height: 40px;
-  background-color: #222;
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  font-size: 20px;
-  text-align: center;
-  cursor: pointer;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .CodeMirror {
-  height: 100%;
-  border-radius: 10px;
+  flex: 1;
+  border-radius: 12px;
   font-size: 14px;
 }
+</style>
 
-    </style>
-    <script>
-    //ソースはmain.jsに移動しました
-    </script>
-  </head>
-  <body>
-    <header class="top-bar">
-      <a href="/" class="logo">tool-webs</a>
-    </header>
+<script>
+//main.jsの中身
+//main.js側のコードを実行させるために、これはサンプルであるためコメントアウトしています。
+/*
+let editor;
 
-    <main>
-      <div class="content">
-        <div class="ViewModebar">
-            <button id="UIEditBtn" title="UIを編集">✏</button>
-            <button id="TrueViewBtn" title="プレビュー">📋️</button>
-        </div>
-        <div class="maincontent">
-          <iframe id="previewFrame" style="width:100%; height:100%; border:none;"></iframe>
-        </div>
-      </div>
-      <div class="editor">
-        <div class="toolbar">
-          <button id="changeToHTML" title="HTMLエディタへ移動">✏</button>
-          <button id="changeToUISettings" title="選択されたUIの設定変更">📋️</button>
-        </div>
-        <textarea id="mirror"></textarea>
-      </div>
-    </main>
-  </body>
+function preview() {
+  document.getElementById("previewFrame").srcdoc = editor.getValue();
+}
+
+function showPage() {
+  previewFrame.style.opacity = 1;
+  previewFrame.style.pointerEvents = "auto";
+  EditFrame.style.opacity = 0;
+  EditFrame.style.pointerEvents = "none";
+}
+
+function hidePage() {
+  previewFrame.style.opacity = 0;
+  previewFrame.style.pointerEvents = "none";
+  EditFrame.style.opacity = 1;
+  EditFrame.style.pointerEvents = "auto";
+}
+
+window.addEventListener("load", () => {
+  editor = CodeMirror.fromTextArea(mirror, {
+    mode: "htmlmixed",
+    lineNumbers: true,
+    tabSize: 2,
+    indentUnit: 2,
+    autoCloseTags: true,
+    matchBrackets: true,
+    autoCloseBrackets: true
+  });
+
+  editor.on("change", preview);
+  preview();
+  showPage();
+
+  TrueViewBtn.onclick = showPage;
+  UIEditBtn.onclick = hidePage;
+});
+*/
+</script>
+</head>
+
+<body>
+<header class="top-bar">
+  <span>tool-webs</span>
+  <input type="text" class="PageTitle" placeholder="ページのタイトルを入力">
+</header>
+
+<main>
+  <div class="content">
+    <div class="maincontent">
+      <iframe id="previewFrame"></iframe>
+      <div class="EditFrame" id="EditFrame"></div>
+    </div>
+    <button id="UIEditBtn">UI編集</button>
+    <button id="TrueViewBtn">プレビュー</button>
+  </div>
+
+  <div class="editor">
+    <textarea id="mirror"><h1>Hello World</h1></textarea>
+  </div>
+</main>
+</body>
 </html>
