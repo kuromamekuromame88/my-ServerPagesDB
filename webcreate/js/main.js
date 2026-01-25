@@ -17,13 +17,15 @@ function preview() {
   EditPage.forEach((e) => {
     e.addEventListener("mouseover", () => {
       e.style.border = "5px solid #000";
+      e.stopPropagation();
     });
     e.addEventListener("mouseout", () => {
       e.style.border = "none";
+      e.stopPropagation();
     });
     e.addEventListener("click", () => {
       console.log(e);
-      e.preventDefault();
+      e.stopPropagation();
     });
   });
 }
