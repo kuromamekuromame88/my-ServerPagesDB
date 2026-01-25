@@ -6,11 +6,11 @@ let Editmode = false;
 const TrueViewBtn = document.getElementById("TrueViewBtn");
 const UIEditBtn = document.getElementById("UIEditBtn");
 
-const preview = document.getElementById("previewFrame"); 
+const prev = document.getElementById("previewFrame"); 
 const Edit = document.getElementById("EditFrame");
 
 function preview() {
-  preview.srcdoc = editor.getValue();
+  prev.srcdoc = editor.getValue();
 
   Edit.srcdoc = editor.getValue();
   const EditPage = Edit.contentDocument;
