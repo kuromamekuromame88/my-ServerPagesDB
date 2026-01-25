@@ -14,7 +14,6 @@ function preview() {
 
   Edit.srcdoc = editor.getValue();
   let EditPage = Edit.contentDocument.querySelectorAll("*");
-  console.log(EditPage);
   EditPage.forEach((e) => {
     e.addEventListener("mouseover", () => {
       e.style.border = "5px solid #000";
@@ -24,6 +23,7 @@ function preview() {
     });
     e.addEventListener("click", () => {
       console.log(e);
+      e.preventDefault();
     });
   });
 }
