@@ -18,11 +18,11 @@ function preview() {
   EditPage.forEach((e, ec) => {
     e.addEventListener("mouseover", () => {
       e.style.border = "5px solid #000";
-      //e.stopPropagation();
+      e.stopImmediatePropagation();
     });
     e.addEventListener("mouseout", () => {
       e.style.border = "none";
-      //e.stopPropagation();
+      e.stopImmediatePropagation();
     });
     e.addEventListener("click", () => {
       console.log(e);
