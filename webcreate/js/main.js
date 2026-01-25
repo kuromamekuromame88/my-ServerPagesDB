@@ -1,14 +1,20 @@
 let editor;
 
+let Editmode = false;
+
 function preview() {
   document.getElementById("previewFrame").srcdoc = editor.getValue();
+  document.getElementById("EditFrame").innerHTML = editor.getValue();
 }
+
+
 
 function showPage() {
   previewFrame.style.opacity = 1;
   previewFrame.style.pointerEvents = "auto";
   EditFrame.style.opacity = 0;
   EditFrame.style.pointerEvents = "none";
+  Editmode = false;
 }
 
 function hidePage() {
@@ -16,6 +22,7 @@ function hidePage() {
   previewFrame.style.pointerEvents = "none";
   EditFrame.style.opacity = 1;
   EditFrame.style.pointerEvents = "auto";
+  Editmode = true;
 }
 
 window.addEventListener("load", () => {
