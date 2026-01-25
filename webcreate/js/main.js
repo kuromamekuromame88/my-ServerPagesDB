@@ -22,6 +22,7 @@ function drug(e){
 
     e.addEventListener('mousemove', (e) => {
         if (isDragging) {
+            e.target.style.position = 'absolute';
             e.target.style.left = (e.clientX - startX) + 'px';
             e.target.style.top = (e.clientY - startY) + 'px';
         }
