@@ -17,8 +17,8 @@ function showPage() {
   EditFrame.style.opacity = 0;
   EditFrame.style.pointerEvents = "none";
   Editmode = false;
-  TrueViewBtn.style.borderBottom = "5px solid #fff";
-  UIEditBtn.style.borderBottom = "none";
+  TrueViewBtn.style.border = "5px solid #ffcc00";
+  UIEditBtn.style.border = "none";
 }
 
 function hidePage() {
@@ -27,8 +27,8 @@ function hidePage() {
   EditFrame.style.opacity = 1;
   EditFrame.style.pointerEvents = "auto";
   Editmode = true;
-  TrueViewBtn.style.borderBottom = "5px solid #fff";
-  UIEditBtn.style.borderBottom = "none";
+  TrueViewBtn.style.border = "5px solid #ffcc00";
+  UIEditBtn.style.border = "none";
 }
 
 window.addEventListener("load", () => {
