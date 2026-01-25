@@ -3,6 +3,10 @@ const containerDiv = document.getElementById("container");
 // ===== 卒業日 =====
 const graduationDate = new Date("2026-03-17T00:00:00");
 
+//フラグリスト
+const shownPhotoCounts = new Set();
+
+
 // ===== デフォルト背景 =====
 const DEFAULT_BACKGROUND_URL =
   "https://tool-webs.onrender.com/countdown/img/background.webp";
@@ -147,16 +151,26 @@ function setBackground(texture) {
 
 // ===== 写真更新 =====
 async function updatePhotos() {
-  while (
-    currentPhotoIndex < photoStages.length &&
-    clickCount >= photoStages[currentPhotoIndex].count
-  ) {
-    const stage = photoStages[currentPhotoIndex];
+  for (const stage of photoStages) {
+    // 条件を満たしていない → スキップ
+    if (clickCount < stage.count) continue;
+
+    // すでに表示済み → スキップ
+    if (shownPhotoCounts.has(stage.count)) continue;
+
+    // ★ ここで即座に「表示済み」にする（重要）
+    shownPhotoCounts.add(stage.count);
+
     const tex = await PIXI.Assets.load(stage.url);
-    createPhotoFrame(tex);
-    currentPhotoIndex++;
+
+    if (stage.mode === "background") {
+      setBackground(tex);
+    } else {
+      createPhotoFrame(tex);
+    }
   }
 }
+
 
 // ===== ループ =====
 app.ticker.add(() => {
