@@ -16,6 +16,7 @@ function preview() {
   Edit.srcdoc = editor.getValue();
   let EditPage = Edit.contentDocument.querySelectorAll("*");
   EditPage.forEach((e, ec) => {
+    if(e.tagName === "HTML") return;
     e.addEventListener("mouseover", () => {
       e.style.border = "5px solid #000";
       e.stopImmediatePropagation();
