@@ -135,7 +135,7 @@ function createPhotoFrame(texture) {
   });
 }
 
-// ===== 背景設定 =====
+// ===== 背景 =====
 function setBackground(texture) {
   const scale = Math.max(
     app.screen.width / texture.width,
@@ -154,12 +154,13 @@ function setBackground(texture) {
   });
 }
 
-// ===== 写真更新（修正版） =====
+// ===== 写真更新（安定版） =====
 async function updatePhotos() {
-  if (currentPhotoIndex >= photoStages.length) return;
-
-  const stage = photoStages[currentPhotoIndex];
-  if (clickCount >= stage.count) {
+  while (
+    currentPhotoIndex < photoStages.length &&
+    clickCount >= photoStages[currentPhotoIndex].count
+  ) {
+    const stage = photoStages[currentPhotoIndex];
     const tex = await PIXI.Assets.load(stage.url);
 
     if (stage.mode === "background") {
