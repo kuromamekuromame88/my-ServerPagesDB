@@ -51,7 +51,8 @@ body {
 }
 
 .nav-ui{
-  position: relative;
+  position: absolute;
+  top: 20px;
   right: 40px;
 }
 
@@ -170,7 +171,7 @@ window.addEventListener("load", () => {
 <header class="top-bar">
   <a href="/">tool-webs</a>
   <div class="nav-ui">
-    <input type="text" class="PageTitle" placeholder="ページのタイトルを入力">
+    <input type="text" id="PageTitle" class="PageTitle" placeholder="ページのタイトルを入力">
   </div>
 </header>
 
