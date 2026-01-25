@@ -13,8 +13,9 @@ function preview() {
   prev.srcdoc = editor.getValue();
 
   Edit.srcdoc = editor.getValue();
-  const EditPage = Edit.contentDocument;
-  EditPage.querySelector("*").forEach((e) => {
+  let EditPage = Edit.contentDocument.querySelector("*");
+  console.log(EditPage);
+  EditPage.forEach((e) => {
     e.addEventListener("mouseover", () => {
       e.style.border = "5px solid #000";
     });
