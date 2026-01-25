@@ -11,14 +11,40 @@ const DEFAULT_BACKGROUND_URL =
 const photoStages = [
   {
     count: 10,
-    url: "https://tool-webs.onrender.com/countdown/img/50.jpg",
+    url: "https://tool-webs.onrender.com/countdown/img/10.jpg",
     mode: "frame",
   },
-  // {
-  //   count: 30,
-  //   url: "...",
-  //   mode: "background",
-  // },
+  {
+    count : 20,
+    url: "https://tool-webs.onrender.com/countdown/img/20.jpg",
+    mode: "frame",
+  },
+  {
+    count: 40,
+    url: "https://tool-webs.onrender.com/countdown/img/40.jpg",
+    mode: "frame",
+  },
+  {
+    count: 80,
+    url: "https://tool-webs.onrender.com/countdown/img/80.jpg",
+    mode: "frame",
+  },
+  {
+    count: 160,
+    url: "https://tool-webs.onrender.com/countdown/img/160.jpg",
+    mode: "frame",
+  }
+  {
+    count: 320,
+    url: "https://tool-webs.onrender.com/countdown/img/320.jpg",
+    mode: "frame",
+  },
+  {
+    count: 640,
+    url: "https://tool-webs.onrender.com/countdown/img/640.jpg",
+    mode: "frame",
+  },
+  //mode: background
 ];
 
 let currentPhotoIndex = -1;
@@ -88,7 +114,7 @@ function updateText() {
   countdown.text =
     diffDays <= 0
       ? `🎓 ついに卒業！\n思い出数：${clickCount}`
-      : `卒業まであと ${diffDays} 日\n思い出: ${clickCount}`;
+      : `卒業まであと ${diffDays} 日\n思い出カウンター: ${clickCount}`;
 
   countdown.x = app.screen.width / 2;
   countdown.y = app.screen.height * 0.75;
