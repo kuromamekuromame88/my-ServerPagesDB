@@ -13,21 +13,21 @@ function drug(e){
     let isDragging = false;
     let startX, startY;
 
-    e.target.addEventListener('mousedown', (e) => {
+    e.addEventListener('mousedown', (e) => {
         isDragging = true;
         startX = e.clientX - e.target.offsetLeft;
         startY = e.clientY - e.target.offsetTop;
         e.target.style.cursor = 'grabbing';
     });
 
-    document.addEventListener('mousemove', (e) => {
+    e.addEventListener('mousemove', (e) => {
         if (isDragging) {
             e.target.style.left = (e.clientX - startX) + 'px';
             e.target.style.top = (e.clientY - startY) + 'px';
         }
     });
 
-    document.addEventListener('mouseup', (e) => {
+    e.addEventListener('mouseup', (e) => {
         isDragging = false;
         e.target.style.cursor = 'grab';
         e.mousedown = null;
