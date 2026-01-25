@@ -2,6 +2,9 @@ let editor;
 
 let Editmode = false;
 
+const TrueViewBtn = document.getElementById("TrueViewBtn");
+const UIEditBtn = document.getElementById("UIEditBtn");
+
 function preview() {
   document.getElementById("previewFrame").srcdoc = editor.getValue();
   document.getElementById("EditFrame").srcdoc = editor.getValue();
@@ -13,6 +16,8 @@ function showPage() {
   EditFrame.style.opacity = 0;
   EditFrame.style.pointerEvents = "none";
   Editmode = false;
+  TrueViewBtn.style.borderBottom = "5px solid #fff";
+  UIEditBtn.style.borderBottom = "none";
 }
 
 function hidePage() {
@@ -21,6 +26,8 @@ function hidePage() {
   EditFrame.style.opacity = 1;
   EditFrame.style.pointerEvents = "auto";
   Editmode = true;
+  TrueViewBtn.style.borderBottom = "5px solid #fff";
+  UIEditBtn.style.borderBottom = "none";
 }
 
 window.addEventListener("load", () => {
