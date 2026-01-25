@@ -9,6 +9,32 @@ const UIEditBtn = document.getElementById("UIEditBtn");
 const prev = document.getElementById("previewFrame"); 
 const Edit = document.getElementById("EditFrame");
 
+function drug(e){
+    let isDragging = false;
+    let startX, startY;
+
+    e.target.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        startX = e.clientX - e.target.offsetLeft;
+        startY = e.clientY - e.target.offsetTop;
+        e.target.style.cursor = 'grabbing';
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (isDragging) {
+            e.target.style.left = (e.clientX - startX) + 'px';
+            e.target.style.top = (e.clientY - startY) + 'px';
+        }
+    });
+
+    document.addEventListener('mouseup', (e) => {
+        isDragging = false;
+        e.target.style.cursor = 'grab';
+        e.mousedown = null;
+        e.mousemove = null;
+    });  
+};
+
 function preview() {
   prev.srcdoc = editor.getValue();
   Edit.srcdoc = editor.getValue();
@@ -16,12 +42,12 @@ function preview() {
   Edit.onload = () => {
     const doc = Edit.contentDocument;
 
-    // 既存イベントの二重登録防止
+    // 既存イベントの消去
     doc.body.onmouseover = null;
     doc.body.onmouseout = null;
     doc.body.onclick = null;
 
-    // マウスオーバー（要素強調）
+    // 要素選択ライン表示
     doc.body.addEventListener("mouseover", (e) => {
       const target = e.target;
       if (target === doc.body || target === doc.documentElement) return;
@@ -29,24 +55,22 @@ function preview() {
       target.style.outline = "3px solid #ff9800";
       e.stopPropagation();
     });
-
-    // マウスアウト（強調解除）
     doc.body.addEventListener("mouseout", (e) => {
       const target = e.target;
       target.style.outline = "";
       e.stopPropagation();
     });
 
-    // クリック（要素選択）
+    // 要素選択時のクリックイベント
     doc.body.addEventListener("click", (e) => {
       const target = e.target;
       console.log("選択要素:", target);
+      drug(target);
       e.preventDefault();
       e.stopPropagation();
     });
   };
 }
-
 
 function showPage() {
   previewFrame.style.opacity = 1;
