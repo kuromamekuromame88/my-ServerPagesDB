@@ -33,7 +33,7 @@ const photoStages = [
     count: 160,
     url: "https://tool-webs.onrender.com/countdown/img/160.jpg",
     mode: "frame",
-  }
+  },
   {
     count: 320,
     url: "https://tool-webs.onrender.com/countdown/img/320.jpg",
