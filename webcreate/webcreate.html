@@ -149,6 +149,7 @@ iframe, #EditFrame {
 //main.jsの中身
 //main.js側のコードを実行させるために、これはサンプルであるためコメントアウトしています。
 /*
+
 let editor;
 
 let Editmode = false;
@@ -156,9 +157,31 @@ let Editmode = false;
 const TrueViewBtn = document.getElementById("TrueViewBtn");
 const UIEditBtn = document.getElementById("UIEditBtn");
 
+const prev = document.getElementById("previewFrame"); 
+const Edit = document.getElementById("EditFrame");
+
 function preview() {
-  document.getElementById("previewFrame").srcdoc = editor.getValue();
-  document.getElementById("EditFrame").srcdoc = editor.getValue();
+  console.log("preview!");
+  prev.srcdoc = editor.getValue();
+
+  Edit.srcdoc = editor.getValue();
+  let EditPage = Edit.contentDocument.querySelectorAll("*");
+  EditPage.forEach((e, ec) => {
+    if(e.tagName != "HTML"){
+      e.addEventListener("mouseover", () => {
+        e.style.border = "5px solid #000";
+        e.stopImmediatePropagation();
+      });
+      e.addEventListener("mouseout", () => {
+        e.style.border = "none";
+        e.stopImmediatePropagation();
+      });
+      e.addEventListener("click", () => {
+        console.log(e);
+        e.stopPropagation();
+      });
+    }
+  });
 }
 
 function showPage() {
@@ -167,8 +190,8 @@ function showPage() {
   EditFrame.style.opacity = 0;
   EditFrame.style.pointerEvents = "none";
   Editmode = false;
-  TrueViewBtn.style.borderBottom = "5px solid #fff";
-  UIEditBtn.style.borderBottom = "none";
+  TrueViewBtn.style.border = "5px solid #ffcc00";
+  UIEditBtn.style.border = "none";
 }
 
 function hidePage() {
@@ -177,8 +200,8 @@ function hidePage() {
   EditFrame.style.opacity = 1;
   EditFrame.style.pointerEvents = "auto";
   Editmode = true;
-  TrueViewBtn.style.borderBottom = "5px solid #fff";
-  UIEditBtn.style.borderBottom = "none";
+  UIEditBtn.style.border = "5px solid #ffcc00";
+  TrueViewBtn.style.border = "none";
 }
 
 window.addEventListener("load", () => {

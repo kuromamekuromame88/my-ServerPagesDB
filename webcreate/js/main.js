@@ -10,29 +10,43 @@ const prev = document.getElementById("previewFrame");
 const Edit = document.getElementById("EditFrame");
 
 function preview() {
-  console.log("preview!");
   prev.srcdoc = editor.getValue();
-
   Edit.srcdoc = editor.getValue();
-  let EditPage = Edit.contentDocument.querySelectorAll("*");
-  EditPage.forEach((e, ec) => {
-    if(e.tagName === "HTML") return;
-    e.addEventListener("mouseover", () => {
-      e.style.border = "5px solid #000";
-      e.stopImmediatePropagation();
-    });
-    e.addEventListener("mouseout", () => {
-      e.style.border = "none";
-      e.stopImmediatePropagation();
-    });
-    e.addEventListener("click", () => {
-      console.log(e);
+
+  Edit.onload = () => {
+    const doc = Edit.contentDocument;
+
+    // 既存イベントの二重登録防止
+    doc.body.onmouseover = null;
+    doc.body.onmouseout = null;
+    doc.body.onclick = null;
+
+    // マウスオーバー（要素強調）
+    doc.body.addEventListener("mouseover", (e) => {
+      const target = e.target;
+      if (target === doc.body || target === doc.documentElement) return;
+
+      target.style.outline = "3px solid #ff9800";
       e.stopPropagation();
-      
     });
-    console.log(ec);
-  });
+
+    // マウスアウト（強調解除）
+    doc.body.addEventListener("mouseout", (e) => {
+      const target = e.target;
+      target.style.outline = "";
+      e.stopPropagation();
+    });
+
+    // クリック（要素選択）
+    doc.body.addEventListener("click", (e) => {
+      const target = e.target;
+      console.log("選択要素:", target);
+      e.preventDefault();
+      e.stopPropagation();
+    });
+  };
 }
+
 
 function showPage() {
   previewFrame.style.opacity = 1;
