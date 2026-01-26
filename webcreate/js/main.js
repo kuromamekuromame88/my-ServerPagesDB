@@ -8,12 +8,47 @@ const prev = document.getElementById("previewFrame");
 const Edit = document.getElementById("EditFrame");
 
 /* =========================
+   editor用 style 管理
+========================= */
+function getEditorStyleTag(doc) {
+  let style = doc.getElementById("__editor-style");
+  if (!style) {
+    style = doc.createElement("style");
+    style.id = "__editor-style";
+    doc.head.appendChild(style);
+  }
+  return style;
+}
+
+function ensureEditorId(el) {
+  if (!el.dataset.editorId) {
+    el.dataset.editorId = crypto.randomUUID();
+  }
+  return el.dataset.editorId;
+}
+
+function updateElementStyle(el, cssText) {
+  const doc = el.ownerDocument;
+  const styleTag = getEditorStyleTag(doc);
+  const id = ensureEditorId(el);
+  const selector = `[data-editor-id="${id}"]`;
+
+  const rules = styleTag.textContent
+    .split("}")
+    .map(r => r.trim())
+    .filter(r => r && !r.startsWith(selector));
+
+  rules.push(`${selector}{${cssText}}`);
+  styleTag.textContent = rules.join("");
+}
+
+/* =========================
    Edit iframe → HTML生成
 ========================= */
 function getEditedHTML() {
   const doc = Edit.contentDocument;
   if (!doc) return editor.getValue();
-  return "<!DOCTYPE html>\n" + doc.documentElement.outerHTML;
+  return "<!DOCTYPE html>" + doc.documentElement.outerHTML;
 }
 
 /* =========================
@@ -22,10 +57,8 @@ function getEditedHTML() {
 function syncAllFromEdit() {
   const html = getEditedHTML();
 
-  // preview iframe 更新（再ロードなしで反映）
   prev.srcdoc = html;
 
-  // CodeMirror 差分同期
   if (editor.getValue() !== html) {
     editor.setValue(html);
   }
@@ -39,8 +72,7 @@ function drug(target){
   let startX = 0;
   let startY = 0;
 
-  target.style.touchAction = "none";
-  target.style.cursor = "grab";
+  ensureEditorId(target);
 
   target.addEventListener("pointerdown", (e) => {
     isDragging = true;
@@ -50,8 +82,7 @@ function drug(target){
     startX = e.clientX - rect.left;
     startY = e.clientY - rect.top;
 
-    target.style.position = "absolute";
-    target.style.cursor = "grabbing";
+    target.classList.add("__editor-dragging");
 
     e.preventDefault();
     e.stopPropagation();
@@ -60,18 +91,20 @@ function drug(target){
   target.addEventListener("pointermove", (e) => {
     if (!isDragging) return;
 
-    target.style.left = (e.clientX - startX) + "px";
-    target.style.top  = (e.clientY - startY) + "px";
+    updateElementStyle(
+      target,
+      `position:absolute;left:${e.clientX - startX}px;top:${e.clientY - startY}px;`
+    );
   });
 
   function endDrag(e) {
     if (!isDragging) return;
-
     isDragging = false;
-    target.releasePointerCapture(e.pointerId);
-    target.style.cursor = "grab";
 
-    // 🔽 ここでのみ同期！
+    target.releasePointerCapture(e.pointerId);
+    target.classList.remove("__editor-dragging");
+
+    // 🔽 ドラッグ終了時のみ同期
     syncAllFromEdit();
   }
 
@@ -91,16 +124,23 @@ function preview() {
   Edit.onload = () => {
     const doc = Edit.contentDocument;
 
+    // editor用UI CSS注入
+    const uiStyle = doc.createElement("style");
+    uiStyle.textContent = `
+      .__editor-hover { outline: 3px solid #ff9800; }
+      .__editor-dragging { cursor: grabbing; }
+      [data-editor-id] { touch-action: none; }
+    `;
+    doc.head.appendChild(uiStyle);
+
     doc.body.addEventListener("mouseover", (e) => {
-      const target = e.target;
-      if (target === doc.body || target === doc.documentElement) return;
-      target.style.outline = "3px solid #ff9800";
-      e.stopPropagation();
+      const t = e.target;
+      if (t === doc.body || t === doc.documentElement) return;
+      t.classList.add("__editor-hover");
     });
 
     doc.body.addEventListener("mouseout", (e) => {
-      e.target.style.outline = "";
-      e.stopPropagation();
+      e.target.classList.remove("__editor-hover");
     });
 
     doc.body.addEventListener("click", (e) => {
