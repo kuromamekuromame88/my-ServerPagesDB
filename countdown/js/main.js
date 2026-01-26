@@ -9,7 +9,7 @@ const shownPhotoCounts = new Set();
 
 // ===== デフォルト背景 =====
 const DEFAULT_BACKGROUND_URL =
-  "https://tool-webs.onrender.com/countdown/img/background.webp";
+  "https://tool-webs.onrender.com/countdown/img/background.jpg";//webp
 
 // ===== 写真ステージ =====
 const photoStages = [
@@ -20,6 +20,14 @@ const photoStages = [
   { count: 160, url: "https://tool-webs.onrender.com/countdown/img/160.jpg", mode: "frame" },
   { count: 320, url: "https://tool-webs.onrender.com/countdown/img/320.jpg", mode: "frame" },
   { count: 640, url: "https://tool-webs.onrender.com/countdown/img/640.jpg", mode: "frame" },
+  { count: 1280, url: "https://tool-webs.onrender.com/countdown/img/1280.jpg", mode: "frame" },
+  { count: 2560, url: "https://tool-webs.onrender.com/countdown/img/2560.jpg", mode: "frame" },
+  { count: 5120, url: "https://tool-webs.onrender.com/countdown/img/5120.jpg", mode: "frame" },
+  { count: 10240, url: "https://tool-webs.onrender.com/countdown/img/10240.jpg", mode: "frame" },
+  { count: 20480, url: "https://tool-webs.onrender.com/countdown/img/20480.jpg", mode: "frame" },
+  { count: 40960, url: "https://tool-webs.onrender.com/countdown/img/40960.jpg", mode: "frame" },
+  { count: 81920, url: "https://tool-webs.onrender.com/countdown/img/81920.jpg", mode: "frame" },
+  { count: 163840, url: "https://tool-webs.onrender.com/countdown/img/163840.jpg", mode: "frame" },
 ];
 
 let currentPhotoIndex = 0;
