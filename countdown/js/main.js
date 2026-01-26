@@ -3,13 +3,13 @@ const containerDiv = document.getElementById("container");
 // ===== 卒業日 =====
 const graduationDate = new Date("2026-03-17T00:00:00");
 
-//フラグリスト
+// ===== 表示済み写真管理 =====
 const shownPhotoCounts = new Set();
-
+const occupiedRects = []; // 重なり防止用
 
 // ===== デフォルト背景 =====
 const DEFAULT_BACKGROUND_URL =
-  "https://tool-webs.onrender.com/countdown/img/background.jpg";//webp
+  "https://tool-webs.onrender.com/countdown/img/background.jpg";
 
 // ===== 写真ステージ =====
 const photoStages = [
@@ -21,23 +21,13 @@ const photoStages = [
   { count: 320, url: "https://tool-webs.onrender.com/countdown/img/320.jpg", mode: "frame" },
   { count: 640, url: "https://tool-webs.onrender.com/countdown/img/640.jpg", mode: "frame" },
   { count: 1280, url: "https://tool-webs.onrender.com/countdown/img/1280.jpg", mode: "frame" },
-  { count: 2560, url: "https://tool-webs.onrender.com/countdown/img/2560.jpg", mode: "frame" },
-  { count: 5120, url: "https://tool-webs.onrender.com/countdown/img/5120.jpg", mode: "frame" },
-  { count: 10240, url: "https://tool-webs.onrender.com/countdown/img/10240.jpg", mode: "frame" },
-  { count: 20480, url: "https://tool-webs.onrender.com/countdown/img/20480.jpg", mode: "frame" },
-  { count: 40960, url: "https://tool-webs.onrender.com/countdown/img/40960.jpg", mode: "frame" },
-  { count: 81920, url: "https://tool-webs.onrender.com/countdown/img/81920.jpg", mode: "frame" },
-  { count: 163840, url: "https://tool-webs.onrender.com/countdown/img/163840.jpg", mode: "frame" },
 ];
-
-let currentPhotoIndex = 0;
 
 // ===== 日数 =====
 function getDiffDays() {
-  const today = new Date();
   return Math.max(
     0,
-    Math.ceil((graduationDate - today) / (1000 * 60 * 60 * 24))
+    Math.ceil((graduationDate - new Date()) / 86400000)
   );
 }
 
@@ -52,16 +42,25 @@ const app = new PIXI.Application({
   backgroundColor: 0x95c0ec,
 });
 containerDiv.appendChild(app.view);
+app.stage.sortableChildren = true;
+
+// ===== レイヤ =====
+const bgLayer = new PIXI.Container();
+const photoLayer = new PIXI.Container();
+const uiLayer = new PIXI.Container();
+const petalLayer = new PIXI.Container();
+
+bgLayer.zIndex = 0;
+photoLayer.zIndex = 10;
+uiLayer.zIndex = 20;
+petalLayer.zIndex = -10;
+
+app.stage.addChild(bgLayer, photoLayer, uiLayer, petalLayer);
 
 // ===== 背景 =====
 const backgroundSprite = new PIXI.Sprite();
 backgroundSprite.anchor.set(0.5);
-backgroundSprite.alpha = 0;
-app.stage.addChild(backgroundSprite);
-
-// ===== フォトレイヤ =====
-const photoLayer = new PIXI.Container();
-app.stage.addChild(photoLayer);
+bgLayer.addChild(backgroundSprite);
 
 // ===== 桜 =====
 const petals = [];
@@ -77,120 +76,108 @@ function createPetal() {
   p.speed = 0.5 + Math.random() * 1.5;
   p.rotationSpeed = (Math.random() - 0.5) * 0.03;
 
-  app.stage.addChild(p);
+  petalLayer.addChild(p);
   petals.push(p);
 }
 
 // ===== テキスト =====
-const textStyle = new PIXI.TextStyle({
-  fontFamily: "Arial",
+const countdown = new PIXI.Text("", {
   fontSize: 36,
   fill: "white",
   dropShadow: true,
-  dropShadowBlur: 4,
 });
-
-const countdown = new PIXI.Text("", textStyle);
 countdown.anchor.set(0.5);
-countdown.alpha = 0;
-app.stage.addChild(countdown);
+uiLayer.addChild(countdown);
 
 function updateText() {
   countdown.text =
     diffDays <= 0
-      ? `🎓 ついに卒業！\n思い出数：${clickCount}`
-      : `卒業まであと ${diffDays} 日\n思い出カウンター: ${clickCount}`;
+      ? `🎓 卒業！\n思い出数：${clickCount}`
+      : `卒業まであと ${diffDays} 日\n思い出数：${clickCount}`;
 
   countdown.x = app.screen.width / 2;
-  countdown.y = app.screen.height * 0.75;
+  countdown.y = app.screen.height * 0.8;
+}
+
+// ===== 重なり判定 =====
+function intersects(a, b) {
+  return !(
+    a.x + a.w < b.x ||
+    a.x > b.x + b.w ||
+    a.y + a.h < b.y ||
+    a.y > b.y + b.h
+  );
+}
+
+function findFreePosition(w, h) {
+  for (let i = 0; i < 40; i++) {
+    const rect = {
+      x: Math.random() * (app.screen.width - w),
+      y: Math.random() * (app.screen.height * 0.55),
+      w, h,
+    };
+    if (!occupiedRects.some(r => intersects(r, rect))) {
+      occupiedRects.push(rect);
+      return rect;
+    }
+  }
+  return null;
 }
 
 // ===== フォトフレーム =====
 function createPhotoFrame(texture) {
-  const frame = new PIXI.Container();
-
   const maxW = app.screen.width * 0.35;
   const maxH = app.screen.height * 0.35;
-
   const scale = Math.min(maxW / texture.width, maxH / texture.height, 1);
 
   const photo = new PIXI.Sprite(texture);
   photo.anchor.set(0.5);
   photo.scale.set(scale);
 
+  const w = photo.width;
+  const h = photo.height;
+
+  const pos = findFreePosition(w, h);
+  if (!pos) return;
+
+  const frame = new PIXI.Container();
+  frame.x = pos.x + w / 2;
+  frame.y = pos.y + h / 2;
+  frame.alpha = 0;
+  frame.rotation = (Math.random() - 0.5) * 0.1;
+
   const border = new PIXI.Graphics();
   border.lineStyle(6, 0xffffff);
-  border.drawRect(-photo.width / 2, -photo.height / 2, photo.width, photo.height);
+  border.drawRect(-w / 2, -h / 2, w, h);
 
-  frame.addChild(border);
-  frame.addChild(photo);
-
-  frame.x = Math.random() * (app.screen.width - photo.width) + photo.width / 2;
-  frame.y = Math.random() * (app.screen.height * 0.5) + photo.height / 2;
-  frame.rotation = (Math.random() - 0.5) * 0.1;
-  frame.alpha = 0;
-
+  frame.addChild(border, photo);
   photoLayer.addChild(frame);
 
   app.ticker.add(function fade() {
-    frame.alpha += 0.02;
+    frame.alpha += 0.03;
     if (frame.alpha >= 1) app.ticker.remove(fade);
-  });
-}
-
-// ===== 背景 =====
-function setBackground(texture) {
-  const scale = Math.max(
-    app.screen.width / texture.width,
-    app.screen.height / texture.height
-  );
-
-  backgroundSprite.texture = texture;
-  backgroundSprite.scale.set(scale);
-  backgroundSprite.x = app.screen.width / 2;
-  backgroundSprite.y = app.screen.height / 2;
-
-  backgroundSprite.alpha = 0;
-  app.ticker.add(function fade() {
-    backgroundSprite.alpha += 0.02;
-    if (backgroundSprite.alpha >= 1) app.ticker.remove(fade);
   });
 }
 
 // ===== 写真更新 =====
 async function updatePhotos() {
   for (const stage of photoStages) {
-    // 条件を満たしていない → スキップ
     if (clickCount < stage.count) continue;
-
-    // すでに表示済み → スキップ
     if (shownPhotoCounts.has(stage.count)) continue;
 
-    // ★ ここで即座に「表示済み」にする（重要）
     shownPhotoCounts.add(stage.count);
-
     const tex = await PIXI.Assets.load(stage.url);
-
-    if (stage.mode === "background") {
-      setBackground(tex);
-    } else {
-      createPhotoFrame(tex);
-    }
+    createPhotoFrame(tex);
   }
 }
 
-
 // ===== ループ =====
 app.ticker.add(() => {
-  // 花びら数を常にクリック数に合わせる
-  while (petals.length < targetPetalCount) {
-    createPetal();
-  }
+  while (petals.length < targetPetalCount) createPetal();
 
-  petals.forEach((p) => {
+  petals.forEach(p => {
     p.y += p.speed;
     p.rotation += p.rotationSpeed;
-
     if (p.y > app.screen.height + 10) {
       p.y = -10;
       p.x = Math.random() * app.screen.width;
@@ -201,12 +188,19 @@ app.ticker.add(() => {
 // ===== 初期化 =====
 async function init() {
   const bgTex = await PIXI.Assets.load(DEFAULT_BACKGROUND_URL);
-  setBackground(bgTex);
+  backgroundSprite.texture = bgTex;
+  backgroundSprite.scale.set(
+    Math.max(
+      app.screen.width / bgTex.width,
+      app.screen.height / bgTex.height
+    )
+  );
+  backgroundSprite.x = app.screen.width / 2;
+  backgroundSprite.y = app.screen.height / 2;
 
   const logoTex = await PIXI.Assets.load(
     "https://tool-webs.onrender.com/countdown/img/schoolLogo2.png"
   );
-
   const logo = new PIXI.Sprite(logoTex);
   logo.anchor.set(0.5);
   logo.scale.set(0.4);
@@ -214,6 +208,13 @@ async function init() {
   logo.y = app.screen.height * 0.4;
   logo.interactive = true;
   logo.buttonMode = true;
+
+  occupiedRects.push({
+    x: logo.x - logo.width / 2,
+    y: logo.y - logo.height / 2,
+    w: logo.width,
+    h: logo.height,
+  });
 
   logo.on("pointerdown", () => {
     if (!gameStarted) {
@@ -226,13 +227,7 @@ async function init() {
     updatePhotos();
   });
 
-  app.stage.addChild(logo);
-
-  app.ticker.add(function fade() {
-    countdown.alpha += 0.02;
-    if (countdown.alpha >= 1) app.ticker.remove(fade);
-  });
-
+  uiLayer.addChild(logo);
   updateText();
 }
 
