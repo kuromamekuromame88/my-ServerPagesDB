@@ -8,46 +8,6 @@ const prev = document.getElementById("previewFrame");
 const Edit = document.getElementById("EditFrame");
 
 /* =========================
-   editor用ID保証
-========================= */
-function ensureEditorId(el) {
-  if (!el.dataset.editorId) {
-    el.dataset.editorId = crypto.randomUUID();
-  }
-  return el.dataset.editorId;
-}
-
-/* =========================
-   styleタグ取得 or 生成
-========================= */
-function getEditorStyleTag(doc) {
-  let style = doc.getElementById("editor-style");
-  if (!style) {
-    style = doc.createElement("style");
-    style.id = "editor-style";
-    doc.head.appendChild(style);
-  }
-  return style;
-}
-
-/* =========================
-   要素CSS更新
-========================= */
-function updateElementStyle(el, cssText) {
-  const doc = el.ownerDocument;
-  const styleTag = getEditorStyleTag(doc);
-  const id = ensureEditorId(el);
-
-  const selector = `[data-editor-id="${id}"]`;
-  const rules = styleTag.textContent.split("}");
-
-  const filtered = rules.filter(r => !r.includes(selector));
-  filtered.push(`${selector} { ${cssText} }`);
-
-  styleTag.textContent = filtered.join("}\n").trim() + "}";
-}
-
-/* =========================
    Edit iframe → HTML生成
 ========================= */
 function getEditedHTML() {
@@ -62,10 +22,10 @@ function getEditedHTML() {
 function syncAllFromEdit() {
   const html = getEditedHTML();
 
-  // preview iframe 更新
+  // preview iframe 更新（再ロードなしで反映）
   prev.srcdoc = html;
 
-  // CodeMirror 同期
+  // CodeMirror 差分同期
   if (editor.getValue() !== html) {
     editor.setValue(html);
   }
@@ -90,6 +50,9 @@ function drug(target){
     startX = e.clientX - rect.left;
     startY = e.clientY - rect.top;
 
+    target.style.position = "absolute";
+    target.style.cursor = "grabbing";
+
     e.preventDefault();
     e.stopPropagation();
   });
@@ -97,14 +60,8 @@ function drug(target){
   target.addEventListener("pointermove", (e) => {
     if (!isDragging) return;
 
-    const left = e.clientX - startX;
-    const top  = e.clientY - startY;
-
-    // style属性は使わずCSSへ
-    updateElementStyle(
-      target,
-      `position: absolute; left: ${left}px; top: ${top}px;`
-    );
+    target.style.left = (e.clientX - startX) + "px";
+    target.style.top  = (e.clientY - startY) + "px";
   });
 
   function endDrag(e) {
@@ -114,7 +71,7 @@ function drug(target){
     target.releasePointerCapture(e.pointerId);
     target.style.cursor = "grab";
 
-    // 🔽 ドラッグ終了時のみ同期
+    // 🔽 ここでのみ同期！
     syncAllFromEdit();
   }
 
