@@ -1,27 +1,25 @@
-
 let editor;
-
 let Editmode = false;
 
 const TrueViewBtn = document.getElementById("TrueViewBtn");
-const UIEditBtn = document.getElementById("UIEditBtn");
+const UIEditBtn   = document.getElementById("UIEditBtn");
 
 const prev = document.getElementById("previewFrame"); 
 const Edit = document.getElementById("EditFrame");
 
+/* =========================
+   Pointer Events Drag
+========================= */
 function drug(target){
   let isDragging = false;
   let startX = 0;
   let startY = 0;
 
-  // タッチ操作時のスクロール抑制（重要）
   target.style.touchAction = "none";
   target.style.cursor = "grab";
 
   target.addEventListener("pointerdown", (e) => {
     isDragging = true;
-
-    // ポインタを捕捉（マウスが外れても追従する）
     target.setPointerCapture(e.pointerId);
 
     const rect = target.getBoundingClientRect();
@@ -54,52 +52,79 @@ function drug(target){
   });
 }
 
+/* =========================
+   Edit iframe → HTML生成
+========================= */
+function getEditedHTML() {
+  const doc = Edit.contentDocument;
+  if (!doc) return editor.getValue();
 
+  return "<!DOCTYPE html>\n" + doc.documentElement.outerHTML;
+}
+
+/* =========================
+   CodeMirror同期
+========================= */
+function syncEditor(html) {
+  if (editor.getValue() !== html) {
+    editor.setValue(html);
+  }
+}
+
+/* =========================
+   Preview生成
+========================= */
 function preview() {
-  prev.srcdoc = editor.getValue();
-  Edit.srcdoc = editor.getValue();
+  const html = editor.getValue();
+
+  prev.srcdoc = html;
+  Edit.srcdoc = html;
 
   Edit.onload = () => {
     const doc = Edit.contentDocument;
 
-    // 既存イベントの消去
-    doc.body.onmouseover = null;
-    doc.body.onmouseout = null;
-    doc.body.onclick = null;
-
-    // 要素選択ライン表示
+    // 要素ホバー表示
     doc.body.addEventListener("mouseover", (e) => {
       const target = e.target;
       if (target === doc.body || target === doc.documentElement) return;
-
       target.style.outline = "3px solid #ff9800";
       e.stopPropagation();
     });
+
     doc.body.addEventListener("mouseout", (e) => {
-      const target = e.target;
-      target.style.outline = "";
+      e.target.style.outline = "";
       e.stopPropagation();
     });
 
-    // 要素選択時のクリックイベント
+    // 要素選択
     doc.body.addEventListener("click", (e) => {
       const target = e.target;
       console.log("選択要素:", target);
       drug(target);
+
       e.preventDefault();
       e.stopPropagation();
     });
   };
 }
 
+/* =========================
+   モード切替
+========================= */
 function showPage() {
+  // 🔽 Edit内容をHTMLに反映
+  const html = getEditedHTML();
+
+  prev.srcdoc = html;
+  syncEditor(html);
+
   previewFrame.style.opacity = 1;
   previewFrame.style.pointerEvents = "auto";
   EditFrame.style.opacity = 0;
   EditFrame.style.pointerEvents = "none";
+
   Editmode = false;
   TrueViewBtn.style.border = "5px solid #ffcc00";
-  prev.srcdoc = Edit.srcdoc;
   UIEditBtn.style.border = "none";
 }
 
@@ -108,11 +133,15 @@ function hidePage() {
   previewFrame.style.pointerEvents = "none";
   EditFrame.style.opacity = 1;
   EditFrame.style.pointerEvents = "auto";
+
   Editmode = true;
   UIEditBtn.style.border = "5px solid #ffcc00";
   TrueViewBtn.style.border = "none";
 }
 
+/* =========================
+   初期化
+========================= */
 window.addEventListener("load", () => {
   editor = CodeMirror.fromTextArea(mirror, {
     mode: "htmlmixed",
@@ -129,5 +158,5 @@ window.addEventListener("load", () => {
   showPage();
 
   TrueViewBtn.onclick = showPage;
-  UIEditBtn.onclick = hidePage;
+  UIEditBtn.onclick   = hidePage;
 });
