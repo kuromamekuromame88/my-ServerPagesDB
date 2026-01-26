@@ -3,24 +3,21 @@ const containerDiv = document.getElementById("container");
 // ===== 卒業日 =====
 const graduationDate = new Date("2026-03-17T00:00:00");
 
-// ===== 表示済み写真管理 =====
+// ===== 表示済み管理 =====
 const shownPhotoCounts = new Set();
-const occupiedRects = []; // 重なり防止用
+const logoRects = [];
+const photoRects = [];
 
-// ===== デフォルト背景 =====
+// ===== 背景 =====
 const DEFAULT_BACKGROUND_URL =
   "https://tool-webs.onrender.com/countdown/img/background.jpg";
 
 // ===== 写真ステージ =====
 const photoStages = [
-  { count: 10, url: "https://tool-webs.onrender.com/countdown/img/10.jpg", mode: "frame" },
-  { count: 20, url: "https://tool-webs.onrender.com/countdown/img/20.jpg", mode: "frame" },
-  { count: 40, url: "https://tool-webs.onrender.com/countdown/img/40.jpg", mode: "frame" },
-  { count: 80, url: "https://tool-webs.onrender.com/countdown/img/80.jpg", mode: "frame" },
-  { count: 160, url: "https://tool-webs.onrender.com/countdown/img/160.jpg", mode: "frame" },
-  { count: 320, url: "https://tool-webs.onrender.com/countdown/img/320.jpg", mode: "frame" },
-  { count: 640, url: "https://tool-webs.onrender.com/countdown/img/640.jpg", mode: "frame" },
-  { count: 1280, url: "https://tool-webs.onrender.com/countdown/img/1280.jpg", mode: "frame" },
+  { count: 10, url: "https://tool-webs.onrender.com/countdown/img/10.jpg" },
+  { count: 20, url: "https://tool-webs.onrender.com/countdown/img/20.jpg" },
+  { count: 40, url: "https://tool-webs.onrender.com/countdown/img/40.jpg" },
+  { count: 80, url: "https://tool-webs.onrender.com/countdown/img/80.jpg" },
 ];
 
 // ===== 日数 =====
@@ -72,9 +69,12 @@ function createPetal() {
   p.endFill();
 
   p.x = Math.random() * app.screen.width;
-  p.y = Math.random() * app.screen.height;
+  p.y = -10;
   p.speed = 0.5 + Math.random() * 1.5;
   p.rotationSpeed = (Math.random() - 0.5) * 0.03;
+
+  // ★ 重要：イベント無効化
+  p.eventMode = "none";
 
   petalLayer.addChild(p);
   petals.push(p);
@@ -99,7 +99,7 @@ function updateText() {
   countdown.y = app.screen.height * 0.8;
 }
 
-// ===== 重なり判定 =====
+// ===== 衝突判定 =====
 function intersects(a, b) {
   return !(
     a.x + a.w < b.x ||
@@ -109,15 +109,20 @@ function intersects(a, b) {
   );
 }
 
-function findFreePosition(w, h) {
+// ===== 位置探索 =====
+function findPosition(w, h, strict = true) {
   for (let i = 0; i < 40; i++) {
     const rect = {
       x: Math.random() * (app.screen.width - w),
       y: Math.random() * (app.screen.height * 0.55),
       w, h,
     };
-    if (!occupiedRects.some(r => intersects(r, rect))) {
-      occupiedRects.push(rect);
+
+    const avoid = strict
+      ? [...logoRects, ...photoRects]
+      : logoRects;
+
+    if (!avoid.some(r => intersects(r, rect))) {
       return rect;
     }
   }
@@ -137,7 +142,9 @@ function createPhotoFrame(texture) {
   const w = photo.width;
   const h = photo.height;
 
-  const pos = findFreePosition(w, h);
+  // ① 厳密配置 → ② 校章のみ回避
+  let pos = findPosition(w, h, true);
+  if (!pos) pos = findPosition(w, h, false);
   if (!pos) return;
 
   const frame = new PIXI.Container();
@@ -152,6 +159,8 @@ function createPhotoFrame(texture) {
 
   frame.addChild(border, photo);
   photoLayer.addChild(frame);
+
+  photoRects.push({ x: pos.x, y: pos.y, w, h });
 
   app.ticker.add(function fade() {
     frame.alpha += 0.03;
@@ -209,7 +218,7 @@ async function init() {
   logo.interactive = true;
   logo.buttonMode = true;
 
-  occupiedRects.push({
+  logoRects.push({
     x: logo.x - logo.width / 2,
     y: logo.y - logo.height / 2,
     w: logo.width,
