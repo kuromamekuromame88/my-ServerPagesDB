@@ -111,7 +111,7 @@ function intersects(a, b) {
 
 // ===== 位置探索 =====
 function findPosition(w, h, strict = true) {
-  for (let i = 0; i < 40; i++) {
+  for (let i = 0; i < 100; i++) {
     const rect = {
       x: Math.random() * (app.screen.width - w),
       y: Math.random() * (app.screen.height * 0.55),
