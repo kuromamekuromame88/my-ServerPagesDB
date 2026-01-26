@@ -43,16 +43,16 @@ app.stage.sortableChildren = true;
 
 // ===== レイヤ =====
 const bgLayer = new PIXI.Container();
+const petalLayer = new PIXI.Container();
 const photoLayer = new PIXI.Container();
 const uiLayer = new PIXI.Container();
-const petalLayer = new PIXI.Container();
 
 bgLayer.zIndex = 0;
+petalLayer.zIndex = 5;   // ← 修正（背景より上）
 photoLayer.zIndex = 10;
 uiLayer.zIndex = 20;
-petalLayer.zIndex = -10;
 
-app.stage.addChild(bgLayer, photoLayer, uiLayer, petalLayer);
+app.stage.addChild(bgLayer, petalLayer, photoLayer, uiLayer);
 
 // ===== 背景 =====
 const backgroundSprite = new PIXI.Sprite();
@@ -73,7 +73,6 @@ function createPetal() {
   p.speed = 0.5 + Math.random() * 1.5;
   p.rotationSpeed = (Math.random() - 0.5) * 0.03;
 
-  // ★ 重要：イベント無効化
   p.eventMode = "none";
 
   petalLayer.addChild(p);
@@ -142,10 +141,17 @@ function createPhotoFrame(texture) {
   const w = photo.width;
   const h = photo.height;
 
-  // ① 厳密配置 → ② 校章のみ回避
   let pos = findPosition(w, h, true);
   if (!pos) pos = findPosition(w, h, false);
-  if (!pos) return;
+
+  // ★ 最終フォールバック（必ず表示）
+  if (!pos) {
+    pos = {
+      x: app.screen.width / 2 - w / 2,
+      y: app.screen.height * 0.2,
+      w, h,
+    };
+  }
 
   const frame = new PIXI.Container();
   frame.x = pos.x + w / 2;
@@ -160,7 +166,7 @@ function createPhotoFrame(texture) {
   frame.addChild(border, photo);
   photoLayer.addChild(frame);
 
-  photoRects.push({ x: pos.x, y: pos.y, w, h });
+  photoRects.push(pos);
 
   app.ticker.add(function fade() {
     frame.alpha += 0.03;
