@@ -73,14 +73,16 @@ bgLayer.addChild(backgroundSprite);
 // ===== 桜 =====
 const petals = [];
 
-function createPetal(x = Math.random() * app.screen.width, y = -10) {
+function createPetal() {
   const p = new PIXI.Graphics();
   p.beginFill(0xffc0cb);
   p.drawEllipse(0, 0, 6, 4);
   p.endFill();
 
-  p.x = x;
-  p.y = y;
+  // ★ 必ず画面上部から
+  p.x = Math.random() * app.screen.width;
+  p.y = -10;
+
   p.vx = (Math.random() - 0.5) * 0.4;
   p.vy = 0.5 + Math.random() * 1.5;
   p.rotationSpeed = (Math.random() - 0.5) * 0.03;
@@ -290,10 +292,6 @@ async function init() {
     targetPetalCount = clickCount;
     updateText();
     updatePhotos();
-
-    for (let i = 0; i < 5; i++) {
-      createPetal(logo.x, logo.y);
-    }
   });
 
   uiLayer.addChild(logo);
