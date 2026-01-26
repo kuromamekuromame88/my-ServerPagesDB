@@ -37,6 +37,13 @@ let clickCount = 0;
 let targetPetalCount = 0;
 let gameStarted = false;
 
+// ===== 風 =====
+let windActive = false;
+let windX = 0;
+let windY = 0;
+const WIND_RADIUS = 130;
+const WIND_POWER = 0.45;
+
 // ===== Pixi =====
 const app = new PIXI.Application({
   resizeTo: window,
@@ -52,7 +59,7 @@ const photoLayer = new PIXI.Container();
 const uiLayer = new PIXI.Container();
 
 bgLayer.zIndex = 0;
-petalLayer.zIndex = 5;   // ← 修正（背景より上）
+petalLayer.zIndex = 5;
 photoLayer.zIndex = 10;
 uiLayer.zIndex = 20;
 
@@ -66,15 +73,16 @@ bgLayer.addChild(backgroundSprite);
 // ===== 桜 =====
 const petals = [];
 
-function createPetal() {
+function createPetal(x = Math.random() * app.screen.width, y = -10) {
   const p = new PIXI.Graphics();
   p.beginFill(0xffc0cb);
   p.drawEllipse(0, 0, 6, 4);
   p.endFill();
 
-  p.x = Math.random() * app.screen.width;
-  p.y = -10;
-  p.speed = 0.5 + Math.random() * 1.5;
+  p.x = x;
+  p.y = y;
+  p.vx = (Math.random() - 0.5) * 0.4;
+  p.vy = 0.5 + Math.random() * 1.5;
   p.rotationSpeed = (Math.random() - 0.5) * 0.03;
 
   p.eventMode = "none";
@@ -147,8 +155,6 @@ function createPhotoFrame(texture) {
 
   let pos = findPosition(w, h, true);
   if (!pos) pos = findPosition(w, h, false);
-
-  // ★ 最終フォールバック（必ず表示）
   if (!pos) {
     pos = {
       x: app.screen.width / 2 - w / 2,
@@ -169,7 +175,6 @@ function createPhotoFrame(texture) {
 
   frame.addChild(border, photo);
   photoLayer.addChild(frame);
-
   photoRects.push(pos);
 
   app.ticker.add(function fade() {
@@ -190,16 +195,57 @@ async function updatePhotos() {
   }
 }
 
+// ===== 風操作 =====
+app.stage.eventMode = "static";
+
+app.stage.on("pointerdown", (e) => {
+  if (!logoRects.some(r =>
+    e.global.x >= r.x &&
+    e.global.x <= r.x + r.w &&
+    e.global.y >= r.y &&
+    e.global.y <= r.y + r.h
+  )) {
+    windActive = true;
+    windX = e.global.x;
+    windY = e.global.y;
+  }
+});
+
+app.stage.on("pointermove", (e) => {
+  if (windActive) {
+    windX = e.global.x;
+    windY = e.global.y;
+  }
+});
+
+app.stage.on("pointerup", () => {
+  windActive = false;
+});
+
 // ===== ループ =====
 app.ticker.add(() => {
   while (petals.length < targetPetalCount) createPetal();
 
   petals.forEach(p => {
-    p.y += p.speed;
+    if (windActive) {
+      const dx = p.x - windX;
+      const dy = p.y - windY;
+      const dist = Math.hypot(dx, dy);
+      if (dist < WIND_RADIUS && dist > 0.1) {
+        p.vx += (dx / dist) * WIND_POWER;
+        p.vy += (dy / dist) * WIND_POWER;
+      }
+    }
+
+    p.x += p.vx;
+    p.y += p.vy;
     p.rotation += p.rotationSpeed;
+
     if (p.y > app.screen.height + 10) {
       p.y = -10;
       p.x = Math.random() * app.screen.width;
+      p.vx = (Math.random() - 0.5) * 0.4;
+      p.vy = 0.5 + Math.random() * 1.5;
     }
   });
 });
@@ -244,6 +290,10 @@ async function init() {
     targetPetalCount = clickCount;
     updateText();
     updatePhotos();
+
+    for (let i = 0; i < 5; i++) {
+      createPetal(logo.x, logo.y);
+    }
   });
 
   uiLayer.addChild(logo);
