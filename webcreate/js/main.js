@@ -9,32 +9,51 @@ const UIEditBtn = document.getElementById("UIEditBtn");
 const prev = document.getElementById("previewFrame"); 
 const Edit = document.getElementById("EditFrame");
 
-function drug(e){
-    let isDragging = false;
-    let startX, startY;
+function drug(target){
+  let isDragging = false;
+  let startX = 0;
+  let startY = 0;
 
-    e.addEventListener('mousedown', (e) => {
-        isDragging = true;
-        startX = e.clientX - e.target.offsetLeft;
-        startY = e.clientY - e.target.offsetTop;
-        e.target.style.cursor = 'grabbing';
-    });
+  // タッチ操作時のスクロール抑制（重要）
+  target.style.touchAction = "none";
+  target.style.cursor = "grab";
 
-    e.addEventListener('mousemove', (e) => {
-        if (isDragging) {
-            e.target.style.position = 'absolute';
-            e.target.style.left = (e.clientX - startX) + 'px';
-            e.target.style.top = (e.clientY - startY) + 'px';
-        }
-    });
+  target.addEventListener("pointerdown", (e) => {
+    isDragging = true;
 
-    e.addEventListener('mouseup', (e) => {
-        isDragging = false;
-        e.target.style.cursor = 'grab';
-        e.mousedown = null;
-        e.mousemove = null;
-    });  
-};
+    // ポインタを捕捉（マウスが外れても追従する）
+    target.setPointerCapture(e.pointerId);
+
+    const rect = target.getBoundingClientRect();
+    startX = e.clientX - rect.left;
+    startY = e.clientY - rect.top;
+
+    target.style.position = "absolute";
+    target.style.cursor = "grabbing";
+
+    e.preventDefault();
+    e.stopPropagation();
+  });
+
+  target.addEventListener("pointermove", (e) => {
+    if (!isDragging) return;
+
+    target.style.left = (e.clientX - startX) + "px";
+    target.style.top  = (e.clientY - startY) + "px";
+  });
+
+  target.addEventListener("pointerup", (e) => {
+    isDragging = false;
+    target.releasePointerCapture(e.pointerId);
+    target.style.cursor = "grab";
+  });
+
+  target.addEventListener("pointercancel", () => {
+    isDragging = false;
+    target.style.cursor = "grab";
+  });
+}
+
 
 function preview() {
   prev.srcdoc = editor.getValue();
