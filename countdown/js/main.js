@@ -243,14 +243,21 @@ app.ticker.add(() => {
     p.y += p.vy;
     p.rotation += p.rotationSpeed;
 
-    if (p.y > app.screen.height + 10) {
-      p.y = -10;
+    const MARGIN = 20;
+    if (
+      p.x < -MARGIN ||
+      p.x > app.screen.width + MARGIN ||
+      p.y < -MARGIN ||
+      p.y > app.screen.height + MARGIN
+    ) {
       p.x = Math.random() * app.screen.width;
+      p.y = -10;
       p.vx = (Math.random() - 0.5) * 0.4;
       p.vy = 0.5 + Math.random() * 1.5;
     }
   });
 });
+
 
 // ===== 初期化 =====
 async function init() {
