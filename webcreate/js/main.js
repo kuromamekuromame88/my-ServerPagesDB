@@ -99,6 +99,7 @@ function showPage() {
   EditFrame.style.pointerEvents = "none";
   Editmode = false;
   TrueViewBtn.style.border = "5px solid #ffcc00";
+  prev.srcdoc = Edit.srcdoc;
   UIEditBtn.style.border = "none";
 }
 
