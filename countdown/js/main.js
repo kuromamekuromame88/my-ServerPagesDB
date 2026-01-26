@@ -18,6 +18,13 @@ const photoStages = [
   { count: 20, url: "https://tool-webs.onrender.com/countdown/img/20.jpg" },
   { count: 40, url: "https://tool-webs.onrender.com/countdown/img/40.jpg" },
   { count: 80, url: "https://tool-webs.onrender.com/countdown/img/80.jpg" },
+  { count: 160, url: "https://tool-webs.onrender.com/countdown/img/160.jpg" },
+  { count: 320, url: "https://tool-webs.onrender.com/countdown/img/320.jpg" },
+  { count: 640, url: "https://tool-webs.onrender.com/countdown/img/640.jpg" },
+  { count: 1280, url: "https://tool-webs.onrender.com/countdown/img/1280.jpg" },
+  { count: 2560, url: "https://tool-webs.onrender.com/countdown/img/2560.jpg" },
+  { count: 5120, url: "https://tool-webs.onrender.com/countdown/img/5120.jpg" },
+  { count: 10240, url: "https://tool-webs.onrender.com/countdown/img/10240.jpg" },
 ];
 
 // ===== 日数 =====
