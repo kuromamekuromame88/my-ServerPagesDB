@@ -8,6 +8,30 @@ const prev = document.getElementById("previewFrame");
 const Edit = document.getElementById("EditFrame");
 
 /* =========================
+   Edit iframe → HTML生成
+========================= */
+function getEditedHTML() {
+  const doc = Edit.contentDocument;
+  if (!doc) return editor.getValue();
+  return "<!DOCTYPE html>\n" + doc.documentElement.outerHTML;
+}
+
+/* =========================
+   Preview & Editor 同期
+========================= */
+function syncAllFromEdit() {
+  const html = getEditedHTML();
+
+  // preview iframe 更新（再ロードなしで反映）
+  prev.srcdoc = html;
+
+  // CodeMirror 差分同期
+  if (editor.getValue() !== html) {
+    editor.setValue(html);
+  }
+}
+
+/* =========================
    Pointer Events Drag
 ========================= */
 function drug(target){
@@ -40,35 +64,19 @@ function drug(target){
     target.style.top  = (e.clientY - startY) + "px";
   });
 
-  target.addEventListener("pointerup", (e) => {
+  function endDrag(e) {
+    if (!isDragging) return;
+
     isDragging = false;
     target.releasePointerCapture(e.pointerId);
     target.style.cursor = "grab";
-  });
 
-  target.addEventListener("pointercancel", () => {
-    isDragging = false;
-    target.style.cursor = "grab";
-  });
-}
-
-/* =========================
-   Edit iframe → HTML生成
-========================= */
-function getEditedHTML() {
-  const doc = Edit.contentDocument;
-  if (!doc) return editor.getValue();
-
-  return "<!DOCTYPE html>\n" + doc.documentElement.outerHTML;
-}
-
-/* =========================
-   CodeMirror同期
-========================= */
-function syncEditor(html) {
-  if (editor.getValue() !== html) {
-    editor.setValue(html);
+    // 🔽 ここでのみ同期！
+    syncAllFromEdit();
   }
+
+  target.addEventListener("pointerup", endDrag);
+  target.addEventListener("pointercancel", endDrag);
 }
 
 /* =========================
@@ -83,7 +91,6 @@ function preview() {
   Edit.onload = () => {
     const doc = Edit.contentDocument;
 
-    // 要素ホバー表示
     doc.body.addEventListener("mouseover", (e) => {
       const target = e.target;
       if (target === doc.body || target === doc.documentElement) return;
@@ -96,7 +103,6 @@ function preview() {
       e.stopPropagation();
     });
 
-    // 要素選択
     doc.body.addEventListener("click", (e) => {
       const target = e.target;
       console.log("選択要素:", target);
@@ -109,15 +115,9 @@ function preview() {
 }
 
 /* =========================
-   モード切替
+   モード切替（表示のみ）
 ========================= */
 function showPage() {
-  // 🔽 Edit内容をHTMLに反映
-  const html = getEditedHTML();
-
-  prev.srcdoc = html;
-  syncEditor(html);
-
   previewFrame.style.opacity = 1;
   previewFrame.style.pointerEvents = "auto";
   EditFrame.style.opacity = 0;

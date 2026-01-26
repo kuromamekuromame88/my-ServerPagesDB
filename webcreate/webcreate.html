@@ -54,6 +54,7 @@ body {
   position: absolute;
   top: 10px;
   right: 20px;
+  gap: 10px;
 }
 
 .nav-ui input{
@@ -66,6 +67,20 @@ body {
   font-size: 1.2em;
   font-weight: bold;
   text-align: center;
+}
+
+.nav-ui button{
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background-color: #222;
+  color: white;
+  font-size: 1em;
+  cursor: pointer;
+}
+
+.nav-ui button:hover{
+  background-color: #444;
 }
 
 main {
@@ -231,6 +246,7 @@ window.addEventListener("load", () => {
   <a href="/">tool-webs</a>
   <div class="nav-ui">
     <input type="text" id="PageTitle" class="PageTitle" placeholder="ページのタイトルを入力" value="新規ページ">
+    <button>設定</button>
   </div>
 </header>
 
