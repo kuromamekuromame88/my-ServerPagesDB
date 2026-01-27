@@ -706,7 +706,8 @@ if (nickname) {
     type:"regist",
     userID:userID,
     nickname:nickname,
-    pass:"PASSWORD",quiet: true
+    pass: localStorage.getItem("PASSWORD") || "PASSWORD",
+    quiet: true
   }));
 }
 
@@ -750,6 +751,7 @@ saveUsername.addEventListener("click", async() => {
   nickname = name;
   const PASSWORD = document.getElementById("passwordInput").value.trim();
   if(!PASSWORD) return alert("パスワードを入力してください。");
+  localStorage.setItem("PASSWORD", PASSWORD);
 
   function generateUserID(key=5) {
     const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
