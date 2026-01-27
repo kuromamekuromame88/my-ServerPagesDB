@@ -709,7 +709,7 @@ function showChatUI() {
 }
 if (nickname) showChatUI();
 
-async function waitwscon(){
+/*async function waitwscon(){
   let timeout = 0;
   const timerId = setInterval(() => {
     timeout++;
@@ -722,6 +722,14 @@ async function waitwscon(){
       console.error("接続監視タイマーを停止しました! (タイムアウト)");
     }
   }, 1000);
+}*/
+
+function waitwscon(ws, callback) {
+    if (ws.readyState === WebSocket.OPEN) {
+        callback();
+    } else {
+        setTimeout(() => waitwscon(ws, callback), 100);
+    }
 }
 
 // ------------------- 初回ニックネーム登録 -------------------
@@ -747,7 +755,7 @@ saveUsername.addEventListener("click", async() => {
 
   connectWebSocket();
 
-  await waitwscon();
+  waitwscon();
 
   localStorage.removeItem("muted");
   
