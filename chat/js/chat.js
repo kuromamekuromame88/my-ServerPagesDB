@@ -96,9 +96,11 @@ openBoard.onclick = () => {
 // ------------------- ニックネーム & userID -------------------
 let nickname = localStorage.getItem("nickname");
 
-let userID = localStorage.getItem("userID");
+let userID = localStorage.getItem("userID") || null;
 
-if (!userID || userID == "null") {
+
+
+if (!userID || userID == "null" && localStorage.getItem("AlrRgt")) {
   function generateUserID() {
     const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     let id = "";
@@ -721,6 +723,7 @@ saveUsername.onclick = () => {
     for (let i = 0; i < key; i++) id += chars[Math.floor(Math.random() * chars.length)];
     return id;
   }
+  localStorage.setItem("AlrRgt", true);
   if (!userID) {
     userID = generateUserID();
     localStorage.setItem("userID", userID);
