@@ -99,11 +99,12 @@ let nickname = localStorage.getItem("nickname");
 let userID = localStorage.getItem("userID") || null;
 
 
-console.log(!userID);
+/*console.log(!userID);
 console.log(userID);
 console.log(userID == "null");
 console.log(!userID || userID == "null");
 console.log(userID == "null" && localStorage.getItem("AlrRgt") !== "true");
+*/
 
 if (!userID || userID == "null" && localStorage.getItem("AlrRgt") !== "true") {
   /*console.log("nullユーザーを検知! 新しいuserIDを発行します。");
@@ -486,6 +487,7 @@ chatContainer.addEventListener("scroll", () => {
 
 // 重要------------------- WebSocket接続 -------------------
 function connectWebSocket() {
+  if (!userID || userID == "null" && localStorage.getItem("AlrRgt") !== "true") return;
   ws = new WebSocket(SERVER_URL);
 
   checkupdate();
@@ -715,18 +717,6 @@ saveUsername.onclick = () => {
   nickname = name;
   const PASSWORD = document.getElementById("passwordInput").value.trim();
   if(!PASSWORD) return alert("パスワードを入力してください。");
-  if(ws){
-    ws.send(JSON.stringify({
-      app:"webchat",
-      type:"regist",
-      userID:userID,
-      nickname:nickname,
-      pass:PASSWORD
-    }));
-  }else{
-    alert("WebSocketに接続されていません。しばらく待ってからもう一度お試しください。");
-    return;
-  }
 
   function generateUserID(key=5) {
     const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -741,6 +731,19 @@ saveUsername.onclick = () => {
   }
 
   localStorage.removeItem("muted");
+  connectWebSocket()
+  if(ws){
+    ws.send(JSON.stringify({
+      app:"webchat",
+      type:"regist",
+      userID:userID,
+      nickname:nickname,
+      pass:PASSWORD
+    }));
+  }else{
+    alert("WebSocketに接続されていません。しばらく待ってからもう一度お試しください。");
+    return;
+  }
   showChatUI();
 };
 
