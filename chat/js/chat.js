@@ -713,7 +713,7 @@ async function waitwscon(){
   let timeout = 0;
   const timerId = setInterval(() => {
     timeout++;
-    if (ws.ADD_ATTRS && ws.readyState === WebSocket.OPEN) {
+    if (ws.readyState === WebSocket.OPEN) {
       clearInterval(timerId); // タイマー停止
       console.log("接続監視タイマーを停止しました!");
     }
