@@ -713,7 +713,7 @@ async function waitwscon(){
   let timeout = 0;
   const timerId = setInterval(() => {
     timeout++;
-    if (ws) {
+    if (ws.ADD_ATTRS && ws.readyState === WebSocket.OPEN) {
       clearInterval(timerId); // タイマー停止
       console.log("接続監視タイマーを停止しました!");
     }
@@ -721,7 +721,7 @@ async function waitwscon(){
       clearInterval(timerId); // タイマー停止
       console.error("接続監視タイマーを停止しました! (タイムアウト)");
     }
-  }, 100);
+  }, 1000);
 }
 
 // ------------------- 初回ニックネーム登録 -------------------
