@@ -101,6 +101,7 @@ let userID = localStorage.getItem("userID") || null;
 
 
 if (!userID || userID == "null" && localStorage.getItem("AlrRgt")) {
+  console.log("nullユーザーを検知! 新しいuserIDを発行します。");
   function generateUserID() {
     const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     let id = "";
