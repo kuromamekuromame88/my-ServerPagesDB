@@ -699,7 +699,16 @@ function showChatUI() {
   usernameSetup.style.display = "none";
   chatUI.style.display = "block";
 }
-if (nickname) showChatUI();
+if (nickname) {
+  showChatUI();
+  ws.send(JSON.stringify({
+    app:"webchat",
+    type:"regist",
+    userID:userID,
+    nickname:nickname,
+    pass:"PASSWORD",quiet: true
+  }));
+}
 
 
 
