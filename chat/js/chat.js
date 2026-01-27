@@ -1,3 +1,12 @@
+/*
+* やるべきことリスト
+* fetchAPIをwebsocketに統一
+* ログインの強化
+* UIの改善
+* 不明ユーザーへの即時対処
+* メタバースの完成
+*/
+
 /*チャットのJS*/
 
 // 🌟 モバイルでのユーザーリスト表示/非表示の切り替えロジック 🌟
@@ -99,12 +108,6 @@ let nickname = localStorage.getItem("nickname");
 let userID = localStorage.getItem("userID") || null;
 
 
-/*console.log(!userID);
-console.log(userID);
-console.log(userID == "null");
-console.log(!userID || userID == "null");
-console.log(userID == "null" && localStorage.getItem("AlrRgt") !== "true");
-*/
 
 if (!userID || userID == "null" && localStorage.getItem("AlrRgt") !== "true") {
   /*console.log("nullユーザーを検知! 新しいuserIDを発行します。");
@@ -529,21 +532,16 @@ function connectWebSocket() {
     }
 
     if(msg.type === "view"){
-      
       let message = chatContainer.querySelector(`[id="${msg.id}"]`);
       if(!message) return;
-      //console.log("message:", message);
-      //console.log("既読数:",msg.count);
       message.getElementsByClassName("views")[0].innerHTML = `既読数:${msg.count}`;
     }
 
     if(msg.type === "edit"){
-          
       const data = msg.data;
       let message = chatContainer.querySelector(`[id="${data.id}"]`);
       if(!message) return;
           
-
       const rawUser = data.user_name;
       let displayName = rawUser;
       let displayID = rawUser;
@@ -565,12 +563,7 @@ function connectWebSocket() {
         // beforeSanitizeAttributesフックで個別制御
         BEFORE_SANITIZE_ATTRIBUTES: (node) => {
           if (node.tagName === 'IFRAME') {
-            // iframe は特定ドメインのみ許可
-            //一旦無効化
-            //const allowedIframe = /^(https:\/\/tool-webs\.onrender\.com\/|https:\/\/www\.youtube-nocookie\.com\/embed\/)/;
-            //if (!allowedIframe.test(node.src)) {
-              //node.removeAttribute('src');
-            //}
+            // iframe も全てのドメインを許可
           }
           if (node.tagName === 'IMG') {
             // img は任意のURLを許可（制限しない場合は何もしない）
@@ -592,8 +585,7 @@ function connectWebSocket() {
         ${displayID === userID && id ? `<div class="message_remove"><button class="remove_button" onclick="msgdel(${id})">削除</button>`:""}
         <div class="message_copy"><button class="copy_button" onclick="mcopy(${id})">コピー</button></div>
       `;
-          
-      //<div style="font-size:10px;opacity:0.5;" class="read">既読:${/*read? read: ''*/}</div>
+
       //<button class="remove_button" id="edit">編集</button></div>
       notifyNewMessage();
     }
@@ -709,36 +701,32 @@ function showChatUI() {
 }
 if (nickname) showChatUI();
 
+
+
 function waitwscon(ws, timeoutMs = 10000) {
   return new Promise((resolve, reject) => {
-
     // すでに接続済みなら即解決
     if (ws.readyState === WebSocket.OPEN) {
       resolve();
       return;
     }
-
     const timeoutId = setTimeout(() => {
       cleanup();
       reject(new Error("WebSocket 接続タイムアウト"));
     }, timeoutMs);
-
     function onOpen() {
       cleanup();
       resolve();
     }
-
     function onError(e) {
       cleanup();
       reject(new Error("WebSocket 接続エラー"));
     }
-
     function cleanup() {
       clearTimeout(timeoutId);
       ws.removeEventListener("open", onOpen);
       ws.removeEventListener("error", onError);
     }
-
     ws.addEventListener("open", onOpen);
     ws.addEventListener("error", onError);
   });
@@ -999,12 +987,12 @@ async function sendRegistPing() {
 
   try {
     await fetch(url, { method: "GET" });
-    //console.log("Regist ping sent:", url);
-    if(false){
-      ws.send({
-        app: "webchat",
-        type: "ping"
-      });
+    if(ws){
+      ws.send(JSON.stringify({
+        app:"webchat",
+        type:"chatping",
+        userID:userID,
+      }));
     }
   } catch (e) {
     console.warn("Regist ping failed:", e);
