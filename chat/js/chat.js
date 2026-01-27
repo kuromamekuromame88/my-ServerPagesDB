@@ -709,8 +709,23 @@ function showChatUI() {
 }
 if (nickname) showChatUI();
 
+async function waitwscon(){
+  let timeout = 0;
+  const timerId = setInterval(() => {
+    timeout++;
+    if (ws) {
+      clearInterval(timerId); // タイマー停止
+      console.log("接続監視タイマーを停止しました!");
+    }
+    if(timeout > 10){
+      clearInterval(timerId); // タイマー停止
+      console.error("接続監視タイマーを停止しました! (タイムアウト)");
+    }
+  }, 100);
+}
+
 // ------------------- 初回ニックネーム登録 -------------------
-saveUsername.onclick = () => {
+saveUsername.addEventListener("click", async() => {
   const name = usernameInput.value.trim();
   if (!name) return alert("ニックネームを入力してください");
   localStorage.setItem("nickname", name);
@@ -718,6 +733,9 @@ saveUsername.onclick = () => {
   const PASSWORD = document.getElementById("passwordInput").value.trim();
   if(!PASSWORD) return alert("パスワードを入力してください。");
   connectWebSocket();
+
+  await waitwscon();
+
   function generateUserID(key=5) {
     const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     let id = "";
@@ -745,7 +763,7 @@ saveUsername.onclick = () => {
     return;
   }
   showChatUI();
-};
+});
 
 //-------------------画像アップロード----------------
 const MAXSIZE = 800 * 1024;
