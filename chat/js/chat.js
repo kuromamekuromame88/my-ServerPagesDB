@@ -713,7 +713,7 @@ async function waitwscon(){
   let timeout = 0;
   const timerId = setInterval(() => {
     timeout++;
-    if (ws.readyState === WebSocket.OPEN) {
+    if (ws.readyState === ws.OPEN) {
       clearInterval(timerId); // タイマー停止
       console.log("接続監視タイマーを停止しました!");
     }
@@ -732,9 +732,6 @@ saveUsername.addEventListener("click", async() => {
   nickname = name;
   const PASSWORD = document.getElementById("passwordInput").value.trim();
   if(!PASSWORD) return alert("パスワードを入力してください。");
-  connectWebSocket();
-
-  await waitwscon();
 
   function generateUserID(key=5) {
     const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -747,6 +744,10 @@ saveUsername.addEventListener("click", async() => {
     userID = generateUserID();
     localStorage.setItem("userID", userID);
   }
+
+  connectWebSocket();
+
+  await waitwscon();
 
   localStorage.removeItem("muted");
   
