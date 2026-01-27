@@ -110,6 +110,9 @@ if (!userID || userID == "null" && localStorage.getItem("AlrRgt")) {
   }
   userID = generateUserID();
   localStorage.setItem("userID", userID);
+  localStorage.setItem("AlrRgt", true);
+}else{
+  localStorage.setItem("AlrRgt", true);
 }
 
 
