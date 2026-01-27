@@ -777,7 +777,8 @@ saveUsername.addEventListener("click", async() => {
       type:"regist",
       userID:userID,
       nickname:nickname,
-      pass:PASSWORD
+      pass:PASSWORD,
+      quiet: true
     }));
   }else{
     alert("WebSocketに接続されていません。しばらく待ってからもう一度お試しください。");
