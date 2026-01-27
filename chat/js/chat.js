@@ -717,7 +717,7 @@ saveUsername.onclick = () => {
   nickname = name;
   const PASSWORD = document.getElementById("passwordInput").value.trim();
   if(!PASSWORD) return alert("パスワードを入力してください。");
-
+  connectWebSocket();
   function generateUserID(key=5) {
     const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     let id = "";
@@ -731,7 +731,7 @@ saveUsername.onclick = () => {
   }
 
   localStorage.removeItem("muted");
-  connectWebSocket()
+  
   if(ws){
     ws.send(JSON.stringify({
       app:"webchat",
