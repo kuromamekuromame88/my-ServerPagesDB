@@ -709,28 +709,41 @@ function showChatUI() {
 }
 if (nickname) showChatUI();
 
-/*async function waitwscon(){
-  let timeout = 0;
-  const timerId = setInterval(() => {
-    timeout++;
-    if (ws.readyState === ws.OPEN) {
-      clearInterval(timerId); // タイマー停止
-      console.log("接続監視タイマーを停止しました!");
-    }
-    if(timeout > 10){
-      clearInterval(timerId); // タイマー停止
-      console.error("接続監視タイマーを停止しました! (タイムアウト)");
-    }
-  }, 1000);
-}*/
+function waitwscon(ws, timeoutMs = 10000) {
+  return new Promise((resolve, reject) => {
 
-function waitwscon(ws, callback) {
+    // すでに接続済みなら即解決
     if (ws.readyState === WebSocket.OPEN) {
-        callback();
-    } else {
-        setTimeout(() => waitwscon(ws, callback), 100);
+      resolve();
+      return;
     }
+
+    const timeoutId = setTimeout(() => {
+      cleanup();
+      reject(new Error("WebSocket 接続タイムアウト"));
+    }, timeoutMs);
+
+    function onOpen() {
+      cleanup();
+      resolve();
+    }
+
+    function onError(e) {
+      cleanup();
+      reject(new Error("WebSocket 接続エラー"));
+    }
+
+    function cleanup() {
+      clearTimeout(timeoutId);
+      ws.removeEventListener("open", onOpen);
+      ws.removeEventListener("error", onError);
+    }
+
+    ws.addEventListener("open", onOpen);
+    ws.addEventListener("error", onError);
+  });
 }
+
 
 // ------------------- 初回ニックネーム登録 -------------------
 saveUsername.addEventListener("click", async() => {
@@ -755,7 +768,7 @@ saveUsername.addEventListener("click", async() => {
 
   connectWebSocket();
 
-  waitwscon();
+  await waitwscon(ws);
 
   localStorage.removeItem("muted");
   
