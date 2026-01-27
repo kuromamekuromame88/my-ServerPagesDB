@@ -99,6 +99,11 @@ let nickname = localStorage.getItem("nickname");
 let userID = localStorage.getItem("userID") || null;
 
 
+console.log(!userID);
+console.log(userID);
+console.log(userID == "null");
+console.log(!userID || userID == "null");
+console.log(userID == "null" && localStorage.getItem("AlrRgt") === "true");
 
 if (!userID || userID == "null" && localStorage.getItem("AlrRgt") === "true") {
   console.log("nullユーザーを検知! 新しいuserIDを発行します。");
