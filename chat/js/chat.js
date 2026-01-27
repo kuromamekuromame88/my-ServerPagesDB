@@ -106,7 +106,7 @@ console.log(!userID || userID == "null");
 console.log(userID == "null" && localStorage.getItem("AlrRgt") !== "true");
 
 if (!userID || userID == "null" && localStorage.getItem("AlrRgt") !== "true") {
-  console.log("nullユーザーを検知! 新しいuserIDを発行します。");
+  /*console.log("nullユーザーを検知! 新しいuserIDを発行します。");
   function generateUserID() {
     const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     let id = "";
@@ -115,7 +115,7 @@ if (!userID || userID == "null" && localStorage.getItem("AlrRgt") !== "true") {
   }
   userID = generateUserID();
   localStorage.setItem("userID", userID);
-  localStorage.setItem("AlrRgt", true);
+  localStorage.setItem("AlrRgt", true);*/
 }else{
   console.log("nullユーザーを検知しませんでした。");
   console.log("AlrRgtフラグを設定します。");
