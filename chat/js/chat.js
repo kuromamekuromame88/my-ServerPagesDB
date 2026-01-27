@@ -103,9 +103,9 @@ console.log(!userID);
 console.log(userID);
 console.log(userID == "null");
 console.log(!userID || userID == "null");
-console.log(userID == "null" && localStorage.getItem("AlrRgt") === "true");
+console.log(userID == "null" && localStorage.getItem("AlrRgt") !== "true");
 
-if (!userID || userID == "null" && localStorage.getItem("AlrRgt") === "true") {
+if (!userID || userID == "null" && localStorage.getItem("AlrRgt") !== "true") {
   console.log("nullユーザーを検知! 新しいuserIDを発行します。");
   function generateUserID() {
     const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
