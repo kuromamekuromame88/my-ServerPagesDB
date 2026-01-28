@@ -110,7 +110,7 @@
       
       /* chat-container: top-barの高さが可変なので、vhからtop-barの最大高さを引く */
       .chat-container {
-        width: 80vw !important;
+        width: 90vw !important;
         margin-left: 1vw !important;
         height: calc(100vh - 200px) !important; /* input-areaとtop-barに合わせて調整 */
       }
@@ -125,12 +125,13 @@
 
       .input-area textarea {
         height: 80px; /* 高さを固定 */
+        width: 60vw;
         resize: none; /* ユーザーによるリサイズを禁止 */
       }
 
       .input-area #sendButton,
       .input-area #img_upload {
-        width: 100%; /* 幅をいっぱいに広げる */
+        width: 20vw; /* 幅をいっぱいに広げる */
         padding: 10px;
         margin: 0;
       }
