@@ -1014,6 +1014,10 @@ async function sendRegistPing() {
         type:"chatping",
         userID:userID,
       }));
+      ws.send(JSON.stringify({
+        app:"webchat",
+        type:"getUserStatus"
+      }));
     }
   } catch (e) {
     console.warn("Regist ping failed:", e);
@@ -1096,6 +1100,7 @@ function detectStatus(lastTime) {
 }
 
 // UI更新関数
+/*
 async function updateUserStatus() {
   // ネットワーク状態チェック
   if (!navigator.onLine) return;
@@ -1125,6 +1130,7 @@ async function updateUserStatus() {
     console.error("ユーザー一覧取得エラー:", err);
   }
 }
+*/
 
 async function newUserStatus(data) {
   const users = data;
@@ -1150,7 +1156,7 @@ async function repeatprocess(){
   if(navigator.onLine){
     await sendRegistPing();
     await updateChannelListUI();
-    await updateUserStatus();
+    //await updateUserStatus();
   }
 }
 
