@@ -38,7 +38,7 @@
     }
 
         /* ----------------- 🌟 モバイル向けスタイル追加 🌟 ----------------- */
-    @media (max-width: 768px) {
+    @media (max-width: 1000px) {
       /* top-bar: ボタンを縦に積み重ねるか、アイコン化する */
       .top-bar {
         height: auto; /* 高さを自動調整 */
@@ -111,7 +111,7 @@
       /* chat-container: top-barの高さが可変なので、vhからtop-barの最大高さを引く */
       .chat-container {
         width: 50vw !important;
-        
+        margin-left: 1vw !important;
         height: calc(100vh - 300px) !important; /* input-areaとtop-barに合わせて調整 */
       }
 
