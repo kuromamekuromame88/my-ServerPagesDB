@@ -694,25 +694,6 @@ function connectWebSocket() {
 
 connectWebSocket();
 
-// ------------------- UI表示 -------------------
-function showChatUI() {
-  usernameSetup.style.display = "none";
-  chatUI.style.display = "block";
-}
-if (nickname) {
-  showChatUI();
-  ws.send(JSON.stringify({
-    app:"webchat",
-    type:"regist",
-    userID:userID,
-    nickname:nickname,
-    pass: localStorage.getItem("PASSWORD") || "PASSWORD",
-    quiet: true
-  }));
-}
-
-
-
 function waitwscon(ws, timeoutMs = 10000) {
   return new Promise((resolve, reject) => {
     // すでに接続済みなら即解決
@@ -741,6 +722,27 @@ function waitwscon(ws, timeoutMs = 10000) {
     ws.addEventListener("error", onError);
   });
 }
+
+// ------------------- UI表示 -------------------
+function showChatUI() {
+  usernameSetup.style.display = "none";
+  chatUI.style.display = "block";
+}
+
+
+if (nickname) {
+  waitwscon(ws);
+  showChatUI();
+  ws.send(JSON.stringify({
+    app:"webchat",
+    type:"regist",
+    userID:userID,
+    nickname:nickname,
+    pass: localStorage.getItem("PASSWORD") || "PASSWORD",
+    quiet: true
+  }));
+}
+
 
 
 // ------------------- 初回ニックネーム登録 -------------------
