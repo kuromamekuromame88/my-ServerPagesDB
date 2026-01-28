@@ -1130,16 +1130,14 @@ async function newUserStatus(data) {
   const users = data;
   userListDiv.innerHTML = ""; // 毎回リセット
   users.forEach(u => {
-    if(u.room === room){
-      const status = detectStatus(u.last_ping);
-      const div = document.createElement("div");
-      div.classList.add("user-item");
-      div.innerHTML = `
-        <div class="status-dot status-${status}"></div>
-        <div class="user-nick">${u.nickname} | ${u.userID}</div>
-      `;
-      userListDiv.appendChild(div);
-    }
+    const status = detectStatus(u.last_ping);
+    const div = document.createElement("div");
+    div.classList.add("user-item");
+    div.innerHTML = `
+      <div class="status-dot status-${status}"></div>
+      <div class="user-nick">${u.nickname} | ${u.userID}</div>
+    `;
+    userListDiv.appendChild(div);
   });
 }
 
