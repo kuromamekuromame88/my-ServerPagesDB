@@ -729,7 +729,7 @@ function showChatUI() {
   chatUI.style.display = "block";
 }
 
-(async() => {
+async function init(){
   if (nickname) {
     await waitwscon(ws);
     showChatUI();
@@ -742,8 +742,9 @@ function showChatUI() {
       quiet: true
     }));
   }
-})();
+}
 
+init();
 
 // ------------------- 初回ニックネーム登録 -------------------
 saveUsername.addEventListener("click", async() => {
