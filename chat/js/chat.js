@@ -745,8 +745,6 @@ function showChatUI() {
 })();
 
 
-
-
 // ------------------- 初回ニックネーム登録 -------------------
 saveUsername.addEventListener("click", async() => {
   const name = usernameInput.value.trim();
