@@ -729,19 +729,21 @@ function showChatUI() {
   chatUI.style.display = "block";
 }
 
+(async() => {
+  if (nickname) {
+    await waitwscon(ws);
+    showChatUI();
+    ws.send(JSON.stringify({
+      app:"webchat",
+      type:"regist",
+      userID:userID,
+      nickname:nickname,
+      pass: localStorage.getItem("PASSWORD") || "PASSWORD",
+      quiet: true
+    }));
+  }
+})();
 
-if (nickname) {
-  waitwscon(ws);
-  showChatUI();
-  ws.send(JSON.stringify({
-    app:"webchat",
-    type:"regist",
-    userID:userID,
-    nickname:nickname,
-    pass: localStorage.getItem("PASSWORD") || "PASSWORD",
-    quiet: true
-  }));
-}
 
 
 
