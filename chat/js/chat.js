@@ -970,7 +970,7 @@ changePassword.onclick = () => {
   const newpass = newPasswordInput.value.trim();
   if (!currentpass || !newpass) return alert("現在のパスワードと新しいパスワードを入力してください");
   if (currentpass === newpass) return alert("新しいパスワードは現在のパスワードと異なる必要があります。");
-
+  localStorage.setItem("PASSWORD", newpass);
   ws.send(JSON.stringify({
     app: "webchat",
     type: "changepass",
