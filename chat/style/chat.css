@@ -1,7 +1,8 @@
 
     /* ----------------- chat ----------------- */
     .chat-container {
-      max-width: 50%;
+      max-width: 70vw;
+      width: 70vw;
       margin-left: 10%;/*margin: 0 auto;*/
       padding: 10px;
       overflow-y: auto;
