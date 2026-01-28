@@ -513,6 +513,11 @@ function connectWebSocket() {
     const fullUsername = getFullUsername();
     if(msg.type !== "view") console.log("受信:",msg);
 
+    if(msg.type === "userstatus"){
+      newUserStatus(msg.data);
+      return;
+    }
+
     if (msg.type === "mute" && msg.user === userID /*|| msg.user.includes(userID)*/ ) {
       wasmuted = true;
       localStorage.setItem("muted", "1");
@@ -1119,6 +1124,23 @@ async function updateUserStatus() {
   } catch (err) {
     console.error("ユーザー一覧取得エラー:", err);
   }
+}
+
+async function newUserStatus(data) {
+  const users = data;
+  userListDiv.innerHTML = ""; // 毎回リセット
+  users.forEach(u => {
+    if(u.room === room){
+      const status = detectStatus(u.last_ping);
+      const div = document.createElement("div");
+      div.classList.add("user-item");
+      div.innerHTML = `
+        <div class="status-dot status-${status}"></div>
+        <div class="user-nick">${u.nickname} | ${u.userID}</div>
+      `;
+      userListDiv.appendChild(div);
+    }
+  });
 }
 
 // 初回実行
