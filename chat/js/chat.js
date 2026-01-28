@@ -14,7 +14,7 @@ const userStatusBar = document.getElementById('userStatusBar');
 const toggleUserListBtn = document.getElementById('toggleUserList');
 
 window.onresize = () => {
-  if (window.innerWidth <= 768) {
+  if (window.innerWidth <= 1000) {
     // モバイルサイズの場合、ユーザーリストボタンを表示
     toggleUserListBtn.style.display = 'block';
 
