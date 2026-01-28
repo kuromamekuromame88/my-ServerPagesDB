@@ -944,6 +944,7 @@ UserSettingsChangeModal.onclick = (e) => {
 openUserSettingsChange.onclick = () => {
   newNicknameInput.value = nickname;
   UserSettingsChangeModal.style.display = "flex";
+  currentPasswordInput.value = localStorage.getItem("PASSWORD");
 };
 
 cancelNicknameChange.onclick = () => {
