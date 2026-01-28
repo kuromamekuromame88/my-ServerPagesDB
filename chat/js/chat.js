@@ -511,7 +511,7 @@ function connectWebSocket() {
     const msg = JSON.parse(event.data);
     if(msg.app !== "webchat") return;
     const fullUsername = getFullUsername();
-    if(msg.type !== "view") console.log("受信:",msg);
+    if(msg.type !== "view" && msg.type !== "userstatus") console.log("受信:",msg);
 
     if(msg.type === "userstatus"){
       newUserStatus(msg.data);
