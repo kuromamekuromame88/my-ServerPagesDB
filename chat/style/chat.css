@@ -3,7 +3,7 @@
     .chat-container {
       max-width: 70vw;
       width: 70vw;
-      margin-left: 10%;/*margin: 0 auto;*/
+      margin-left: 5vw;/*margin: 0 auto;*/
       padding: 10px;
       overflow-y: auto;
       height: calc(100vh - 140px);
