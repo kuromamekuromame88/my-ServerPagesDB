@@ -60,11 +60,10 @@
       
       .top-bar .nav-buttons button,
       .top-bar .nav-buttons .roomselect button {
-        /* タッチしやすいようにボタンのパディングを大きく */
-        padding: 8px 12px;
+        padding: 6px 12px;
         font-size: 14px;
         flex-grow: 1; /* スペースに合わせてボタンを広げる */
-        min-width: 80px; /* 最小幅を確保 */
+        min-width: 42px; /* 最小幅を確保 */
       }
       
       /* ルーム選択メニュー */
@@ -117,7 +116,7 @@
 
       /* input-area: 縦に広がりすぎないように調整 */
       .input-area {
-        flex-direction: column;
+        flex-direction: row;
         padding: 8px;
         gap: 8px;
         border-top: 1px solid #ccc;
@@ -125,7 +124,7 @@
 
       .input-area textarea {
         height: 80px; /* 高さを固定 */
-        width: 60vw;
+        width: 50vw;
         resize: none; /* ユーザーによるリサイズを禁止 */
       }
 
