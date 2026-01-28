@@ -1148,7 +1148,7 @@ async function newUserStatus(data) {
 }
 
 // 初回実行
-updateUserStatus();
+//updateUserStatus();
 
 
 //全部まとめて繰り返し
