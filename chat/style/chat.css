@@ -234,7 +234,7 @@
       padding: 20px;
       border-radius: 10px;
       width: 500px;
-      height: calc(30vh);
+      height: calc(50vh);
       overflow-x: hidden;
       overflow-y: auto;
     }
