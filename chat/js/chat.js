@@ -992,40 +992,20 @@ changePassword.onclick = () => {
 
 //定期登録系
 
-// ------------------- mute用 定期登録 API -------------------
+// ------------------- mute・ステータス表示用 定期登録 API -------------------
 async function sendRegistPing() {
-  // ネットワーク状態チェック
-  if (!navigator.onLine || !userID) return;
-
   // WebSocket 状態チェック（OPEN のときだけ送る）
   if (!ws || ws.readyState !== WebSocket.OPEN) return;
-
-  var date = new Date();
-
-  var nick = nickname ? nickname: "匿名";
-
-  const url = `https://tool-webs.onrender.com/webchat/regist?user=${encodeURIComponent(userID)}&nick=${nick}&room=${room}&lasttime=${date.toISOString()}`;
-
-  try {
-    await fetch(url, { method: "GET" });
-    if(ws){
-      ws.send(JSON.stringify({
-        app:"webchat",
-        type:"chatping",
-        userID:userID,
-      }));
-      ws.send(JSON.stringify({
-        app:"webchat",
-        type:"getUserStatus"
-      }));
-    }
-  } catch (e) {
-    console.warn("Regist ping failed:", e);
-  }
+  ws.send(JSON.stringify({
+    app:"webchat",
+    type:"chatping",
+    userID:userID,
+  }));
+  ws.send(JSON.stringify({
+    app:"webchat",
+    type:"getUserStatus"
+  }));
 }
-
-// ページ読み込み時に1回実行（任意）
-sendRegistPing();
 
 
 const channelAPI = "https://tool-webs.onrender.com/webchat/channelList";
@@ -1100,38 +1080,6 @@ function detectStatus(lastTime) {
 }
 
 // UI更新関数
-/*
-async function updateUserStatus() {
-  // ネットワーク状態チェック
-  if (!navigator.onLine) return;
-  try {
-    const res = await fetch(userAPI);
-    const users = await res.json();
-
-    userListDiv.innerHTML = ""; // 毎回リセット
-
-    users.forEach(u => {
-      if(u.room === room){
-        const status = detectStatus(u.lastTime);
-
-        const div = document.createElement("div");
-        div.classList.add("user-item");
-
-        div.innerHTML = `
-          <div class="status-dot status-${status}"></div>
-          <div class="user-nick">${u.nick} | ${u.id}</div>
-        `;
-
-        userListDiv.appendChild(div);
-      }
-    });
-
-  } catch (err) {
-    console.error("ユーザー一覧取得エラー:", err);
-  }
-}
-*/
-
 async function newUserStatus(data) {
   const users = data;
   userListDiv.innerHTML = ""; // 毎回リセット
@@ -1147,16 +1095,12 @@ async function newUserStatus(data) {
   });
 }
 
-// 初回実行
-//updateUserStatus();
-
 
 //全部まとめて繰り返し
 async function repeatprocess(){
   if(navigator.onLine){
     await sendRegistPing();
     await updateChannelListUI();
-    //await updateUserStatus();
   }
 }
 
