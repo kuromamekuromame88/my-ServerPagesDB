@@ -532,7 +532,7 @@ function connectWebSocket() {
         userID = loginUserIDInput.value;
         PASSWORD = loginPasswordInput.value;
         localStorage.setItem("userID", userID);
-        localStorage.setItem("userID", PASSWORD);
+        localStorage.setItem("PASSWORD", PASSWORD);
         showChatUI();
       }else{
         alert("認証に失敗しました。");
