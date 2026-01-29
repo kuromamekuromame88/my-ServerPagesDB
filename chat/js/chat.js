@@ -57,6 +57,11 @@ const currentPasswordInput = document.getElementById("currentPasswordInput");
 const newPasswordInput = document.getElementById("newPasswordInput");
 const changePassword = document.getElementById("changePassword");
 
+const loginUI = document.getElementById("loginUI");
+const loginUserIDInput = document.getElementById("loginUserIDInput");
+const loginPasswordInput = document.getElementById("loginPasswordInput");
+const loginButton = document.getElementById("loginButton");
+
 let wr = new URL(window.location.href);
 const params = new URLSearchParams(wr.search);
 wr = params.get('room');
@@ -976,6 +981,7 @@ changePassword.onclick = () => {
   if (!currentpass || !newpass) return alert("現在のパスワードと新しいパスワードを入力してください");
   if (currentpass === newpass) return alert("新しいパスワードは現在のパスワードと異なる必要があります。");
   localStorage.setItem("PASSWORD", newpass);
+  if(!ws) return;
   ws.send(JSON.stringify({
     app: "webchat",
     type: "changepass",
@@ -983,9 +989,27 @@ changePassword.onclick = () => {
     cpass: currentpass,
     npass: newpass
   }));
-
   alert("パスワード変更リクエストを送信しました。");
 }
+
+
+//ログイン画面認証関係
+
+loginButton.addEventListener("click", async()=>{
+  const luser = loginUserIDInput.value;
+  const lpass = loginPasswordInput.value;
+  if(!luser || !lpass){
+    alert("ユーザーIDとパスワードを入力してください。");
+    return;
+  }
+  await waitwscon(ws);
+  ws.send(JSON.stringify({
+    app: "webchat",
+    type: "login",
+    user: luser,
+    pass: lpass
+  }));
+});
 
 
 //定期登録系
@@ -1065,7 +1089,6 @@ async function updateChannelListUI() {
 updateChannelListUI();
 
 
-//const userAPI = "https://tool-webs.onrender.com/webchat/user";
 const userListDiv = document.getElementById("userList");
 
 // 最終ログイン時間からステータスを決定
