@@ -131,6 +131,7 @@ if (!userID || userID == "null" && localStorage.getItem("AlrRgt") !== "true") {
   console.log("nullユーザーを検知しませんでした。");
   console.log("AlrRgtフラグを設定します。");
   localStorage.setItem("AlrRgt", true);
+  localStorage.setItem("logout", true);
 }
 
 
@@ -783,15 +784,15 @@ async function init(){
   }
   if (nickname) {
     await waitwscon(ws);
-    if(!localStorage.getItem("logout")) localStorage.setItem("logout", false);
-      showChatUI();
-      ws.send(JSON.stringify({
-        app:"webchat",
-        type:"regist",
-        userID:userID,
-        nickname:nickname,
-        pass: localStorage.getItem("PASSWORD") || "PASSWORD",
-        quiet: true
+    if(!(localStorage.getItem("logout") === "true")) localStorage.setItem("logout", false);
+    showChatUI();
+    ws.send(JSON.stringify({
+      app:"webchat",
+      type:"regist",
+      userID:userID,
+      nickname:nickname,
+      pass: localStorage.getItem("PASSWORD") || "PASSWORD",
+      quiet: true
     }));
   }
 }
