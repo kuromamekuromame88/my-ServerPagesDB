@@ -769,6 +769,12 @@ document.getElementById("gotoRegist").addEventListener("click", ()=>{
   usernameSetup.style.display = "block";
 });
 
+document.getElementById("gotoLogin").addEventListener("click", ()=>{
+  localStorage.setItem("logout", true);
+  loginUI.style.display = "block";
+  usernameSetup.style.display = "none";
+});
+
 async function init(){
   if(localStorage.getItem("logout") === "true"){
     loginUI.style.display = "block";
