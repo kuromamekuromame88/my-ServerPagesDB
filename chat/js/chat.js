@@ -77,7 +77,6 @@ const roomToggleBtn = document.getElementById("roomToggleBtn");
 const roomMenu = document.getElementById("roomMenu");
 
 //画像送信用
-//const imgSend = document.getElementById("img_send");
 const imgUpload = document.getElementById("img_upload");
 
 // チャット / ボード 切替ボタン
@@ -112,6 +111,8 @@ let nickname = localStorage.getItem("nickname");
 
 let userID = localStorage.getItem("userID") || null;
 
+let PASSWORD = localStorage.getItem("PASSWORD") || "PASSWORD";
+
 
 
 if (!userID || userID == "null" && localStorage.getItem("AlrRgt") !== "true") {
@@ -125,10 +126,20 @@ if (!userID || userID == "null" && localStorage.getItem("AlrRgt") !== "true") {
   userID = generateUserID();
   localStorage.setItem("userID", userID);
   localStorage.setItem("AlrRgt", true);*/
+  localStorage.setItem("logout", true);
 }else{
   console.log("nullユーザーを検知しませんでした。");
   console.log("AlrRgtフラグを設定します。");
   localStorage.setItem("AlrRgt", true);
+}
+
+
+
+if(localStorage.getItem("AlrRgt") === "true" && localStorage.getItem("Logout") === true){
+  loginUI.style.display = "block";
+  usernameSetup.style.display = "none";
+}else{
+  if(!localStorage.getItem("logout")) localStorage.setItem("logout", false);
 }
 
 
@@ -526,6 +537,11 @@ function connectWebSocket() {
     if(msg.type === "authresult"){
       if(msg.state || msg.state === "true"){
         alert("認証に成功しました！");
+        localStorage.setItem("logout", false);
+        userID = loginUserIDInput.value;
+        PASSWORD = loginPasswordInput.value;
+        localStorage.setItem("userID", userID);
+        localStorage.setItem("userID", PASSWORD);
         showChatUI();
       }else{
         alert("認証に失敗しました。");
@@ -772,7 +788,7 @@ saveUsername.addEventListener("click", async() => {
   if (!name) return alert("ニックネームを入力してください");
   localStorage.setItem("nickname", name);
   nickname = name;
-  const PASSWORD = document.getElementById("passwordInput").value.trim();
+  PASSWORD = document.getElementById("passwordInput").value.trim();
   if(!PASSWORD) return alert("パスワードを入力してください。");
   localStorage.setItem("PASSWORD", PASSWORD);
 
@@ -783,6 +799,7 @@ saveUsername.addEventListener("click", async() => {
     return id;
   }
   localStorage.setItem("AlrRgt", true);
+  localStorage.setItem("logout", false);
   if (!userID) {
     userID = generateUserID();
     localStorage.setItem("userID", userID);
