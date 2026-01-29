@@ -774,9 +774,7 @@ saveUsername.addEventListener("click", async() => {
   }
 
   connectWebSocket();
-
   await waitwscon(ws);
-
   localStorage.removeItem("muted");
   
   if(ws){
@@ -996,6 +994,7 @@ changePassword.onclick = () => {
 async function sendRegistPing() {
   // WebSocket 状態チェック（OPEN のときだけ送る）
   if (!ws || ws.readyState !== WebSocket.OPEN) return;
+  await waitwscon(ws);
   ws.send(JSON.stringify({
     app:"webchat",
     type:"chatping",
@@ -1007,6 +1006,7 @@ async function sendRegistPing() {
   }));
 }
 
+sendRegistPing();
 
 const channelAPI = "https://tool-webs.onrender.com/webchat/channelList";
 
@@ -1065,7 +1065,7 @@ async function updateChannelListUI() {
 updateChannelListUI();
 
 
-const userAPI = "https://tool-webs.onrender.com/webchat/user";
+//const userAPI = "https://tool-webs.onrender.com/webchat/user";
 const userListDiv = document.getElementById("userList");
 
 // 最終ログイン時間からステータスを決定
