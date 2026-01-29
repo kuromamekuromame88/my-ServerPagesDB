@@ -769,7 +769,6 @@ async function init(){
     usernameSetup.style.display = "none";
     return;
   }
-  connectWebSocket();
   if (nickname) {
     await waitwscon(ws);
     if(!localStorage.getItem("logout")) localStorage.setItem("logout", false);
@@ -1034,6 +1033,7 @@ loginButton.addEventListener("click", async()=>{
     alert("ユーザーIDとパスワードを入力してください。");
     return;
   }
+  connectWebSocket();
   await waitwscon(ws);
   ws.send(JSON.stringify({
     app: "webchat",
