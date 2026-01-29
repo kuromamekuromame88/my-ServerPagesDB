@@ -530,9 +530,11 @@ function connectWebSocket() {
       if(msg.state || msg.state === "true"){
         alert("認証に成功しました！");
         localStorage.setItem("logout", false);
-        userID = loginUserIDInput.value;
+        userID = msg.userID;
+        nickname = msg.nickname; 
         PASSWORD = loginPasswordInput.value;
         localStorage.setItem("userID", userID);
+        localStorage.setItem("nickname", nickname);
         localStorage.setItem("PASSWORD", PASSWORD);
         showChatUI();
       }else{
