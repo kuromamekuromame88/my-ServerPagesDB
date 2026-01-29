@@ -536,6 +536,7 @@ function connectWebSocket() {
         localStorage.setItem("userID", userID);
         localStorage.setItem("nickname", nickname);
         localStorage.setItem("PASSWORD", PASSWORD);
+        ws.close();
         showChatUI();
       }else{
         alert("認証に失敗しました。");
