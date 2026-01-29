@@ -763,6 +763,12 @@ document.getElementById("logout").addEventListener("click", ()=>{
   }, 500);
 });
 
+document.getElementById("gotoRegist").addEventListener("click", ()=>{
+  localStorage.setItem("logout", true);
+  loginUI.style.display = "none";
+  usernameSetup.style.display = "block";
+});
+
 async function init(){
   if(localStorage.getItem("logout") === "true"){
     loginUI.style.display = "block";
