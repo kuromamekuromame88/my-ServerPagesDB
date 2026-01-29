@@ -139,7 +139,7 @@ document.getElementById("logout").addEventListener("click", ()=>{
 });
 
 
-if(localStorage.getItem("AlrRgt") === "true" && localStorage.getItem("Logout") === true){
+if(localStorage.getItem("AlrRgt") === "true" && localStorage.getItem("Logout") === "true"){
   loginUI.style.display = "block";
   usernameSetup.style.display = "none";
 }else{
