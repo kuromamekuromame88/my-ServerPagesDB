@@ -758,7 +758,9 @@ function showChatUI() {
 
 document.getElementById("logout").addEventListener("click", ()=>{
   localStorage.setItem("logout", true);
-  location.reload();
+  setTimeout(()=>{
+    location.reload();
+  }, 500);
 });
 
 async function init(){
