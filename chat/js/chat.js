@@ -131,7 +131,7 @@ if (!userID || userID == "null" && localStorage.getItem("AlrRgt") !== "true") {
   console.log("nullユーザーを検知しませんでした。");
   console.log("AlrRgtフラグを設定します。");
   localStorage.setItem("AlrRgt", true);
-  localStorage.setItem("logout", false);
+  if(!localStorage.getItem("logout")) localStorage.setItem("logout", false);
 }
 
 
