@@ -752,6 +752,7 @@ function waitwscon(ws, timeoutMs = 10000) {
 
 // ------------------- UI表示 -------------------
 function showChatUI() {
+  console.log("showChatUIが呼び出されました!")
   loginUI.style.display = "none";
   usernameSetup.style.display = "none";
   chatUI.style.display = "block";
@@ -777,6 +778,8 @@ document.getElementById("gotoLogin").addEventListener("click", ()=>{
 });
 
 async function init(){
+  console.log("init()が呼び出されました！");
+
   if(localStorage.getItem("logout") === "true"){
     loginUI.style.display = "block";
     usernameSetup.style.display = "none";
