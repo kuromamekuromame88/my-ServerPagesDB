@@ -762,24 +762,23 @@ document.getElementById("logout").addEventListener("click", ()=>{
 });
 
 async function init(){
+  if(localStorage.getItem("Logout") === "true"){
+    loginUI.style.display = "block";
+    usernameSetup.style.display = "none";
+    return;
+  }
   if (nickname) {
     await waitwscon(ws);
-    
-    if(localStorage.getItem("Logout") === "true"){
-      loginUI.style.display = "block";
-      usernameSetup.style.display = "none";
-    }else{
-      if(!localStorage.getItem("logout")) localStorage.setItem("logout", false);
-        showChatUI();
-        ws.send(JSON.stringify({
-          app:"webchat",
-          type:"regist",
-          userID:userID,
-          nickname:nickname,
-          pass: localStorage.getItem("PASSWORD") || "PASSWORD",
-          quiet: true
-      }));
-    }
+    if(!localStorage.getItem("logout")) localStorage.setItem("logout", false);
+      showChatUI();
+      ws.send(JSON.stringify({
+        app:"webchat",
+        type:"regist",
+        userID:userID,
+        nickname:nickname,
+        pass: localStorage.getItem("PASSWORD") || "PASSWORD",
+        quiet: true
+    }));
   }
 }
 
