@@ -133,19 +133,6 @@ if (!userID || userID == "null" && localStorage.getItem("AlrRgt") !== "true") {
   localStorage.setItem("AlrRgt", true);
 }
 
-document.getElementById("logout").addEventListener("click", ()=>{
-  localStorage.setItem("logout", true);
-  location.reload();
-});
-
-
-if(localStorage.getItem("Logout") === "true"){
-  loginUI.style.display = "block";
-  usernameSetup.style.display = "none";
-}else{
-  if(!localStorage.getItem("logout")) localStorage.setItem("logout", false);
-}
-
 
 function getFullUsername() {
   return nickname + "|" + userID;
@@ -769,18 +756,30 @@ function showChatUI() {
   chatUI.style.display = "block";
 }
 
+document.getElementById("logout").addEventListener("click", ()=>{
+  localStorage.setItem("logout", true);
+  location.reload();
+});
+
 async function init(){
   if (nickname) {
     await waitwscon(ws);
-    showChatUI();
-    ws.send(JSON.stringify({
-      app:"webchat",
-      type:"regist",
-      userID:userID,
-      nickname:nickname,
-      pass: localStorage.getItem("PASSWORD") || "PASSWORD",
-      quiet: true
-    }));
+    
+    if(localStorage.getItem("Logout") === "true"){
+      loginUI.style.display = "block";
+      usernameSetup.style.display = "none";
+    }else{
+      if(!localStorage.getItem("logout")) localStorage.setItem("logout", false);
+        showChatUI();
+        ws.send(JSON.stringify({
+          app:"webchat",
+          type:"regist",
+          userID:userID,
+          nickname:nickname,
+          pass: localStorage.getItem("PASSWORD") || "PASSWORD",
+          quiet: true
+      }));
+    }
   }
 }
 
