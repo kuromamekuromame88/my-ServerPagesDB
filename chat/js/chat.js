@@ -781,22 +781,24 @@ async function init(){
     loginUI.style.display = "block";
     usernameSetup.style.display = "none";
     return;
-  }
-  if (nickname) {
-    usernameSetup.style.display = "none";
-    loginUI.style.display = "none";
-    connectWebSocket();
-    await waitwscon(ws);
-    if(!(localStorage.getItem("logout") === "true")) localStorage.setItem("logout", false);
-    showChatUI();
-    ws.send(JSON.stringify({
-      app:"webchat",
-      type:"regist",
-      userID:userID,
-      nickname:nickname,
-      pass: localStorage.getItem("PASSWORD") || "PASSWORD",
-      quiet: true
-    }));
+  }else{
+    if (nickname) {
+      usernameSetup.style.display = "none";
+      loginUI.style.display = "none";
+      connectWebSocket();
+      await waitwscon(ws);
+      if(!(localStorage.getItem("logout") === "true")) localStorage.setItem("logout", false);
+      showChatUI();
+      ws.send(JSON.stringify({
+        app:"webchat",
+        type:"regist",
+        userID:userID,
+        nickname:nickname,
+        pass: localStorage.getItem("PASSWORD") || "PASSWORD",
+        quiet: true
+      }));
+      return;
+    }
   }
 }
 
