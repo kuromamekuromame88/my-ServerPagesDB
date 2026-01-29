@@ -139,7 +139,7 @@ body {
   background: #f4f4f4;
   border-left: 1px solid #ccc;
   padding: 10px;
-  overflow-y: auto;
+  overflow-y: scroll;
   box-shadow: -2px 0 6px rgba(0,0,0,0.1);
   z-index: -1;
 }
