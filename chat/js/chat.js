@@ -523,6 +523,15 @@ function connectWebSocket() {
       return;
     }
 
+    if(msg.type === "authresult"){
+      if(msg.state || msg.state === "true"){
+        alert("認証に成功しました！");
+        showChatUI();
+      }else{
+        alert("認証に失敗しました。");
+      }
+    }
+
     if (msg.type === "mute" && msg.user === userID /*|| msg.user.includes(userID)*/ ) {
       wasmuted = true;
       localStorage.setItem("muted", "1");
@@ -735,6 +744,7 @@ function waitwscon(ws, timeoutMs = 10000) {
 
 // ------------------- UI表示 -------------------
 function showChatUI() {
+  loginUI.style.display = "none";
   usernameSetup.style.display = "none";
   chatUI.style.display = "block";
 }
