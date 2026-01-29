@@ -718,7 +718,7 @@ function connectWebSocket() {
   });
 }
 
-connectWebSocket();
+
 
 function waitwscon(ws, timeoutMs = 10000) {
   return new Promise((resolve, reject) => {
@@ -769,6 +769,7 @@ async function init(){
     usernameSetup.style.display = "none";
     return;
   }
+  connectWebSocket();
   if (nickname) {
     await waitwscon(ws);
     if(!localStorage.getItem("logout")) localStorage.setItem("logout", false);
