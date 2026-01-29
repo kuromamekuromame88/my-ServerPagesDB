@@ -133,6 +133,10 @@ if (!userID || userID == "null" && localStorage.getItem("AlrRgt") !== "true") {
   localStorage.setItem("AlrRgt", true);
 }
 
+document.getElementById("logout").addEventListener("click", ()=>{
+  localStorage.setItem("logout", true);
+  location.reload();
+});
 
 
 if(localStorage.getItem("AlrRgt") === "true" && localStorage.getItem("Logout") === true){
