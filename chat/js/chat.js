@@ -781,11 +781,13 @@ async function init(){
   console.log("init()が呼び出されました！");
 
   if(localStorage.getItem("logout") === "true"){
+    console.log("ログアウトを検知しました。ログインUIを表示します!");
     loginUI.style.display = "block";
     usernameSetup.style.display = "none";
     return;
   }else{
     if (nickname) {
+      console.log("すでにログインされているようです。ChatUIを表示します!");
       usernameSetup.style.display = "none";
       loginUI.style.display = "none";
       connectWebSocket();
