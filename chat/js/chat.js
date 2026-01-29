@@ -764,7 +764,7 @@ document.getElementById("logout").addEventListener("click", ()=>{
 });
 
 async function init(){
-  if(localStorage.getItem("Logout") === "true"){
+  if(localStorage.getItem("logout") === "true"){
     loginUI.style.display = "block";
     usernameSetup.style.display = "none";
     return;
