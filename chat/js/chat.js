@@ -783,6 +783,9 @@ async function init(){
     return;
   }
   if (nickname) {
+    usernameSetup.style.display = "none";
+    loginUI.style.display = "none";
+    connectWebSocket();
     await waitwscon(ws);
     if(!(localStorage.getItem("logout") === "true")) localStorage.setItem("logout", false);
     showChatUI();
