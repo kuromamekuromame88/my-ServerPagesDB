@@ -249,6 +249,12 @@ function connectWebSocket(){
 
   ws.onmessage = async (e) => {
     const msg = JSON.parse(e.data);
+    if(msg.app === "webchat"){
+      if(msg.type === "userstatus"){
+        updateUserStatus(msg.data);
+        return;
+      }
+    }
     if (msg.app !== "voice") return;
 
     /* 着信 */
