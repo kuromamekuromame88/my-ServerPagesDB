@@ -254,6 +254,7 @@ function connectWebSocket(){
         updateUserStatus(msg.data);
         return;
       }
+
     }
     if (msg.app !== "voice") return;
 
@@ -702,7 +703,7 @@ function detectStatus(lastTime) {
 
 async function updateUserStatus(data) {
   userListDiv.innerHTML = "";
-
+  const users = data; 
   users.forEach(u => {
     if (u.userID === userID) return;
     const status = detectStatus(u.last_ping);
