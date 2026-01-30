@@ -627,11 +627,59 @@ document.querySelector(".cam").onchange = (e) => {
 };
 
 
+
+//websocket再接続待機関数
+function waitwscon(ws, timeoutMs = 10000) {
+  return new Promise((resolve, reject) => {
+    // すでに接続済みなら即解決
+    if (ws.readyState === WebSocket.OPEN) {
+      resolve();
+      return;
+    }
+    const timeoutId = setTimeout(() => {
+      cleanup();
+      reject(new Error("WebSocket 接続タイムアウト"));
+    }, timeoutMs);
+    function onOpen() {
+      cleanup();
+      resolve();
+    }
+    function onError(e) {
+      cleanup();
+      reject(new Error("WebSocket 接続エラー"));
+    }
+    function cleanup() {
+      clearTimeout(timeoutId);
+      ws.removeEventListener("open", onOpen);
+      ws.removeEventListener("error", onError);
+    }
+    ws.addEventListener("open", onOpen);
+    ws.addEventListener("error", onError);
+  });
+}
+
+
+
 // ==================================================
 // ユーザー一覧・ステータス取得
 // ==================================================
 const userAPI = "https://tool-webs.onrender.com/webchat/user";
 const userListDiv = document.getElementById("userList");
+
+async function requestUserStatus(){
+  // WebSocket 状態チェック（OPEN のときだけ送る）
+  if (!ws || ws.readyState !== WebSocket.OPEN) return;
+  await waitwscon(ws);
+  /*ws.send(JSON.stringify({
+    app:"webchat",
+    type:"chatping",
+    userID:userID,
+  }));*/
+  ws.send(JSON.stringify({
+    app:"webchat",
+    type:"getUserStatus"
+  }));
+}
 
 // 最終ログイン時間からステータス判定
 function detectStatus(lastTime) {
@@ -645,7 +693,28 @@ function detectStatus(lastTime) {
 }
 
 // UI更新
-async function updateUserStatus() {
+
+async function updateUserStatus(data) {
+  userListDiv.innerHTML = "";
+
+  users.forEach(u => {
+    if (u.userID === userID) return;
+    const status = detectStatus(u.last_ping);
+    const div = document.createElement("div");
+    div.classList.add("user-item");
+    div.innerHTML = `
+      <div class="status-dot status-${status}"></div>
+      <div class="user-nick">${u.nickname} | ${u.userID}</div>
+      ${status === "online" || status === "away" ? `
+        <button onclick="startcall('${u.userID}');" class="startCall">
+          <svg width="148.31" height="200" viewBox="0 0 148.31 200"><g transform="translate(-16.77 -262.768)"><path class="a" d="M72.1,267.978a10.381,10.381,0,0,0-14.213-3.806L43.9,272.245l-5.322,3.073-16.045,9.263a11.488,11.488,0,0,0-4.214,15.728l41.943,72.648,6.579,11.4L108.789,457a11.489,11.489,0,0,0,15.728,4.214l16.045-9.263,5.322-3.073,13.983-8.073a10.381,10.381,0,0,0,3.81-14.211l-20-34.644a10.384,10.384,0,0,0-14.214-3.809l-13.983,8.073L98.184,366.26l-6.579-11.4L74.31,324.909l13.983-8.073A10.384,10.384,0,0,0,92.1,302.621Z" transform="translate(0 0)"/></g></svg>
+        </button>
+      ` : ""}
+    `;
+    userListDiv.appendChild(div);
+  });
+}
+/*async function updateUserStatus() {
   try {
     const res = await fetch(userAPI);
     const users = await res.json();
@@ -677,11 +746,11 @@ async function updateUserStatus() {
   } catch (err) {
     console.error("ユーザー一覧取得エラー:", err);
   }
-}
+}*/
 
 // 初回 & 定期更新
-updateUserStatus();
-setInterval(updateUserStatus, 5000);
+requestUserStatus();
+setInterval(requestUserStatus, 5000);
 
 
 
