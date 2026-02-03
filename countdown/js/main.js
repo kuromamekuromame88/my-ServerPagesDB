@@ -22,6 +22,7 @@ const photoStages = [
   { count: 320, url: "https://tool-webs.onrender.com/countdown/img/320.jpg" },
   { count: 640, url: "https://tool-webs.onrender.com/countdown/img/640.jpg" },
   { count: 1280, url: "https://tool-webs.onrender.com/countdown/img/1280.jpg" },
+  { count: 2560, url: "https://tool-webs.onrender.com/countdown/img/2560.jpg" },
 ];
 
 // ===== 日数 =====
