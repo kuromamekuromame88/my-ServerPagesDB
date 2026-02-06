@@ -98,12 +98,12 @@
 <body>
   <h2>Screen Writer v1.0</h2>
   
-  <details open>
+  <details id="info" open>
     <summary>説明・使い方</summary>
     <b>Screen writer</b>
     <p>この拡張機能は、フィルタリングの拡張機能では制限しきれないURLを生徒側で設定できるようにした拡張機能です。</p>
     <b>使い方</b>
-    <p>1:対象のユーザーを▶デバイス一覧パネルから検索します。<br>2:対象のユーザー名を制御パネルのUserに入力して、下の方にある サーバーから読み込み ボタンを押して、現在登録されているポリシーを読み込みます。<br>3:それぞれの項目を編集します。操作ロックは名前の通り、対象のユーザーの操作をブロックします。<br>4:サーバーに書き込むボタンを押し、ポリシーを更新して完了です。<br>
+    <p>1:対象のユーザーを▶デバイス一覧パネルから検索します。<br>2:対象のユーザー名の横にある「読み込み」ボタンを押し、現在登録されているポリシーを読み込みます。<br>3:それぞれの項目を編集します。操作ロックは名前の通り、対象のユーザーの操作をブロックします。<br>4:サーバーに書き込むボタンを押し、ポリシーを更新して完了です。<br>
     </p>
     <b>※制御対象は、リアルタイムにポリシーが更新されるわけではありません。1分間ごとに更新を行っています。また、wifiの接続が切れているときは更新されません。</b>
     <br>
@@ -112,13 +112,13 @@
     <b>https://tool-webs.onrender.comはブロックしないでください。設定を反映できなくなります。</b>
   </details>
   
-  <details>
+  <details id="device">
     <summary>デバイス一覧</summary>
     <div class="devices" id="devices"></div>
     <button id="ReloadDevices">更新</button>
   </details>
 
-  <details open>
+  <details id="control" open>
     <summary>制御パネル</summary>
     <div class="control">
       <div class="row">
@@ -188,6 +188,9 @@
     }
 
     function load(deviceName){
+      document.getElementById("info").open = false;
+      document.getElementById("device").open = false;
+      document.getElementById("control").open = true;
       document.querySelector("#user").value = deviceName;
       document.querySelector("#get").click();
     }
