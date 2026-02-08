@@ -1,144 +1,160 @@
 <html>
-  <meta charset="utf-8">
-<title>得点計算ツール</title>
-<body>
-  <div class="top-bar">
-    <a href="/" class="logo"><b>tool-html</b></a>
-  </div>
-  <div class="maincontent">
-    <h1>得点計算ツール</h1>
-    <h4>平均の算出などの面倒な作業を効率よく計算するために作ったサイトです。</h4>
-    <div class="score">
-      <span>1日目</span><input type="number" max="60" min="0" id="ia" value="0">
-    </div>
-    <div class="score">
-      <span>2日目</span><input type="number" max="60" min="0" id="ib" value="0">
-    </div>
-    <div class="score">
-      <span>3日目</span><input type="number" max="60" min="0" id="ic" value="0">
-    </div>
-    <div class="score">
-      <span>4日目</span><input type="number" max="60" min="0" id="id" value="0">
-    </div>
-    <div class="score">
-      <span>5日目</span><input type="number" max="60" min="0" id="ie" value="0">
-    </div>
-    <div class="score">
-      <span>授業数</span><input type="number" max="30" min="0" id="z"><br>
-    </div>
-    <button onclick="b()"><font size="3">集計</font></button>
-    <p id="result"></p>
-  </div>
-  <style>
-    input[type=number]{
-      width:100px;
-      height:50px;
-      font-size: 40px;
-    }
-    button{width:100; height:50;}
-    body {
+  <head>
+    <meta charset="utf-8">
+    <title>得点計算ツール</title>
+    <link rel="stylesheet" href="./style/button.css">
+    <style>
+      input[type=number]{
+        width:100px;
+        height:50px;
+        font-size: 40px;
+      }
+
+      button{width:100; height:50;}
+
+      body {
         margin: 0;
         padding-top: 80px; /* ヘッダーの高さ分だけ下げる */
         font-family: sans-serif;
-    }
+      }
 
-    .top-bar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 50px;
-      background-color: #333;
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: space-around;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-      z-index: 1000;
-    }
+      .top-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 50px;
+        background-color: #333;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        z-index: 1000;
+      }
 
-    .top-bar a {
-      color: white;
-      text-decoration: none;
-      padding: 10px 15px;
-      border-radius: 5px;
-      transition: background-color 0.3s;
-    }
+      .top-bar a {
+        color: white;
+        text-decoration: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+      }
 
-    .top-bar a:hover {
-      background-color: #555;
-    }
+      .top-bar a:hover {
+        background-color: #555;
+      }
       
-    .logo {
-      position: absolute;
-      left: 0;
-    }
+      .logo {
+        position: absolute;
+        left: 0;
+      }
 
-    .maincontent{
-      text-align: center;
-      margin-top: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-  </style>
-  <link rel="stylesheet" href="./style/button.css">
-  <script src="https://cdn.jsdelivr.net/npm/decimal.js@10.4.3/decimal.min.js"></script>
-  <script>
-    function ave(z, ...values) {
-      if (z == null || isNaN(z) || new Decimal(z).isZero()) return null;
-      let sum = new Decimal(0);
-      let count = 0;
-      for (let v of values) {
-        if (v != null && !isNaN(v)) {
-          sum = sum.plus(new Decimal(v));
-          count++;
+      .maincontent{
+        text-align: center;
+        margin-top: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .span day{
+        align-items: center;
+        font-size: 50px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="top-bar">
+      <a href="/" class="logo"><b>tool-html</b></a>
+    </div>
+    <div class="maincontent">
+      <h1>得点計算ツール</h1>
+      <h4>平均の算出などの面倒な作業を効率よく計算するために作ったサイトです。</h4>
+      <div class="score">
+        <span class="day">1日目</span>
+        <input type="number" max="60" min="0" id="ia" value="60">
+      </div>
+      <div class="score">
+        <span class="day">2日目</span>
+        <input type="number" max="60" min="0" id="ib" value="60">
+      </div>
+      <div class="score">
+        <span class="day">3日目</span>
+        <input type="number" max="60" min="0" id="ic" value="50">
+      </div>
+      <div class="score">
+        <span class="day">4日目</span>
+        <input type="number" max="60" min="0" id="id" value="60">
+      </div>
+      <div class="score">
+        <span class="day">5日目</span>
+        <input type="number" max="60" min="0" id="ie" value="60">
+      </div>
+      <div class="score">
+        <span class="day">授業数</span>
+        <input type="number" max="30" min="0" id="z"><br>
+      </div>
+      <button onclick="b()"><font size="3">集計</font></button>
+      <p id="result"></p>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/decimal.js@10.4.3/decimal.min.js"></script>
+    <script>
+      function ave(z, ...values) {
+        if (z == null || isNaN(z) || new Decimal(z).isZero()) return null;
+        let sum = new Decimal(0);
+        let count = 0;
+        for (let v of values) {
+          if (v != null && !isNaN(v)) {
+            sum = sum.plus(new Decimal(v));
+            count++;
+          }
+        }
+        if (count === 0) return null;
+        const result = sum.div(new Decimal(z));
+        return result.toFixed(2); // 小数第3位で四捨五入し、小数第2位まで返す
+      }
+
+      function orgFloor(value, base) {
+        return Math.floor(value * base) / base;
+      }
+    
+      function ex(i){
+        if(!i == 0){
+          return 0;
+        }else{
+          return i;
         }
       }
-      if (count === 0) return null;
-      const result = sum.div(new Decimal(z));
-      return result.toFixed(2); // 小数第3位で四捨五入し、小数第2位まで返す
-    }
-
-    function orgFloor(value, base) {
-      return Math.floor(value * base) / base;
-    }
     
-    function ex(i){
-      if(!i == 0){
-        return 0;
-      }else{
-        return i;
+      function p(str,color){
+        var text = document.getElementById("result");
+        text.style.color = color;
+        text.innerText = str;
       }
-    }
     
-    function p(str,color){
-      var text = document.getElementById("result");
-      text.style.color = color;
-      text.innerText = str;
-    }
-    
-    function b(){
-      var a = parseInt(document.getElementById("ia").value);
-      var b = parseInt(document.getElementById("ib").value);
-      var c = parseInt(document.getElementById("ic").value);
-      var d = parseInt(document.getElementById("id").value);
-      var e = parseInt(document.getElementById("ie").value);
-      var z = parseInt(document.getElementById("z").value);
-      var text = document.getElementById("result");
-      var sum = a+b+c+d+e;
-      var res = orgFloor(sum/z, 100);
-      //var res = ave(a,b,c,d,e);
-      if(isNaN(z)){
-        p("授業数の値を設定してください","red");
-      }else if(z >= 31){
-        p("授業数の値は30以下である必要があります。","red");
-      }else if(isNaN(sum)){
-        p("少なくとも1日分の得点を記載する必要があります。","red");
-      }else if(z<=30){
-        p("合計:"+sum+"　平均:"+res, "blue");
+      function b(){
+        var a = parseInt(document.getElementById("ia").value);
+        var b = parseInt(document.getElementById("ib").value);
+        var c = parseInt(document.getElementById("ic").value);
+        var d = parseInt(document.getElementById("id").value);
+        var e = parseInt(document.getElementById("ie").value);
+        var z = parseInt(document.getElementById("z").value);
+        var text = document.getElementById("result");
+        var sum = a+b+c+d+e;
+        var res = orgFloor(sum/z, 100);
+        //var res = ave(a,b,c,d,e);
+        if(isNaN(z)){
+          p("授業数の値を設定してください","red");
+        }else if(z >= 31){
+          p("授業数の値は30以下である必要があります。","red");
+        }else if(isNaN(sum)){
+          p("少なくとも1日分の得点を記載する必要があります。","red");
+        }else if(z<=30){
+          p("合計:"+sum+"　平均:"+res, "blue");
+        }
       }
-    }
-  </script>
-</body>
+    </script>
+  </body>
 </html>
