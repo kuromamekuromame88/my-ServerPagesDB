@@ -228,15 +228,11 @@ async function callRoomAuth(room, pass) {
     const params = new URLSearchParams();
     if (room != null) params.set("room", room);
     if (pass != null) params.set("pass", pass);
-
     const url = `https://tool-webs.onrender.com/webchat/roomauth?${params.toString()}`;
-
     const res = await fetch(url, { method: "GET" });
-
     if (!res.ok) {
       throw new Error(`HTTP Error ${res.status}`);
     }
-
     const data = await res.json();
     return {
       result: data.result,
@@ -494,6 +490,17 @@ chatContainer.addEventListener("scroll", () => {
   }
 });
 
+//リンクが新しいタブで開かれるようにするための設定関数
+function addOpenLinkEvent(){
+  const links = document.querySelectorAll(`a[href^="http"]`);
+  links.forEach(e=>{
+    e.removeEventListener("click");
+    e.addEventListener("click", (e)=>{
+      e.preventDefault();
+      window.open(e.href);
+    });
+  });
+}
 
 
 // 重要------------------- WebSocket接続 -------------------
