@@ -1051,7 +1051,7 @@ changePassword.onclick = () => {
 
 
 //ログイン画面認証関係
-
+connectWebSocket();
 loginButton.addEventListener("click", async()=>{
   const luser = loginUserIDInput.value;
   const lpass = loginPasswordInput.value;
