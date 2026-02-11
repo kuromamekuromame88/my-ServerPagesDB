@@ -27,9 +27,9 @@ document.getElementById("openVoice").onclick = () => {
   );
 };
 
-document.getElementById("openYoutube").onclick = () => {
+document.getElementById("openCookie").onclick = () => {
   createWindow("Cookieclicker",
-    "https://kuromamekuromame88.github.io/cookie-clone/",
+    "https://kuromamekuromame88.github.io/cookie-clone",
     50, 100, 1200, 450
   );
 };
