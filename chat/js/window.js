@@ -28,7 +28,7 @@ document.getElementById("openVoice").onclick = () => {
 };
 
 document.getElementById("openCookie").onclick = () => {
-  createWindow("Cookieclicker",
+  createWindow("Cookieclicker(カスタムバージョン,広告なし)",
     "https://kuromamekuromame88.github.io/cookie-clone",
     50, 100, 1200, 450
   );
