@@ -695,9 +695,6 @@ function connectWebSocket() {
         <div class="message_copy"><button class="copy_button" onclick="mcopy(${id})">コピー</button></div>
       `;
       
-      await addOpenLinkEvent();
-      notifyNewMessage();
-
       if(msg.isHistory){
         chatContainer.prepend(div);
         observer.observe(div);
@@ -711,6 +708,10 @@ function connectWebSocket() {
         observer.observe(div);
         chatContainer.scrollTop = chatContainer.scrollHeight;
       }
+
+      await addOpenLinkEvent();
+      notifyNewMessage();
+
 
 
       //<button class="remove_button" id="edit">編集</button>
