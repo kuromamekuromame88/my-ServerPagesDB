@@ -620,6 +620,7 @@ function connectWebSocket() {
       `;
 
       //<button class="remove_button" id="edit">編集</button></div>
+      addOpenLinkEvent();
       notifyNewMessage();
     }
 
@@ -693,6 +694,7 @@ function connectWebSocket() {
         <div class="message_copy"><button class="copy_button" onclick="mcopy(${id})">コピー</button></div>
       `;
       
+      addOpenLinkEvent();
       notifyNewMessage();
 
       if(msg.isHistory){
