@@ -16,20 +16,20 @@ function createWindow(title, url, x, y, width, height){
 document.getElementById("openYoutube").onclick = () => {
   createWindow("youtube-player",
     "https://tool-webs.onrender.com/youtube",
-    50, 100, 1200, 450
+    50, 100, window.innerWidth*0.6, 450
   );
 };
 
 document.getElementById("openVoice").onclick = () => {
   createWindow("Voice",
     "https://tool-webs.onrender.com/voice",
-    50, 100, 1200, 450
+    50, 100, window.innerWidth*0.6, 450
   );
 };
 
 document.getElementById("openCookie").onclick = () => {
-  createWindow("Cookieclicker(カスタムバージョン,広告なし)",
+  createWindow("Cookieclicker(v2.031,広告なし)",
     "https://kuromamekuromame88.github.io/cookie-clone",
-    50, 100, 1200, 450
+    50, 100, window.innerWidth*0.6, 450
   );
 };
