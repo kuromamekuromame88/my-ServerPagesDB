@@ -491,7 +491,7 @@ chatContainer.addEventListener("scroll", () => {
 });
 
 //リンクが新しいタブで開かれるようにするための設定関数
-function addOpenLinkEvent(){
+async function addOpenLinkEvent(){
   console.log("target属性を追加中");
   const links = document.querySelectorAll(`a[href^="http"]`);
   links.forEach(e=>{
@@ -519,7 +519,7 @@ function connectWebSocket() {
     });
   }
 
-  ws.addEventListener("message", (event) => {
+  ws.addEventListener("message", async(event) => {
     const msg = JSON.parse(event.data);
     if(msg.app !== "webchat") return;
     const fullUsername = getFullUsername();
@@ -621,7 +621,7 @@ function connectWebSocket() {
       `;
 
       //<button class="remove_button" id="edit">編集</button></div>
-      addOpenLinkEvent();
+      await addOpenLinkEvent();
       notifyNewMessage();
     }
 
@@ -695,7 +695,7 @@ function connectWebSocket() {
         <div class="message_copy"><button class="copy_button" onclick="mcopy(${id})">コピー</button></div>
       `;
       
-      addOpenLinkEvent();
+      await addOpenLinkEvent();
       notifyNewMessage();
 
       if(msg.isHistory){
