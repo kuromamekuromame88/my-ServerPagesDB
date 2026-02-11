@@ -494,7 +494,7 @@ chatContainer.addEventListener("scroll", () => {
 function addOpenLinkEvent(){
   const links = document.querySelectorAll(`a[href^="http"]`);
   links.forEach(e=>{
-    e.removeEventListener("click");
+    e.click = null;
     e.addEventListener("click", (e)=>{
       e.preventDefault();
       window.open(e.href);
