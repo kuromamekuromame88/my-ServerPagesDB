@@ -140,7 +140,7 @@
 
 <body>
   <!-- top-bar -->
-  <div class="top-bar">
+  <header class="top-bar">
     <a href="/" class="logo">tool-webs</a>
 
     <div class="nav-buttons">
@@ -169,74 +169,71 @@
       <button id="toggleUserList" style="display: none;">👤 ユーザー</button>
       <button id="openUserSettingsChange" title="設定">⚙️設定</button>
     </div>
-  </div>
+  </header>
 
-
-  <!-- 初回登録UI -->
-  <div id="usernameSetup" class="username-setup">
-    <h2>ニックネームとパスワードを入力してください（後で変更可）</h2>
-    <p>※ユーザーIDは自動生成されます</p>
-    <p>※サーバーに保存するように変更されました</p>
-    <input type="text" id="usernameInput" placeholder="ニックネーム">
-    <input type="text" id="passwordInput" placeholder="パスワード">
-    <button id="saveUsername">登録</button>
-    <button id="gotoLogin">すでにあるアカウントでログイン</button>
-  </div>
-
-  <!-- ログインUI -->
-  <div id="loginUI" class="login-ui" style="display:none;"><!-- 一旦非表示-->
-    <h2>ユーザーIDとパスワードを入力してください</h2>
-    <input type="text" id="loginUserIDInput" placeholder="ユーザーIDを入力">
-    <input type="text" id="loginPasswordInput" placeholder="パスワードを入力">
-    <button id="loginButton">ログイン</button>
-    <button id="gotoRegist">アカウントを新規作成</button>
-  </div>
-
-  <!-- 設定変更モーダル -->
-  <div id="UserSettingsChangeModal">
-    <div id="UserSettingsChangeBox" class="UserSettings-change-box">
-      <button id="cancelNicknameChange" style="background:#999;">キャンセル</button>
-      <h3>ニックネーム変更</h3>
-      <input type="text" id="newNicknameInput" placeholder="新しいニックネーム">
-      <button id="changeNickname">変更</button>
-      <h3>パスワード確認</h3>
-      <span>
-        ※前バージョンにすでに登録されていたユーザーは、
-        <br>
-        パスワードをPASSWORDに設定しています。ここで変更してください。
-      </span>
-      <input type="NowPassword" id="currentPasswordInput" placeholder="現在のパスワード">
-      <input type="newPassword" id="newPasswordInput" placeholder="新しいパスワード">
-      <button id="changePassword">変更</button>
-      <button id="logout">ログアウト</button>
+  <main>
+    <!-- 初回登録UI -->
+    <div id="usernameSetup" class="username-setup">
+      <h2>ニックネームとパスワードを入力してください（後で変更可）</h2>
+      <p>※ユーザーIDは自動生成されます</p>
+      <p>※サーバーに保存するように変更されました</p>
+      <input type="text" id="usernameInput" placeholder="ニックネーム">
+      <input type="text" id="passwordInput" placeholder="パスワード">
+      <button id="saveUsername">登録</button>
+      <button id="gotoLogin">すでにあるアカウントでログイン</button>
     </div>
-  </div>
 
-  <!-- チャットUI -->
-  <div id="chatUI" style="display:none;">
-    <div class="chat-container" id="chatContainer"></div>
-
-    <div class="input-area">
-      <button id="img_upload">画像を送信</button>
-      <!--<button id="img_send">URL画像</button>-->
-      <textarea id="messageInput" placeholder="メッセージを入力 (Shift+Enterで改行)"></textarea>
-      <button id="sendButton">送信</button>
+    <!-- ログインUI -->
+    <div id="loginUI" class="login-ui" style="display:none;"><!-- 一旦非表示-->
+      <h2>ユーザーIDとパスワードを入力してください</h2>
+      <input type="text" id="loginUserIDInput" placeholder="ユーザーIDを入力">
+      <input type="text" id="loginPasswordInput" placeholder="パスワードを入力">
+      <button id="loginButton">ログイン</button>
+      <button id="gotoRegist">アカウントを新規作成</button>
     </div>
-  </div>
 
-  
-  <div id="userStatusBar" class="user-status-bar">
-    <h3>ユーザー</h3>
-    <div id="userList"></div>
-  </div>
+    <!-- 設定変更モーダル -->
+    <div id="UserSettingsChangeModal">
+      <div id="UserSettingsChangeBox" class="UserSettings-change-box">
+        <button id="cancelNicknameChange" style="background:#999;">キャンセル</button>
+        <h3>ニックネーム変更</h3>
+        <input type="text" id="newNicknameInput" placeholder="新しいニックネーム">
+        <button id="changeNickname">変更</button>
+        <h3>パスワード確認</h3>
+        <span>
+          ※前バージョンにすでに登録されていたユーザーは、
+          <br>
+          パスワードをPASSWORDに設定しています。ここで変更してください。
+        </span>
+        <input type="NowPassword" id="currentPasswordInput" placeholder="現在のパスワード">
+        <input type="newPassword" id="newPasswordInput" placeholder="新しいパスワード">
+        <button id="changePassword">変更</button>
+        <button id="logout">ログアウト</button>
+      </div>
+    </div>
 
+    <!-- チャットUI -->
+    <div id="chatUI" style="display:none;">
+      <div class="chat-container" id="chatContainer"></div>
+      <div class="input-area">
+        <button id="img_upload">画像を送信</button>
+        <!--<button id="img_send">URL画像</button>-->
+        <textarea id="messageInput" placeholder="メッセージを入力 (Shift+Enterで改行)"></textarea>
+        <button id="sendButton">送信</button>
+      </div>
+    </div>
 
-  <!--機能拡張拡張用Canvas-->
-  <div id="metacanvas"></div>
+    <div id="userStatusBar" class="user-status-bar">
+      <h3>ユーザー</h3>
+      <div id="userList"></div>
+    </div>
 
-  <script src="https://tool-webs.onrender.com/chat/js/window.js"></script>
-  <script src="https://tool-webs.onrender.com/chat/js/chat.js"></script>
-  <script src="https://tool-webs.onrender.com/chat/js/meta.js"></script>
-  <script></script>
+    <!--機能拡張拡張用Canvas-->
+    <div id="metacanvas"></div>
+
+    <script src="https://tool-webs.onrender.com/chat/js/window.js"></script>
+    <script src="https://tool-webs.onrender.com/chat/js/chat.js"></script>
+    <script src="https://tool-webs.onrender.com/chat/js/meta.js"></script>
+  </main>
 </body>
 </html>
