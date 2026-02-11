@@ -26,3 +26,10 @@ document.getElementById("openVoice").onclick = () => {
     50, 100, 1200, 450
   );
 };
+
+document.getElementById("openYoutube").onclick = () => {
+  createWindow("Cookieclicker",
+    "https://kuromamekuromame88.github.io/cookie-clone/",
+    50, 100, 1200, 450
+  );
+};
