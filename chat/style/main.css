@@ -180,8 +180,6 @@ body {
   font-size: 14px;
 }
 
-
-
 /*ウィンドウの角を丸くする*/
 div[id^="iw"] {
   border-radius: 10px;
