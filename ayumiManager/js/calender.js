@@ -26,7 +26,17 @@ function showProcess(date) {
     document.querySelector('#header').innerHTML = year + "年 " + (month + 1) + "月";
 
     var calendar = createProcess(year, month);
-    document.querySelector('#calendar').innerHTML = calendar;
+    const c = document.querySelector('#calendar');
+    c.innerHTML = calendar;
+    const days = c.getElementsByTagName("td");
+    days.foreach(e=>{
+      if(!e.classList.contains("disabled")){
+        e.addEventListener("click", (e)=>{
+          if(e.dataset.day) console.log(e.dataset.day);
+        });
+      });
+    }
+    
 }
 
 // カレンダー作成
@@ -62,9 +72,9 @@ function createProcess(year, month) {
                 if(year == today.getFullYear()
                   && month == (today.getMonth())
                   && count == today.getDate()){
-                    calendar += "<td class='today'>" + count + "</td>";
+                    calendar += `<td class="today" dataset-day="${`${year}-${month}-${count}`}">${count}</td>`;
                 } else {
-                    calendar += "<td>" + count + "</td>";
+                    calendar += `<td dataset-day="${`${year}-${month}-${count}`}">${count}</td>`;
                 }
             }
         }
