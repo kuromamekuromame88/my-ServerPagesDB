@@ -39,7 +39,7 @@ main {
 }
 
 .cal{
-  width: 50vh;
+  width: 50vw;
   height: 100vh;
   margin-left:0;
   overflow-x: hidden;
