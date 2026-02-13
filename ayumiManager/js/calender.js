@@ -28,7 +28,7 @@ function showProcess(date) {
     var calendar = createProcess(year, month);
     const c = document.querySelector('#calendar');
     c.innerHTML = calendar;
-    const days = c.getElementsByTagName("td");
+    const days = Object.entries(c.getElementsByTagName("td"));
     days.forEach(e=>{
       if(!e.classList.contains("disabled")){
         e.addEventListener("click", (e)=>{
