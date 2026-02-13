@@ -4,9 +4,9 @@ const today = new Date();
 var showDate = new Date(today.getFullYear(), today.getMonth(), 1);
 
 // 初期表示
-window.onload = function () {
+/*window.onload = function () {
     showProcess(today, calendar);
-};
+};*/
 // 前の月表示
 function prev(){
     showDate.setMonth(showDate.getMonth() - 1);
@@ -87,3 +87,5 @@ function createProcess(year, month) {
     }
     return calendar;
 }
+
+showProcess(today, calendar);
