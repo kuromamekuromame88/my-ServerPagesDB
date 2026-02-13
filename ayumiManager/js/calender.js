@@ -23,8 +23,8 @@ function patchEvent(c){
   const days = Array.from(c.getElementsByTagName("td"));
   days.forEach(e => {
     if (!e.classList.contains("disabled")) {
-      e.addEventListener("click", function () {
-        console.log(this.dataset.day);
+      e.addEventListener("click", function (a) {
+        console.log(a.dataset);
         if (this.dataset.day) {
           console.log(this.dataset.day);
         }
