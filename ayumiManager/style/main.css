@@ -40,7 +40,7 @@ main {
 .cal{
   background-color: #f8f8f8;
   position: absolute;
-  top: 0;
+  top: 60;
   left: 0;
   width: 50vw;
   height: 100%;
@@ -49,7 +49,7 @@ main {
 .schedule{
   background-color: #ffffff;
   position: absolute;
-  top: 0;
+  top: 60;
   right: 0;
   width: 50vw;
   height:100%;
