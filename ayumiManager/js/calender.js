@@ -24,9 +24,6 @@ function patchEvent(c){
   days.forEach(e => {
     if (!e.classList.contains("disabled")) {
       e.addEventListener("click", function () {
-        console.log(e);
-        console.log(this);
-        console.log(e.dataset);
         if (e.dataset.day) {
           console.log(e.dataset.day);
         }
@@ -80,9 +77,9 @@ function createProcess(year, month) {
                 if(year == today.getFullYear()
                   && month == (today.getMonth())
                   && count == today.getDate()){
-                    calendar += `<td class="today" dataset-day="${`${year}-${month+1}-${count}`}">${count}</td>`;
+                    calendar += `<td class="today" data-day="${`${year}-${month+1}-${count}`}">${count}</td>`;
                 } else {
-                    calendar += `<td dataset-day="${`${year}-${month+1}-${count}`}">${count}</td>`;
+                    calendar += `<td data-day="${`${year}-${month+1}-${count}`}">${count}</td>`;
                 }
             }
         }
