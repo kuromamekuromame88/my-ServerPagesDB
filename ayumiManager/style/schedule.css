@@ -9,9 +9,10 @@
 
 .scheduleTable{
   position: fixed;
-  width: 80%;
+  max-width: 80%;
+  overflow-x: hidden;
   height: calc(100% - 20px);
-  margin: 0;
+  margin: 0 auto;
 }
 
 .scheduleTable table{
