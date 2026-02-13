@@ -2,7 +2,7 @@
 
 /*全体*/
 .wrapper{
-    max-width: 600px;
+    min-width: 50vw;
     margin: 0 auto;
     color: #666;
 }
