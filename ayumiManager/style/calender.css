@@ -2,9 +2,9 @@
 
 /*全体*/
 .wrapper{
-    margin-top: 10%;
+    justify-content: center;
     max-width: 70%;
-    margin: 0 auto;
+    margin: auto;
     color: #666;
 }
 #header {
