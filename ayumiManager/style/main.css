@@ -40,14 +40,14 @@ main {
 .cal{
   background-color: #f8f8f8;
   width: 50vw;
-  height: 100vh;
+  height: 100%;
   margin-left:0;
   overflow-x: hidden;
 }
 
 .schedule{
   width: 50vw;
-  height:100vh;
+  height:100%;
   margin-right:0;
   background-color: darkgray;
 }
