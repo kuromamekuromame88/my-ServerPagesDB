@@ -22,7 +22,9 @@
 
 .scheduleTable td {
   outline: 2px solid #000;
-  padding-top: 10px;
-  padding-bottom: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
   text-align: center;
+  width: max-content;
+  height: 20px;
 }
