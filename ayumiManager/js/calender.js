@@ -23,20 +23,24 @@ function next(){
 function showProcess(date) {
     var year = date.getFullYear();
     var month = date.getMonth();
-    document.querySelector('#header').innerHTML = year + "年 " + (month + 1) + "月";
+    document.querySelector('#header').innerHTML =
+        year + "年 " + (month + 1) + "月";
 
     var calendar = createProcess(year, month);
     const c = document.querySelector('#calendar');
     c.innerHTML = calendar;
-    const days = Object.entries(c.getElementsByTagName("td"));
-    days.forEach(e=>{
-      if(!(e.className==="disabled")){
-        e.onclick = function(a){
-          if(a.dataset.day) console.log(a.dataset.day);
-        };
-      }
+
+    c.addEventListener("click", function(event){
+    const target = event.target;
+    if(target.tagName === "TD" &&
+       !target.classList.contains("disabled") &&
+       target.dataset.day){
+        console.log(target.dataset.day);
+    }
     });
+
 }
+
 
 // カレンダー作成
 function createProcess(year, month) {
