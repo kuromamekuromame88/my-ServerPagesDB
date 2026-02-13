@@ -34,8 +34,8 @@ function showProcess(date) {
         e.addEventListener("click", (e)=>{
           if(e.dataset.day) console.log(e.dataset.day);
         });
-      });
-    }
+      }
+    });
     
 }
 
