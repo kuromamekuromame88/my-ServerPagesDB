@@ -24,7 +24,7 @@ function patchEvent(c){
   days.forEach(e => {
     if (!e.classList.contains("disabled")) {
       e.addEventListener("click", function () {
-        console.log("this.dataset.day");
+        console.log(this.dataset);
         if (this.dataset.day) {
           console.log(this.dataset.day);
         }
