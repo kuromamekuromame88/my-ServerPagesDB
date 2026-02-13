@@ -38,15 +38,15 @@
     color: red;
 }
 /*土曜日*/
-#calender td:last-child {
+#calendar td:last-child {
     color: blue;
 }
 /*前後月の日付*/
-#calender td.disabled {
+#calendar td.disabled {
     color: #ccc;
 }
 /*本日*/
-#calender td.today {
+#calendar td.today {
     background-color: #D65E72;
     color: #fff;
 }
