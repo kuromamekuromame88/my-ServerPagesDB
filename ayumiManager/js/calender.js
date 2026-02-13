@@ -22,10 +22,9 @@ function next(){
 function patchEvent(c){
   const days = Array.from(c.getElementsByTagName("td"));
   days.forEach(e => {
-    //console.log(!e.classList.contains("disabled"));
     if (!e.classList.contains("disabled")) {
       e.addEventListener("click", function () {
-        console.log("clicked!");
+        console.log("this.dataset.day");
         if (this.dataset.day) {
           console.log(this.dataset.day);
         }
