@@ -30,15 +30,17 @@ function showProcess(date) {
     const c = document.querySelector('#calendar');
     c.innerHTML = calendar;
 
-    c.addEventListener("click", function(event){
-    const target = event.target;
-    if(target.tagName === "TD" &&
-       !target.classList.contains("disabled") &&
-       target.dataset.day){
-        console.log(target.dataset.day);
-    }
-    });
+    const days = Array.from(c.getElementsByTagName("td"));
 
+    days.forEach(e => {
+        if (!e.classList.contains("disabled")) {
+            e.addEventListener("click", function () {
+                if (this.dataset.day) {
+                    console.log(this.dataset.day);
+                }
+            });
+        }
+    });
 }
 
 
