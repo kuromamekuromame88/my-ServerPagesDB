@@ -34,19 +34,19 @@
     text-align: center;
 }
 /*日曜日*/
-td:first-child {
+#calender td:first-child {
     color: red;
 }
 /*土曜日*/
-td:last-child {
+#calender td:last-child {
     color: blue;
 }
 /*前後月の日付*/
-td.disabled {
+#calender td.disabled {
     color: #ccc;
 }
 /*本日*/
-td.today {
+#calender td.today {
     background-color: #D65E72;
     color: #fff;
 }
