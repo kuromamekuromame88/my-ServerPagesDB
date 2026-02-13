@@ -26,6 +26,7 @@ function patchEvent(c){
       e.addEventListener("click", function () {
         if (e.dataset.day) {
           console.log(e.dataset.day);
+          
         }
       });
     }
