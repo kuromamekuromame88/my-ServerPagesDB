@@ -24,10 +24,10 @@
     border-collapse: collapse;
     width: 100%;
 }
-th {
+.dayOfWeek th {
     color: #000;
 }
-th, td {
+.dayOfWeek th, #calendar td {
     outline: 1px solid #ddd;
     padding-top: 10px;
     padding-bottom: 10px;
