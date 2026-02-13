@@ -29,14 +29,13 @@ function showProcess(date) {
     const c = document.querySelector('#calendar');
     c.innerHTML = calendar;
     const days = c.getElementsByTagName("td");
-    days.foreach(e=>{
+    days.forEach(e=>{
       if(!e.classList.contains("disabled")){
         e.addEventListener("click", (e)=>{
           if(e.dataset.day) console.log(e.dataset.day);
         });
       }
     });
-    
 }
 
 // カレンダー作成
