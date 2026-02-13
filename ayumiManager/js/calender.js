@@ -19,28 +19,28 @@ function next(){
     showProcess(showDate);
 }
 
+function patchEvent(c){
+  const days = Array.from(c.getElementsByTagName("td"));
+  days.forEach(e => {
+    if (!e.classList.contains("disabled")) {
+      e.addEventListener("click", function () {
+        if (this.dataset.day) {
+          console.log(this.dataset.day);
+        }
+      });
+    }
+  });
+}
+
 // カレンダー表示
 function showProcess(date) {
-    var year = date.getFullYear();
-    var month = date.getMonth();
-    document.querySelector('#header').innerHTML =
-        year + "年 " + (month + 1) + "月";
-
-    var calendar = createProcess(year, month);
-    const c = document.querySelector('#calendar');
-    c.innerHTML = calendar;
-
-    const days = Array.from(c.getElementsByTagName("td"));
-
-    days.forEach(e => {
-        if (!e.classList.contains("disabled")) {
-            e.addEventListener("click", function () {
-                if (this.dataset.day) {
-                    console.log(this.dataset.day);
-                }
-            });
-        }
-    });
+  var year = date.getFullYear();
+  var month = date.getMonth();
+  document.querySelector('#header').innerHTML = year + "年 " + (month + 1) + "月";
+  var calendar = createProcess(year, month);
+  const c = document.querySelector('#calendar');
+  c.innerHTML = calendar;
+  patchEvent(c);
 }
 
 
