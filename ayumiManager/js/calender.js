@@ -31,9 +31,9 @@ function showProcess(date) {
     const days = Object.entries(c.getElementsByTagName("td"));
     days.forEach(e=>{
       if(!(e.className==="disabled")){
-        e.addEventListener("click", (a)=>{
+        e.onclick = function(a){
           if(a.dataset.day) console.log(a.dataset.day);
-        });
+        };
       }
     });
 }
