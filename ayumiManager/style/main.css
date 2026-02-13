@@ -4,6 +4,8 @@ main {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   background-color: #f8f8f8;
   overflow:hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 /* ----------------- top-bar ----------------- */
@@ -31,4 +33,14 @@ main {
   color: white;
 }
 
+.wrapper{
+  display: flex;
+  flex:1;
+}
+
+.schedule{
+  display: flex;
+  flex:1;
+  background-color: darkgray;
+}
 

@@ -7,11 +7,9 @@
     <title>あゆみ管理ページ</title>
     <!-- チャットの部分のcss-->
     <link rel="stylesheet" href="ayumiManager/style/main.css">
-  
-    <script src="ayumiManager/js/calender.js"></script>
+    <link rel="stylesheet" href="ayumiManager/style/calender.css">
 
     <style>
-      
     </style>
 
   </head>
@@ -20,7 +18,21 @@
       <a href="/" class="logo">tool-webs</a>
     </header>
     <main>
-      <div class="calender"></div>
+      <div class="wrapper">
+        <!-- xxxx年xx月を表示 -->
+        <h1 id="header"></h1>
+        <!-- ボタンクリックで月移動 -->
+        <div id="next-prev-button">
+          <button id="prev" onclick="prev()">‹</button>
+          <button id="next" onclick="next()">›</button>
+        </div>
+        <!-- カレンダー -->
+        <div id="calendar"></div>
+      </div>
+
+      <div class="schedule">
+
+      </div>
     </main>
     <script src="/js/main.js"></script>
   </body>
