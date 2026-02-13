@@ -9,7 +9,6 @@ main {
   margin-top: 60px;
   width:100vw;
   height:100vh;
-  background-color: #f8f8f8;
   overflow:hidden;
 }
 
@@ -39,6 +38,7 @@ main {
 }
 
 .cal{
+  background-color: #f8f8f8;
   width: 50vw;
   height: 100vh;
   margin-left:0;
