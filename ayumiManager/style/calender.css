@@ -19,7 +19,7 @@
     text-align: center;
     width: 100%;
 }
-table {
+#calendar table {
     outline: 2px solid #ddd;
     border-collapse: collapse;
     width: 100%;
