@@ -11,6 +11,7 @@ function dc(subject){
     let tb_b = document.createElement("td");
     let tb_c = document.createElement("td");
     tb_e.textContent = a+1;
+    tb_e.classList.add("notEdit");
     tb_a.textContent = e[0];
     tb_b.textContent = e[1];
     tb_c.textContent = e[2].join(", ");
@@ -51,6 +52,9 @@ async function openSchedule(day){
   return subjects;
 }
 
+function make(){
+  document.querySelectorAll(`#sbody td[class!=notEdit]`);
+}
 
 const slide = document.getElementById("slide");
 slide.addEventListener("change" ,async()=>{
