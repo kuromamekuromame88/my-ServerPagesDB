@@ -35,9 +35,8 @@
 
 .nav-tools{
   background-color: gray;
-  height: max-content;
+  height: calc(max-content + 50px);
   width: 100%;
-  
 }
 
 .nav{
