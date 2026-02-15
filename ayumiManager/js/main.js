@@ -68,9 +68,8 @@ function make(f){
 function resave(){
   const el = document.querySelectorAll(`#sbody td:not(.notEdit)`);
   el.forEach(e=>{
-    console.log(e);
     const text = e.querySelector("textarea");
-    console.log(text);
+    console.log(text.innerHTML);
     let a = text.innerHTML;
     e.innerHTML=`${a}`;
   });
