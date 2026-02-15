@@ -34,7 +34,7 @@ async function openSchedule(day){
     let tb_e = document.createElement("td");
     let tb_a = document.createElement("td");
     tb_e.textContent = "まだ予定が書き込まれていません。";
-    tb_a.innerHTML = `<button onclick="make()" class="make">予定を書き込む</button>`;
+    tb_a.innerHTML = `<button onclick="make(true)" class="make">予定を書き込む</button>`;
     sbody.innerHTML = "";
     tr.append(tb_e, tb_a);
     sbody.appendChild(tr);
@@ -52,17 +52,21 @@ async function openSchedule(day){
   return subjects;
 }
 
-function make(){
-  const d = [["","",[""]],["","",[""]],["","",[""]],["","",[""]],["","",[""]],["","",[""]]];
-  dc(d);
+function make(f){
+  if(f){
+    const d = [["","",[""]],["","",[""]],["","",[""]],["","",[""]],["","",[""]],["","",[""]]];
+    dc(d);
+  }
   const el = document.querySelectorAll(`#sbody td:not(.notEdit)`);
   el.forEach(e=>{
     let a = e.textContent;
     e.innerHTML=`<textarea>${a}</textarea>`;
   });
+  slide.checked = true;
 }
 
 const slide = document.getElementById("slide");
 slide.addEventListener("change" ,async()=>{
   alert(slide.checked);
+  if(slide.checked) make();
 });
