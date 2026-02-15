@@ -53,6 +53,8 @@ async function openSchedule(day){
 }
 
 function make(){
+  const d = [["","",[""]],["","",[""]],["","",[""]],["","",[""]],["","",[""]],["","",[""]]];
+  dc(d);
   const el = document.querySelectorAll(`#sbody td:not(notEdit)`);
   el.forEach(e=>{
     let a = e.textContent;
