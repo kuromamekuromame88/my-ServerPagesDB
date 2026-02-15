@@ -65,8 +65,21 @@ function make(f){
   slide.checked = true;
 }
 
+function resave(){
+  const el = document.querySelectorAll(`#sbody td:not(.notEdit)`);
+  el.forEach(e=>{
+    let a = e.getElementByTagName("textarea").innerText;
+    e.innerHTML=`${a}`;
+  });
+  slide.checked = true;
+}
+
 const slide = document.getElementById("slide");
 slide.addEventListener("change" ,async()=>{
   alert(slide.checked);
-  if(slide.checked) make();
+  if(slide.checked){
+    make();
+  }else{
+
+  }
 });
