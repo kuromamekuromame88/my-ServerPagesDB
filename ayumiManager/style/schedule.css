@@ -39,10 +39,9 @@
   border-radius: 3px;
   color: #ffffff;
   font-weight: bold;
-  font-size: 30px;
+  font-size: 20px;
   padding-left: 10px;
-  padding-left: 10px;
-  display: flex;
+  padding-right: 10px;
   align-items: center;
-  margin: 10px;
+  margin: 5px;
 }
