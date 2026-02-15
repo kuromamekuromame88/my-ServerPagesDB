@@ -16,12 +16,11 @@
 }
 
 .scheduleTable table{
-  display: flex;
-  justify-content: center;
   align-items: center;
 }
 
 .scheduleTable td {
+  
   outline: 2px solid #000;
   padding-top: 5px;
   padding-bottom: 5px;
