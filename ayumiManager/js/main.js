@@ -60,7 +60,7 @@ function make(f){
   const el = document.querySelectorAll(`#sbody td:not(.notEdit)`);
   el.forEach(e=>{
     let a = e.textContent;
-    e.innerHTML=`<textarea>${a}</textarea>`;
+    e.innerHTML=`<textarea id="s">${a}</textarea>`;
   });
   slide.checked = true;
 }
@@ -68,8 +68,10 @@ function make(f){
 function resave(){
   const el = document.querySelectorAll(`#sbody td:not(.notEdit)`);
   el.forEach(e=>{
-    console.log(e.getElementsByTagName("textarea"));
-    let a = e.getElementsByTagName("textarea")[0].innerText;
+    console.log(e);
+    const text = e.getElementById("s");
+    console.log(text);
+    let a = text.innerText;
     e.innerHTML=`${a}`;
   });
   slide.checked = false;
