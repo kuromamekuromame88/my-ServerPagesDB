@@ -68,14 +68,14 @@ function make(f){
 function resave(){
   const el = document.querySelectorAll(`#sbody td:not(.notEdit)`);
   el.forEach(e=>{
-    let a = e.getElementByTagName("textarea").innerText;
+    let a = e.getElementsByTagName("textarea")[0].innerText;
     e.innerHTML=`${a}`;
   });
   slide.checked = false;
 }
 
 const slide = document.getElementById("slide");
-slide.addEventListener("change" ,async()=>{
+slide.addEventListener("change", async()=>{
   alert(slide.checked);
   if(slide.checked){
     make();
