@@ -33,6 +33,13 @@
   font-weight: bold;
 }
 
+.nav-tools{
+  background-color: gray;
+  height: max-content;
+  width: 100%;
+  
+}
+
 .nav{
   background-color: #000;
   border-radius: 3px;
