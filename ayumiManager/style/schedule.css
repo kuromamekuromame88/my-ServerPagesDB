@@ -9,7 +9,7 @@
 
 .scheduleTable{
   position: relative;
-  top: 0px;
+  top: 100px;
   overflow-x: hidden;
   text-align: center;
   height: max-content;
