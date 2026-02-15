@@ -1,7 +1,7 @@
 function dc(k, kk, y){
-  console.log(k);
-  console.log(kk);
-  console.log(y);
+  //console.log(k);
+  //console.log(kk);
+  //console.log(y);
 }
 
 let a;
@@ -14,12 +14,12 @@ async function openSchedule(day){
   const s = await fetch(`https://tool-webs.onrender.com/ayumi?day=${d}`);
   const res = await s.json();
   if(res.day != d || !res) return;
-  //b = res;
   const subjects = res.schedule;
   a = subjects;
   console.log("s",subjects);
   subjects.forEach(e=>{
     var k = Object.keys(e)[0];
+    console.log("k", k);
     var kk = Object.keys(e.k)[0];
     dc(k, kk, e[k][kk]);
     alert("k",k);
