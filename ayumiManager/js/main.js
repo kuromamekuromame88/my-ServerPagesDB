@@ -71,7 +71,7 @@ function resave(){
     console.log(e);
     const text = e.querySelector("textarea");
     console.log(text);
-    let a = text.innerText;
+    let a = text.innerHTML;
     e.innerHTML=`${a}`;
   });
   slide.checked = false;
