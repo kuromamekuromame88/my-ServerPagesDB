@@ -36,6 +36,10 @@
 #calendar td:first-child {
     color: red;
 }
+
+#calendar td:hover {
+  background-color: #bbb;
+}
 /*土曜日*/
 #calendar td:last-child {
     color: blue;
