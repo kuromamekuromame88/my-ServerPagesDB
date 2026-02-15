@@ -8,7 +8,6 @@
 }
 
 .scheduleTable{
-  position: fixed;
   max-width: 80%;
   overflow-x: hidden;
   height: calc(100% - 20px);
