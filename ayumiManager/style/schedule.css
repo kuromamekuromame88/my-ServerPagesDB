@@ -27,7 +27,7 @@
   font-weight: bold;
 }
 
-.scheduleTable tr td:first-child{
+.scheduleTable tr td:first-child:not(.undef){
   width: 5%;
 }
 
