@@ -80,6 +80,6 @@ slide.addEventListener("change" ,async()=>{
   if(slide.checked){
     make();
   }else{
-
+    resave();
   }
 });
