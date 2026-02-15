@@ -70,7 +70,7 @@ main {
   padding-top: 20%;
 }
 
-.wave span {
+.wavetext span {
   display: inline-block; /* translateを効かせるため */
   animation: wave 1s ease-in-out infinite;
 }
@@ -86,13 +86,13 @@ main {
 }
 
 /* 各文字のアニメーション開始をずらす */
-.wave span:nth-child(1) { animation-delay: 0s; }
-.wave span:nth-child(2) { animation-delay: 0.1s; }
-.wave span:nth-child(3) { animation-delay: 0.2s; }
-.wave span:nth-child(4) { animation-delay: 0.3s; }
-.wave span:nth-child(5) { animation-delay: 0.4s; }
-.wave span:nth-child(6) { animation-delay: 0.5s; }
-.wave span:nth-child(7) { animation-delay: 0.6s; }
+.wavetext span:nth-child(1) { animation-delay: 0s; }
+.wavetext span:nth-child(2) { animation-delay: 0.1s; }
+.wavetext span:nth-child(3) { animation-delay: 0.2s; }
+.wavetext span:nth-child(4) { animation-delay: 0.3s; }
+.wavetext span:nth-child(5) { animation-delay: 0.4s; }
+.wavetext span:nth-child(6) { animation-delay: 0.5s; }
+.wavetext span:nth-child(7) { animation-delay: 0.6s; }
 
 .m-plus-rounded-1c-regular {
   font-family: "M PLUS Rounded 1c", sans-serif;
