@@ -60,14 +60,14 @@ main {
 
 #loading{
   background-color: #00000080;
-  color: #ffffff80;
+  color: #ffffffc0;
   position: fixed;
   width: 50%;
   height:100vw;
   margin: 0px;
   text-align: center;
   align-items: center;
-  padding-top: 50%;
+  padding-top: 20%;
 }
 
 .wave span {
