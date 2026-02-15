@@ -4,6 +4,8 @@ function dc(k, kk, y){
   console.log(y);
 }
 
+let a;
+
 async function openSchedule(day){
   if(!day) return;
   const sp = day.split("-");
@@ -12,6 +14,8 @@ async function openSchedule(day){
   const res = s.json();
   if(res.day != d || !res) return;
   const subjects = res.schedule;
+  a = subjects;
+  alert("s",subjects);
   subjects.forEach(e=>{
     var k = Object.keys(e)[0];
     var kk = Object.keys(e.k)[0];
