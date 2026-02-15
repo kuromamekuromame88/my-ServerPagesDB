@@ -31,6 +31,7 @@ async function openSchedule(day){
     let tb_a = document.createElement("td");
     tb_e.textContent = "まだ予定が書き込まれていません。";
     tb_a.innerHTML = `<button onclick="make()" class="make">予定を書き込む</button>`;
+    sbody.innerHTML = "";
     tr.append(tb_e, tb_a);
     sbody.appendChild(tr);
     return;
