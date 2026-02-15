@@ -41,10 +41,6 @@ async function openSchedule(day){
 //slideはcheckboxで作成
 const slide = document.getElementById("slide");
 
-slide.addEventListener("on" ,async()=>{
-  alert("on");
-});
-
-slide.addEventListener("off" ,async()=>{
-  alert("off");
+slide.addEventListener("change" ,async()=>{
+  alert(this.checked);
 });
