@@ -3,23 +3,21 @@ const sbody = document.getElementById("sbody");
 function dc(subject){
   sbody.innerHTML = "";
 
-  subject.forEach(e => {
+  subject.forEach((e, a) => {
     let tr = document.createElement("tr");
-
+    let tb_e = document.createElement("td");
     let tb_a = document.createElement("td");
     let tb_b = document.createElement("td");
     let tb_c = document.createElement("td");
-
+    tb_e.textContent = a+1;
     tb_a.textContent = e[0];
     tb_b.textContent = e[1];
     tb_c.textContent = e[2].join(", ");
 
-    tr.append(tb_a, tb_b, tb_c);
+    tr.append(tb_e, tb_a, tb_b, tb_c);
     sbody.appendChild(tr);
   });
 }
-
-
 
 async function openSchedule(day){
   if(!day) return;
