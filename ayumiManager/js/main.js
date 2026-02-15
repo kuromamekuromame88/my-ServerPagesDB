@@ -1,24 +1,21 @@
 const sbody = document.getElementById("sbody");
 
 function dc(subject){
-  const es = [];
-  subject.forEach(e=>{
+  sbody.innerHTML = "";
+
+  subject.forEach(e => {
     let tr = document.createElement("tr");
+
     let tb_a = document.createElement("td");
     let tb_b = document.createElement("td");
     let tb_c = document.createElement("td");
-    console.log(e[0]);
-    tb_a.innnerText = e[0];
-    tb_b.innnerText = e[1];
-    tb_c.innnerText = e[2].join(", ");
-    tr.appendChild(tb_a);
-    tr.appendChild(tb_b);
-    tr.appendChild(tb_c);
-    es.push(tr);
-  });
-  sbody.innerHTML = "";
-  es.forEach(e=>{
-    sbody.appendChild(e);
+
+    tb_a.textContent = e[0];
+    tb_b.textContent = e[1];
+    tb_c.textContent = e[2].join(", ");
+
+    tr.append(tb_a, tb_b, tb_c);
+    sbody.appendChild(tr);
   });
 }
 
