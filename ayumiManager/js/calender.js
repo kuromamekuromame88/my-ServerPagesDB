@@ -27,7 +27,6 @@ function patchEvent(c){
         if (e.dataset.day) {
           //console.log(e.dataset.day);
           const result = await openSchedule(e.dataset.day);
-          console.log(result);
         }
       });
     }
