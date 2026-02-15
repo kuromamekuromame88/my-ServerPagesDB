@@ -1,4 +1,5 @@
 const sbody = document.getElementById("sbody");
+const loading = document.getElementById("loading");
 
 function dc(subject){
   sbody.innerHTML = "";
@@ -17,12 +18,14 @@ function dc(subject){
     tr.append(tb_e, tb_a, tb_b, tb_c);
     sbody.appendChild(tr);
   });
+  loading.display = "none";
 }
 
 async function openSchedule(day){
   if(!day) return;
   const sp = day.split("-");
   const d = `${sp[0]}${sp[1]>9?sp[1]:"0"+sp[1]}${sp[2]>9?sp[2]:"0"+sp[2]}`;
+  loading.display = "block";
   const s = await fetch(`https://tool-webs.onrender.com/ayumi?day=${d}`);
   const res = await s.json();
   if(!res || res.day != d){
@@ -34,6 +37,7 @@ async function openSchedule(day){
     sbody.innerHTML = "";
     tr.append(tb_e, tb_a);
     sbody.appendChild(tr);
+    loading.display = "none";
     return;
   }
   const subjects = res.schedule;
@@ -47,11 +51,12 @@ async function openSchedule(day){
   return subjects;
 }
 
+loading.display = "none";
 
 //slideはcheckboxで作成
 const slide = document.getElementById("slide");
 
 slide.addEventListener("change" ,async()=>{
   alert(slide.checked);
-  
+
 });
