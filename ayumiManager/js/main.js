@@ -16,16 +16,13 @@ async function openSchedule(day){
   const res = await s.json();
   if(res.day != d || !res) return;
   const subjects = res.schedule;
-  a = subjects;
+  let sb = [];
   console.log("s",subjects);
   subjects.forEach(e=>{
     var k = Object.keys(e)[0];
     var kk = Object.keys(e[k])[0];
-    console.log(e[k][kk]);
-    alert("k",k);
-    alert("kk",kk);
-    alert("e",e[k][kk]);
+    sb.push([k, kk, e[k][kk]]);
   });
-  //k, kk
+  sb.forEach(e=>console.log(e));
   return subjects;
 }
