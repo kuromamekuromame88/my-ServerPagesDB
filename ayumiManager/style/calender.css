@@ -40,6 +40,11 @@
 #calendar td:hover {
   background-color: #bbb;
 }
+
+#calendar td:active {
+  background-color: #999;
+}
+
 /*土曜日*/
 #calendar td:last-child {
     color: blue;
