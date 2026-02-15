@@ -51,12 +51,10 @@ async function openSchedule(day){
   return subjects;
 }
 
+//初期は非表示
 loading.display = "none";
 
-//slideはcheckboxで作成
 const slide = document.getElementById("slide");
-
 slide.addEventListener("change" ,async()=>{
   alert(slide.checked);
-
 });

@@ -68,6 +68,7 @@ main {
   text-align: center;
   align-items: center;
   padding-top: 20%;
+  display: none;
 }
 
 .wavetext span {
