@@ -12,7 +12,7 @@
   display: flex;
   flex: 90;
   overflow-x: hidden;
-  
+  justify-content: center;
 }
 
 .scheduleTable table{
