@@ -53,7 +53,7 @@ async function openSchedule(day){
 }
 
 function make(){
-  document.querySelectorAll(`#sbody td[class!=notEdit]`);
+  document.querySelectorAll(`#sbody td:not(notEdit)`);
 }
 
 const slide = document.getElementById("slide");
