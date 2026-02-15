@@ -21,7 +21,7 @@ async function openSchedule(day){
   subjects.forEach(e=>{
     var k = Object.keys(e)[0];
     console.log("e[k]", e[k]);
-    var kk = Object.keys(e.[k])[0];
+    var kk = Object.keys(e[k])[0];
     dc(k, kk, e[k][kk]);
     alert("k",k);
     alert("kk",kk);
