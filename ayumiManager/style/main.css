@@ -50,6 +50,7 @@ main {
   background-color: #ffffff;
   position: absolute;
   display: flex;
+  flex-direction: column;
   top: 60px;
   right: 0px;
   width: 50vw;
