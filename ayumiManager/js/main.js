@@ -25,8 +25,7 @@ async function openSchedule(day){
   const d = `${sp[0]}${sp[1]>9?sp[1]:"0"+sp[1]}${sp[2]>9?sp[2]:"0"+sp[2]}`;
   const s = await fetch(`https://tool-webs.onrender.com/ayumi?day=${d}`);
   const res = await s.json();
-  if(res.day != d) return;
-  if(!res){
+  if(!res || res.day != d){
     let tr = document.createElement("tr");
     let tb_e = document.createElement("td");
     let tb_a = document.createElement("td");
