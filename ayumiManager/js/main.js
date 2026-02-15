@@ -36,3 +36,15 @@ async function openSchedule(day){
   dc(sb);
   return subjects;
 }
+
+
+//slideはcheckboxで作成
+const slide = document.getElementById("slide");
+
+slide.addEventListener("on" ,async()=>{
+  alert("on");
+});
+
+slide.addEventListener("off" ,async()=>{
+  alert("off");
+});
