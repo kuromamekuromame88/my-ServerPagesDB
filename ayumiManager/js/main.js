@@ -58,7 +58,7 @@ function make(){
   const el = document.querySelectorAll(`#sbody td:not(.notEdit)`);
   el.forEach(e=>{
     let a = e.textContent;
-    e.innerHTML=`<input value="${a}">`;
+    e.innerHTML=`<textarea>${a}</textarea>`;
   });
 }
 

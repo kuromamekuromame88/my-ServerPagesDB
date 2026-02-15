@@ -114,6 +114,7 @@ main {
   padding: 5px 5px;
 }
 
-#sbody tr td input{
-  width: 50px;
+#sbody tr td textarea{
+  width: 150px;
+  height: 30px;
 }
