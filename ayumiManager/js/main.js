@@ -77,7 +77,7 @@ function resave(){
 
 const slide = document.getElementById("slide");
 slide.addEventListener("change", async()=>{
-  alert(slide.checked);
+  //alert(slide.checked);
   if(slide.checked){
     make();
   }else{
