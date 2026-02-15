@@ -1,10 +1,25 @@
-function dc(k, kk, y){
-  //console.log(k);
-  //console.log(kk);
-  //console.log(y);
-}
+const sbody = document.getElementById("sbody");
 
-let a;
+function dc(subject){
+  const es = [];
+  subject.forEach(e=>{
+    let tr = document.createElement("tr");
+    let tb_a = document.createElement("td");
+    let tb_b = document.createElement("td");
+    let tb_c = document.createElement("td");
+    tb_a.innnerHTML = e[0];
+    tb_b.innnerHTML = e[1];
+    tb_c.innnerHTML = e[2];
+    tr.appendChild(tb_a);
+    tr.appendChild(tb_b);
+    tr.appendChild(tb_c);
+    es.push(tr);
+  });
+  sbody.innerHTML = "";
+  es.forEach(e=>{
+    sbody.appendChild(e);
+  });
+}
 
 
 
@@ -17,12 +32,11 @@ async function openSchedule(day){
   if(res.day != d || !res) return;
   const subjects = res.schedule;
   let sb = [];
-  console.log("s",subjects);
   subjects.forEach(e=>{
     var k = Object.keys(e)[0];
     var kk = Object.keys(e[k])[0];
     sb.push([k, kk, e[k][kk]]);
   });
-  sb.forEach(e=>console.log(e));
+  dc(sb);
   return subjects;
 }
