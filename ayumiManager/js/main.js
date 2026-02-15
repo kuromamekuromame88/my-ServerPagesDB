@@ -7,9 +7,10 @@ function dc(subject){
     let tb_a = document.createElement("td");
     let tb_b = document.createElement("td");
     let tb_c = document.createElement("td");
-    tb_a.innnerHTML = e[0];
-    tb_b.innnerHTML = e[1];
-    tb_c.innnerHTML = e[2];
+    console.log(e[0]);
+    tb_a.innnerText = e[0];
+    tb_b.innnerText = e[1];
+    tb_c.innnerText = e[2].join(", ");
     tr.appendChild(tb_a);
     tr.appendChild(tb_b);
     tr.appendChild(tb_c);
