@@ -12,13 +12,13 @@
   display: flex;
   flex: 90;
   overflow-x: hidden;
-  justify-content: center;
-  align-items: center;
+  
 }
 
 .scheduleTable table{
-  margin: 0 auto;
-  width: 80%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .scheduleTable td {
