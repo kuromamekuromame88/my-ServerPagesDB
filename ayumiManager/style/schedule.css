@@ -16,6 +16,7 @@
   padding-bottom: 50px;
   padding-left: 25px;
   padding-right: 25px;
+  table-layout: fixed;
 }
 
 .scheduleTable td {
@@ -24,6 +25,10 @@
   padding-bottom: 2px;
   text-align: center;
   font-weight: bold;
+}
+
+.scheduleTable tr td:first-child{
+  width: 
 }
 
 .nav-tools{
