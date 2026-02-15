@@ -1,19 +1,16 @@
 @charset "utf-8";
 
-.nav-bar{
-  display: flex;
-  flex: 10;
+/*.nav-bar{
   width: 100%;
   height: 20px;
   background-color:#cbcbcb;
   overflow: hidden;
-}
+}*/
 
 .scheduleTable{
-  display: flex;
-  flex: 90;
+  
   overflow-x: hidden;
-  justify-content: center;
+  text-align: center;
   height: max-content;
 }
 
