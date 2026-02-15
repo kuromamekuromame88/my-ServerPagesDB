@@ -53,6 +53,7 @@
 
 
 input[type="checkbox"].slide {
+  vertical-align:middle;
   --size: 25px;
   --scale: 0.6;
   appearance: none;
