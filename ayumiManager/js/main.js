@@ -5,7 +5,8 @@ function dc(k, kk, y){
 }
 
 let a;
-let b;
+
+
 
 async function openSchedule(day){
   if(!day) return;
@@ -19,7 +20,7 @@ async function openSchedule(day){
   console.log("s",subjects);
   subjects.forEach(e=>{
     var k = Object.keys(e)[0];
-    console.log("k", k);
+    console.log("e.k", e.k);
     var kk = Object.keys(e.k)[0];
     dc(k, kk, e[k][kk]);
     alert("k",k);
