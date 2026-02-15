@@ -26,7 +26,8 @@ function patchEvent(c){
       e.addEventListener("click", async function () {
         if (e.dataset.day) {
           //console.log(e.dataset.day);
-          await openSchedule(e.dataset.day);
+          const result = await openSchedule(e.dataset.day);
+          console.log(result);
         }
       });
     }
