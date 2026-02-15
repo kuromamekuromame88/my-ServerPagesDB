@@ -23,10 +23,10 @@ function patchEvent(c){
   const days = Array.from(c.getElementsByTagName("td"));
   days.forEach(e => {
     if (!e.classList.contains("disabled")) {
-      e.addEventListener("click", function () {
+      e.addEventListener("click", async function () {
         if (e.dataset.day) {
-          console.log(e.dataset.day);
-          
+          //console.log(e.dataset.day);
+          await openSchedule(e.dataset.day);
         }
       });
     }
