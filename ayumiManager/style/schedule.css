@@ -8,7 +8,8 @@
 }*/
 
 .scheduleTable{
-  
+  position: relative;
+  top: 0px;
   overflow-x: hidden;
   text-align: center;
   height: max-content;
