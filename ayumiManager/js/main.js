@@ -52,5 +52,6 @@ async function openSchedule(day){
 const slide = document.getElementById("slide");
 
 slide.addEventListener("change" ,async()=>{
-  alert(this.checked);
+  alert(slide.checked);
+  
 });
