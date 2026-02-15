@@ -12,7 +12,7 @@ async function openSchedule(day){
   const d = `${sp[0]}${sp[1]>9?sp[1]:"0"+sp[1]}${sp[2]>9?sp[2]:"0"+sp[2]}`;
   const s = await fetch(`https://tool-webs.onrender.com/ayumi?day=${d}`);
   const res = s.json();
-  console.log(res.day);
+  alert(res.day);
   if(res.day != d || !res) return;
   const subjects = res.schedule;
   a = subjects;
