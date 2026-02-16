@@ -27,7 +27,7 @@ async function openSchedule(day, cde, ){
   document.getElementById("calendar").querySelectorAll("td").forEach(e=>{
     e.style.outline = "solid 1px #ddd;";
   });
-  cde.style.border = "solid 2px #000";
+  cde.style.outline = "solid 2px #000";
   const sp = day.split("-");
   const d = `${sp[0]}${sp[1]>9?sp[1]:"0"+sp[1]}${sp[2]>9?sp[2]:"0"+sp[2]}`;
   loading.style.display = "block";
@@ -75,7 +75,6 @@ function resave(){
   const el = document.querySelectorAll(`#sbody td:not(.notEdit)`);
   el.forEach(e=>{
     const text = e.querySelector("textarea");
-    console.log(text.innerHTML);
     let a = text.value;
     e.innerHTML=`${a}`;
   });
