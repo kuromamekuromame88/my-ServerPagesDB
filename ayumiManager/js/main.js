@@ -13,8 +13,11 @@ function dc(subject){
     tb_e.textContent = a+1;
     tb_e.classList.add("notEdit");
     tb_a.textContent = e[0];
+    tb_a.classList.add("kyoka");
     tb_b.textContent = e[1];
+    tb_b.classList.add("yotei");
     tb_c.textContent = e[2].join(", ");
+    tb_c.classList.add("junbi");
 
     tr.append(tb_e, tb_a, tb_b, tb_c);
     sbody.appendChild(tr);
@@ -88,7 +91,18 @@ function resave(){
 }
 
 function createSaveData(){
-  
+  const kyoka = sbody.querySelectorAll("#sbody td:not(.notEdit).kyoka");
+  kyoka.forEach(e=>{
+    e.innerText
+  });
+  const yotei = sbody.querySelectorAll("#sbody td:not(.notEdit).yotei");
+  yotei.forEach(e=>{
+    e.innerText
+  });
+  const junbi = sbody.querySelectorAll("#sbody td:not(.notEdit).junbi");
+  junbi.forEach(e=>{
+    e.innerText
+  });
 }
 
 async function sendsaveData(){
