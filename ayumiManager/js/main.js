@@ -91,14 +91,18 @@ function resave(){
 }
 
 function createSaveData(){
-  const kyoka = sbody.querySelectorAll("#sbody td:not(.notEdit).kyoka");
-  const yotei = sbody.querySelectorAll("#sbody td:not(.notEdit).yotei");
-  const junbi = sbody.querySelectorAll("#sbody td:not(.notEdit).junbi");  
+  const kyoka = sbody.querySelectorAll("td:not(.notEdit).kyoka");
+  const yotei = sbody.querySelectorAll("td:not(.notEdit).yotei");
+  const junbi = sbody.querySelectorAll("td:not(.notEdit).junbi");  
   const sleng = kyoka.length;
   var c = 0;
   const data = [];
   while(c<sleng){
-    data.push([[kyoka[c].innerText],[yotei[c].innerText], [junbi[c].innerText.split(", ")]]);
+    data.push({
+      [kyoka[c].innerText]: {
+        [yotei[c].innerText]:junbi[c].innerText.split(", ")
+      }
+    });
     c++;
   }
   return data;
