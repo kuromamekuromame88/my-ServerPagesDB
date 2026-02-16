@@ -87,6 +87,14 @@ function resave(){
   slide.checked = false;
 }
 
+function createSaveData(){
+  
+}
+
+async function sendsaveData(){
+  
+}
+
 const slide = document.getElementById("slide");
 slide.addEventListener("change", async()=>{
   //alert(slide.checked);
