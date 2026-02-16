@@ -115,6 +115,6 @@ main {
 }
 
 #sbody tr td textarea{
-  width: 150px;
-  height: 30px;
+  width: 100%;
+  height: 20px;
 }
