@@ -148,6 +148,6 @@ input[type="checkbox"].slide:checked::before {
   border-radius: 10px;
   color: #fff;
   font-weight: bold;
-  font-size: 15px;
-  padding: 5px 10px
+  font-size: 20px;
+  padding: 3px 10px
 }
