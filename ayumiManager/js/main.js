@@ -36,6 +36,7 @@ async function openSchedule(day){
     tb_e.textContent = "まだ予定が書き込まれていません。";
     tb_e.classList.add("undef");
     tb_a.innerHTML = `<button onclick="make(true)" class="make">予定を書き込む</button>`;
+    tb_a.classList.add("undef");
     sbody.innerHTML = "";
     tr.append(tb_e, tb_a);
     sbody.appendChild(tr);
