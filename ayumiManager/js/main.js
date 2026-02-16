@@ -22,8 +22,9 @@ function dc(subject){
   loading.style.display = "none";
 }
 
-async function openSchedule(day){
+async function openSchedule(day, cde){
   if(!day) return;
+  cde.style.border = "2px solid #000";
   const sp = day.split("-");
   const d = `${sp[0]}${sp[1]>9?sp[1]:"0"+sp[1]}${sp[2]>9?sp[2]:"0"+sp[2]}`;
   loading.style.display = "block";
