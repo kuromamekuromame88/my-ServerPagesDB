@@ -71,7 +71,7 @@ function resave(){
   el.forEach(e=>{
     const text = e.querySelector("textarea");
     console.log(text.innerHTML);
-    let a = text.innerHTML;
+    let a = text.value;
     e.innerHTML=`${a}`;
   });
   slide.checked = false;
