@@ -91,3 +91,11 @@ input[type="checkbox"].slide:checked {
 input[type="checkbox"].slide:checked::before {
   transform: translateX(var(--size)) scale(var(--scale));
 }
+
+#delete{
+  background-color: #000;
+  border-radius: 10px;
+  color: #fff;
+  font-weight: bold;
+  padding: 5px 10px
+}
