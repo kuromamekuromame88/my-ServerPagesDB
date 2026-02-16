@@ -1,6 +1,8 @@
 const sbody = document.getElementById("sbody");
 const loading = document.getElementById("loading");
 
+let kday;
+
 function dc(subject){
   sbody.innerHTML = "";
 
@@ -27,6 +29,7 @@ function dc(subject){
 
 async function openSchedule(day, cde){
   if(!day) return;
+  kday = day;
   document.getElementById("calendar").querySelectorAll("td").forEach(e=>{
     e.style.outline = "1px solid #ddd";
     //対象の要素はtd
@@ -105,11 +108,25 @@ function createSaveData(){
     });
     c++;
   }
-  return data;
+  return {
+    "day": kday,
+    "schedule": data
+  };
 }
 
 async function sendsaveData(){
-  
+  try{
+    const save = createSaveData();
+    const r = await fetch("https://tool-webs.onrender.com/ayumi/add", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json"
+                },
+                body: JSON.stringify(save)
+              });
+  }catch(e){
+    console.log(e);
+  }
 }
 
 const slide = document.getElementById("slide");
