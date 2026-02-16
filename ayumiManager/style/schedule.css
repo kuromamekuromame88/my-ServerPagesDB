@@ -59,7 +59,7 @@
   margin: 10px;
 }
 
-
+/*
 input[type="checkbox"].slide {
   vertical-align:middle;
   --size: 25px;
@@ -91,6 +91,57 @@ input[type="checkbox"].slide:checked {
 input[type="checkbox"].slide:checked::before {
   transform: translateX(var(--size)) scale(var(--scale));
 }
+*/
+
+input[type="checkbox"].slide {
+  vertical-align: middle;
+
+  --size: 25px;
+  --scale: 0.6;
+
+  -webkit-appearance: none;
+  appearance: none;
+
+  cursor: pointer;
+  margin: 0;
+
+  width: calc(var(--size) * 2);
+  height: var(--size);
+
+  border-radius: var(--size);
+  background-color: #444444;
+
+  position: relative;
+  transition: background-color 0.2s;
+}
+
+/* ノブ部分 */
+input[type="checkbox"].slide::before {
+  content: "";
+  position: absolute;
+
+  width: var(--size);
+  height: var(--size);
+
+  border-radius: 50%;
+  background-color: #FFFFFF;
+
+  transform: scale(var(--scale));
+  transition: transform 0.2s;
+
+  left: 0;
+  top: 0;
+}
+
+/* ON状態 */
+input[type="checkbox"].slide:checked {
+  background-color: #24B441;
+}
+
+input[type="checkbox"].slide:checked::before {
+  transform: translateX(var(--size)) scale(var(--scale));
+}
+
 
 #delete{
   background-color: #000;
