@@ -70,7 +70,7 @@ async function openSchedule(day, cde){
   }
 }
 
-function make(f){
+async function make(f){
   if(f){
     const d = [["","",[""]],["","",[""]],["","",[""]],["","",[""]],["","",[""]],["","",[""]]];
     dc(d);
@@ -83,13 +83,14 @@ function make(f){
   slide.checked = true;
 }
 
-function resave(){
+async function resave(){
   const el = document.querySelectorAll(`#sbody td:not(.notEdit)`);
   el.forEach(e=>{
     const text = e.querySelector("textarea");
     let a = text.value;
     e.innerHTML=`${a}`;
   });
+  await sendsaveData()
   slide.checked = false;
 }
 
@@ -133,8 +134,8 @@ const slide = document.getElementById("slide");
 slide.addEventListener("change", async()=>{
   //alert(slide.checked);
   if(slide.checked){
-    make();
+    await make();
   }else{
-    resave();
+    await resave();
   }
 });
