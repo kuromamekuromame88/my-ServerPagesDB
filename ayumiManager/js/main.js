@@ -22,40 +22,46 @@ function dc(subject){
   loading.style.display = "none";
 }
 
-async function openSchedule(day, cde, ){
+async function openSchedule(day, cde){
   if(!day) return;
   document.getElementById("calendar").querySelectorAll("td").forEach(e=>{
-    e.style.outline = "solid 1px #ddd;";
+    e.style.outline = "1px solid #ddd";
+    //対象の要素はtd
   });
-  cde.style.outline = "solid 2px #000";
+  cde.style.outline = "2px solid #000";
   const sp = day.split("-");
   const d = `${sp[0]}${sp[1]>9?sp[1]:"0"+sp[1]}${sp[2]>9?sp[2]:"0"+sp[2]}`;
   loading.style.display = "block";
-  const s = await fetch(`https://tool-webs.onrender.com/ayumi?day=${d}`);
-  const res = await s.json();
-  if(!res || res.day != d){
-    let tr = document.createElement("tr");
-    let tb_e = document.createElement("td");
-    let tb_a = document.createElement("td");
-    tb_e.textContent = "まだ予定が書き込まれていません。";
-    tb_e.classList.add("undef");
-    tb_a.innerHTML = `<button onclick="make(true)" class="make">予定を書き込む</button>`;
-    tb_a.classList.add("undef");
-    sbody.innerHTML = "";
-    tr.append(tb_e, tb_a);
-    sbody.appendChild(tr);
-    loading.style.display = "none";
+  try{
+    const s = await fetch(`https://tool-webs.onrender.com/ayumi?day=${d}`);
+    const res = await s.json();
+    if(!res || res.day != d){
+      let tr = document.createElement("tr");
+      let tb_e = document.createElement("td");
+      let tb_a = document.createElement("td");
+      tb_e.textContent = "まだ予定が書き込まれていません。";
+      tb_e.classList.add("undef");
+      tb_a.innerHTML = `<button onclick="make(true)" class="make">予定を書き込む</button>`;
+      tb_a.classList.add("undef");
+      sbody.innerHTML = "";
+      tr.append(tb_e, tb_a);
+      sbody.appendChild(tr);
+      loading.style.display = "none";
+      return;
+    }
+    const subjects = res.schedule;
+    let sb = [];
+    subjects.forEach(e=>{
+      var k = Object.keys(e)[0];
+      var kk = Object.keys(e[k])[0];
+      sb.push([k, kk, e[k][kk]]);
+    });
+    dc(sb);
+    return subjects;
+  }catch(e){
+    console.error(e);
     return;
   }
-  const subjects = res.schedule;
-  let sb = [];
-  subjects.forEach(e=>{
-    var k = Object.keys(e)[0];
-    var kk = Object.keys(e[k])[0];
-    sb.push([k, kk, e[k][kk]]);
-  });
-  dc(sb);
-  return subjects;
 }
 
 function make(f){
@@ -66,7 +72,7 @@ function make(f){
   const el = document.querySelectorAll(`#sbody td:not(.notEdit)`);
   el.forEach(e=>{
     let a = e.textContent;
-    e.innerHTML=`<textarea id="s">${a}</textarea>`;
+    e.innerHTML=`<textarea>${a}</textarea>`;
   });
   slide.checked = true;
 }
