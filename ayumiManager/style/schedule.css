@@ -31,7 +31,7 @@
   width: 5%;
 }
 
-.scheduleTable tr td:nth-child(1):not(.undef){
+.scheduleTable tr td:nth-child(2):not(.undef){
   width: 15%;
 }
 
