@@ -29,7 +29,6 @@ function dc(subject){
 
 async function openSchedule(day, cde){
   if(!day) return;
-  kday = day;
   document.getElementById("calendar").querySelectorAll("td").forEach(e=>{
     e.style.outline = "1px solid #ddd";
     //対象の要素はtd
@@ -37,6 +36,7 @@ async function openSchedule(day, cde){
   cde.style.outline = "2px solid #000";
   const sp = day.split("-");
   const d = `${sp[0]}${sp[1]>9?sp[1]:"0"+sp[1]}${sp[2]>9?sp[2]:"0"+sp[2]}`;
+  kday = d; 
   loading.style.display = "block";
   try{
     const s = await fetch(`https://tool-webs.onrender.com/ayumi?day=${d}`);
