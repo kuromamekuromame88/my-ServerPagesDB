@@ -22,9 +22,12 @@ function dc(subject){
   loading.style.display = "none";
 }
 
-async function openSchedule(day, cde){
+async function openSchedule(day, cde, ){
   if(!day) return;
-  cde.style.border = "2px solid #000";
+  document.getElementById("calendar").querySelectorAll("td").forEach(e=>{
+    e.style.outline = "solid 1px #ddd;";
+  });
+  cde.style.border = "solid 2px #000";
   const sp = day.split("-");
   const d = `${sp[0]}${sp[1]>9?sp[1]:"0"+sp[1]}${sp[2]>9?sp[2]:"0"+sp[2]}`;
   loading.style.display = "block";
