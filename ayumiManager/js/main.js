@@ -135,6 +135,7 @@ async function sendsaveData(){
 async function reqdel(){
   try{
     if(confirm("消去しますか？")){
+      if(!kday) return;
       const s = await fetch(`https://tool-webs.onrender.com/ayumi/del?day=${kday}`);
       const res = await s.json();
       alert("消去しました。");
