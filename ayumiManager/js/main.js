@@ -130,6 +130,22 @@ async function sendsaveData(){
   }
 }
 
+
+
+async function reqdel(){
+  try{
+    if(confirm("消去しますか？")){
+      const s = await fetch(`https://tool-webs.onrender.com/ayumi/del?day=${kday}`);
+      const res = await s.json();
+      alert("消去しました。");
+    }else{
+      alert("消去しませんでした。");
+    }
+  }catch(e){
+    console.log(e);
+  }
+}
+
 const slide = document.getElementById("slide");
 slide.addEventListener("change", async()=>{
   //alert(slide.checked);
@@ -138,4 +154,9 @@ slide.addEventListener("change", async()=>{
   }else{
     await resave();
   }
+});
+
+const del = document.getElementById("delete");
+de.addEventListener("click", async()=>{
+  await reqdel();
 });
