@@ -158,6 +158,6 @@ slide.addEventListener("change", async()=>{
 });
 
 const del = document.getElementById("delete");
-de.addEventListener("click", async()=>{
+del.addEventListener("click", async()=>{
   await reqdel();
 });
