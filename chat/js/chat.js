@@ -863,7 +863,7 @@ saveUsername.addEventListener("click", async() => {
 });
 
 //-------------------画像アップロード----------------
-const MAXSIZE = 800 * 1024;
+const MAXSIZE = 1000 * 1024;
 
 imgUpload.addEventListener("click", (e) => {
   if (localStorage.getItem("muted")) {
@@ -883,7 +883,7 @@ imgUpload.addEventListener("click", (e) => {
     if (!file) return;
 
     if(file.size > MAXSIZE){
-      alert("ファイルサイズが800KBを超えているため送信できません。");
+      alert("ファイルサイズが1MBを超えているため送信できません。");
       return;
     }
 
