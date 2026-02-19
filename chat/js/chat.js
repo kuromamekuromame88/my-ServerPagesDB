@@ -492,7 +492,6 @@ chatContainer.addEventListener("scroll", () => {
 
 //リンクが新しいタブで開かれるようにするための設定関数
 async function addOpenLinkEvent(){
-  console.log("target属性を追加中");
   const links = document.querySelectorAll(`a[href^="http"]`);
   links.forEach(e=>{
     e.setAttribute("target", "_blank");
