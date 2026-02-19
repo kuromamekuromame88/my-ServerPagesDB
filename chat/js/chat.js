@@ -656,6 +656,9 @@ function connectWebSocket() {
       div.id = id;
 
       div.dataset.messageId = id;
+      
+      const re = [];document.querySelectorAll(".message").forEach(e=>{re.push(Number(e.dataset.messageId))});
+      if(re.includes(id)) return;
 
       const html = DOMPurify.sanitize(marked.parse(markdown, { breaks: true }), {
         ADD_TAGS: ["iframe"],
