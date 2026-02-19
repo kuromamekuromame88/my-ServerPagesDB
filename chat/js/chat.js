@@ -657,7 +657,8 @@ function connectWebSocket() {
 
       div.dataset.messageId = id;
       
-      const re = [];document.querySelectorAll(".message").forEach(e=>{re.push(Number(e.dataset.messageId))});
+      const re = [];
+      document.querySelectorAll(".message").forEach(e=>{re.push(Number(e.dataset.messageId))});
       if(re.includes(id)) return;
 
       const html = DOMPurify.sanitize(marked.parse(markdown, { breaks: true }), {
@@ -1193,6 +1194,8 @@ async function repeatprocess(){
     await updateChannelListUI();
   }
 }
+
+setTimeout(repeatprocess, 500);
 
 // 5秒ごとに実行
 setInterval(repeatprocess, 5000);
