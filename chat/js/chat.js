@@ -499,7 +499,7 @@ async function addOpenLinkEvent(){
 }
 
 function patchImgEvent(e){
-  const container = document.querySelector(".chat-container");
+  //const container = document.querySelector(".chat-container");
   const imgcon = document.createElement("div");
   imgcon.classList.add("imgcontainer");
   imgcon.addEventListener("click", ()=>{
@@ -509,7 +509,7 @@ function patchImgEvent(e){
   image.src = e.src;
   image.classList.add("image");
   imgcon.appendChild(image);
-  container.appendChild(imgcon);
+  document.appendChild(imgcon);
 }
 
 
