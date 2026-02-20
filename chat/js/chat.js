@@ -499,18 +499,16 @@ async function addOpenLinkEvent(){
 }
 
 function patchImgEvent(e){
-  //const container = document.querySelector(".chat-container");
   const imgcon = document.createElement("div");
   imgcon.classList.add("imgcontainer");
   imgcon.addEventListener("click", ()=>{
-    //imgcon.style.display = "none";
     imgcon.remove();
   });
   const image = document.createElement("img");
   image.src = e.src;
   image.classList.add("image");
   imgcon.appendChild(image);
-  document.appendChild(imgcon);
+  document.querySelector("body").appendChild(imgcon);
 }
 
 
@@ -1211,7 +1209,7 @@ async function repeatprocess(){
   }
 }
 
-setTimeout(repeatprocess, 500);
+setTimeout(repeatprocess, 1000);
 
 // 5秒ごとに実行
 setInterval(repeatprocess, 5000);
