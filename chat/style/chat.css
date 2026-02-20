@@ -25,8 +25,8 @@
       left: 0px;
       top:0px;
       background-color: #00000080;
-      width: 100vh;
-      height: 100vw;
+      width: 100vw;
+      height: 100vh;
       z-index: 1000000000000;
       display: flex;
       align-items: center;
@@ -35,7 +35,7 @@
 
     .image{
       max-width: 70vw;
-      max-height: 70vw;
+      max-height: 70vh;
     }
 
     .message.mine {
