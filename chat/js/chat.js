@@ -498,6 +498,20 @@ async function addOpenLinkEvent(){
   });
 }
 
+function patchImgEvent(e){
+  const container = document.querySelector(".chat-container");
+  const imgcon = document.createElement("div");
+  imgcon.classList.add("imgcontainer");
+  imgcon.addEventListener("click", ()=>{
+    imgcon.style.display = "none";
+  });
+  const image = document.createElement("img");
+  image.src = e.src;
+  image.classList.add("image");
+  imgcon.appendChild(image);
+  container.appendChild(imgcon);
+}
+
 
 // 重要------------------- WebSocket接続 -------------------
 function connectWebSocket() {
@@ -725,6 +739,7 @@ function connectWebSocket() {
       });
       */
     }
+  document.querySelectorAll(".message > div.text > p > img").forEach(e=>{e.onclick = () =>{patchImgEvent(e);}});
   });
 
   ws.addEventListener("close", () => {
