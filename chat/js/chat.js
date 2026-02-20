@@ -503,7 +503,8 @@ function patchImgEvent(e){
   const imgcon = document.createElement("div");
   imgcon.classList.add("imgcontainer");
   imgcon.addEventListener("click", ()=>{
-    imgcon.style.display = "none";
+    //imgcon.style.display = "none";
+    imgcon.remove();
   });
   const image = document.createElement("img");
   image.src = e.src;
