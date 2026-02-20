@@ -310,6 +310,7 @@ async function toggleScreenShare() {
 }
 
 document.querySelector("#tSS").addEventListener("change", async()=>{
+  console.log("切り替えました!");
   await toggleScreenShare();
 });
 
