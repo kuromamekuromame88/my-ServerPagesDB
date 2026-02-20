@@ -201,26 +201,29 @@
 
 
 
-/* 画面共有 */
-.screenchengebox{
+.screenchengebox {
   padding: 10px;
+  position: relative;
 }
 
-/* checkboxは見せない */
+/* display:noneは使わない */
 .screenchengebox input.screen {
-  display: none;
+  position: absolute;
+  width: 64px;
+  height: 64px;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 2; /* ← これが重要 */
 }
 
-/* ボタン本体 */
 .screenButton {
   width: 64px;
   height: 64px;
   border-radius: 12px;
-  background-color: #de0000; /* OFF：赤 */
+  background-color: #de0000;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
   position: relative;
   transition: background-color 0.25s ease;
 }
@@ -229,17 +232,14 @@
   background-color: #c80000;
 }
 
-/* SVG共通 */
 .screenIcon {
   width: 32px;
   height: 32px;
   fill: white;
-  color: white;
   position: absolute;
   transition: opacity 0.25s ease, transform 0.25s ease;
 }
 
-/* 初期状態（OFF） */
 .screenon {
   opacity: 0;
   transform: scale(0.9);
@@ -250,12 +250,11 @@
   transform: scale(1);
 }
 
-/* ON状態 */
 .screenchengebox input.screen:checked + .screenButton {
-  background-color: #29de00; /* ON：緑 */
+  background-color: #29de00;
 }
 
-.screenchengebox input.screen:checked + .screenButton:hover{
+.screenchengebox input.screen:checked + .screenButton:hover {
   background-color: #23be00;
 }
 
