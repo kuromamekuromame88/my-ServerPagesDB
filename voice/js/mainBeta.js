@@ -866,7 +866,7 @@ async function updateUserStatus(data) {
 }*/
 
 // 初回 & 定期更新
-requestUserStatus();
+setTimeout(requestUserStatus, 1000);
 setInterval(requestUserStatus, 5000);
 
 
