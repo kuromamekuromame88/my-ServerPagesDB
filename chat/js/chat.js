@@ -507,6 +507,9 @@ function patchImgEvent(e){
   const image = document.createElement("img");
   image.src = e.src;
   image.classList.add("image");
+  image.addEventListener("click", (e)=>{
+    e.stopPropagation();
+  });
   imgcon.appendChild(image);
   document.querySelector("body").appendChild(imgcon);
 }
