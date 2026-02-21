@@ -25,6 +25,10 @@ const photoStages = [
   { count: 2560, url: "https://tool-webs.onrender.com/countdown/img/2560.jpg" },
 ];
 
+const musics = [
+  {count: 3900, url: "https://tool-webs.onrender.com/music/3月9日.mp3"}
+];
+
 // ===== 日数 =====
 function getDiffDays() {
   return Math.max(
