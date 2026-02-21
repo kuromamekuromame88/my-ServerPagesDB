@@ -26,7 +26,7 @@ const photoStages = [
 ];
 
 const musics = [
-  {count: 30900, url: "https://tool-webs.onrender.com/countdown/music/3月9日.mp3"}
+  {count: 309/*00*/, url: "https://tool-webs.onrender.com/countdown/music/3月9日.mp3"}
 ];
 
 // ===== 日数 =====
@@ -194,14 +194,14 @@ let audio = { "audio":null, flag:false };
 
 //音声再生
 async function playAudio(){
-  if(audio.audio.ended && audio.audio) audio.flag = false;
+  if(audio.audio?.ended && audio.audio) audio.flag = false;
   if(audio.flag) return;
   let playData =[];
   musics.forEach(e=>{
     if(e.count > clickCount) playData.push(e);
   });
   if(!playData) return;
-  audio.audio = new Audio(playData.url);
+  audio.audio = new Audio(playData[playData.length].url);
   audio.audio.play();
   audio.flag = true;
 }
