@@ -111,7 +111,7 @@ function updateText() {
   countdown.text =
     diffDays <= 0
       ? `🎓 卒業！\n思い出数：${clickCount}`
-      : `卒業まであと ${diffDays} 日\n校章がクリックされた数：${clickCount}`;
+      : `卒業まであと ${diffDays} 日\n${clickCount}`;
 
   countdown.x = app.screen.width / 2;
   countdown.y = app.screen.height * 0.8;
@@ -194,7 +194,7 @@ let audio = { "audio":null, flag:false };
 
 //音声再生
 async function playAudio(){
-  if(audio.audio.ended) audio.flag = false;
+  if(audio.audio.ended && audio.audio) audio.flag = false;
   if(audio.flag) return;
   let playData =[];
   musics.forEach(e=>{
