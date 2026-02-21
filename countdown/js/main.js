@@ -26,7 +26,7 @@ const photoStages = [
 ];
 
 const musics = [
-  {count: 30900, url: "https://tool-webs.onrender.com/music/3月9日.mp3"}
+  {count: 30900, url: "https://tool-webs.onrender.com/countdown/music/3月9日.mp3"}
 ];
 
 // ===== 日数 =====
@@ -194,7 +194,8 @@ let audio = { "audio":null, flag:false };
 
 //音声再生
 async function playAudio(){
-  
+  audio.audio.state
+  if(audio.flag) return;
   let playData =[];
   musics.forEach(e=>{
     if(e.count > clickCount) playData.push(e);
@@ -202,7 +203,7 @@ async function playAudio(){
   if(!playData) return;
   audio.audio = new Audio(playData.url);
   audio.audio.play();
-  audio.flag(true);
+  audio.flag = true;
 }
 
 // ===== 写真更新 =====
