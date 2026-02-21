@@ -26,7 +26,7 @@ const photoStages = [
 ];
 
 const musics = [
-  { count: 30900, url: "https://tool-webs.onrender.com/music/3月9日.mp3" }
+  { count: 3090, url: "https://tool-webs.onrender.com/music/3月9日.mp3" }
 ];
 
 // ===== 日数 =====
