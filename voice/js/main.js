@@ -206,6 +206,14 @@ async function startMedia() {
   localVideo.srcObject = localStream;
 }
 
+async function stopMedia(){
+  if(!localStream) return;
+  //切断
+  localStream = null;
+  document.querySelector(".mic")?.checked = false;
+  videoTrack.enabled = document.querySelector(".cam")?.checked = false;
+};
+
 let RUID;
 const RUIDAPI = "https://tool-webs.onrender.com/api/RUID";
 
