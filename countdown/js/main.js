@@ -200,8 +200,7 @@ async function playAudio(){
   musics.forEach(e=>{
     if(e.count < clickCount) playData.push(e);
   });
-  if(!playData) return;
-  console.log(playData);
+  if(!playData || playData.length) return;
   audio.audio = new Audio(playData[playData.length-1].url);
   audio.audio.play();
   audio.flag = true;
