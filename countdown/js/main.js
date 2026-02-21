@@ -26,7 +26,7 @@ const photoStages = [
 ];
 
 const musics = [
-  { count: 3090, url: "https://tool-webs.onrender.com/music/3月9日.mp3" }
+  {count: 30900, url: "https://tool-webs.onrender.com/music/3月9日.mp3"}
 ];
 
 // ===== 日数 =====
@@ -41,32 +41,6 @@ let diffDays = getDiffDays();
 let clickCount = 0;
 let targetPetalCount = 0;
 let gameStarted = false;
-
-// ===== 音声管理 =====
-let currentAudio = null;
-const playedMusicCounts = new Set();
-
-async function playAudioIfNeeded() {
-  for (const music of musics) {
-    if (clickCount >= music.count && !playedMusicCounts.has(music.count)) {
-
-      playedMusicCounts.add(music.count);
-
-      if (currentAudio) {
-        currentAudio.pause();
-        currentAudio.currentTime = 0;
-      }
-
-      currentAudio = new Audio(music.url);
-
-      try {
-        await currentAudio.play();
-      } catch (e) {
-        console.warn("音声再生に失敗:", e);
-      }
-    }
-  }
-}
 
 // ===== 風 =====
 let windActive = false;
@@ -110,6 +84,7 @@ function createPetal() {
   p.drawEllipse(0, 0, 6, 4);
   p.endFill();
 
+  // ★ 必ず画面上部から
   p.x = Math.random() * app.screen.width;
   p.y = -10;
 
@@ -142,6 +117,94 @@ function updateText() {
   countdown.y = app.screen.height * 0.8;
 }
 
+// ===== 衝突判定 =====
+function intersects(a, b) {
+  return !(
+    a.x + a.w < b.x ||
+    a.x > b.x + b.w ||
+    a.y + a.h < b.y ||
+    a.y > b.y + b.h
+  );
+}
+
+// ===== 位置探索 =====
+function findPosition(w, h, strict = true) {
+  for (let i = 0; i < 100; i++) {
+    const rect = {
+      x: Math.random() * (app.screen.width - w),
+      y: Math.random() * (app.screen.height * 0.55),
+      w, h,
+    };
+
+    const avoid = strict
+      ? [...logoRects, ...photoRects]
+      : logoRects;
+
+    if (!avoid.some(r => intersects(r, rect))) {
+      return rect;
+    }
+  }
+  return null;
+}
+
+// ===== フォトフレーム =====
+function createPhotoFrame(texture) {
+  const maxW = app.screen.width * 0.35;
+  const maxH = app.screen.height * 0.35;
+  const scale = Math.min(maxW / texture.width, maxH / texture.height, 1);
+
+  const photo = new PIXI.Sprite(texture);
+  photo.anchor.set(0.5);
+  photo.scale.set(scale);
+
+  const w = photo.width;
+  const h = photo.height;
+
+  let pos = findPosition(w, h, true);
+  if (!pos) pos = findPosition(w, h, false);
+  if (!pos) {
+    pos = {
+      x: app.screen.width / 2 - w / 2,
+      y: app.screen.height * 0.2,
+      w, h,
+    };
+  }
+
+  const frame = new PIXI.Container();
+  frame.x = pos.x + w / 2;
+  frame.y = pos.y + h / 2;
+  frame.alpha = 0;
+  frame.rotation = (Math.random() - 0.5) * 0.1;
+
+  const border = new PIXI.Graphics();
+  border.lineStyle(6, 0xffffff);
+  border.drawRect(-w / 2, -h / 2, w, h);
+
+  frame.addChild(border, photo);
+  photoLayer.addChild(frame);
+  photoRects.push(pos);
+
+  app.ticker.add(function fade() {
+    frame.alpha += 0.03;
+    if (frame.alpha >= 1) app.ticker.remove(fade);
+  });
+}
+
+let audio = { "audio":null, flag:false };
+
+//音声再生
+async function playAudio(){
+  
+  let playData =[];
+  musics.forEach(e=>{
+    if(e.count > clickCount) playData.push(e);
+  });
+  if(!playData) return;
+  audio.audio = new Audio(playData.url);
+  audio.audio.play();
+  audio.flag(true);
+}
+
 // ===== 写真更新 =====
 async function updatePhotos() {
   for (const stage of photoStages) {
@@ -153,6 +216,68 @@ async function updatePhotos() {
     createPhotoFrame(tex);
   }
 }
+
+// ===== 風操作 =====
+app.stage.eventMode = "static";
+
+app.stage.on("pointerdown", (e) => {
+  if (!logoRects.some(r =>
+    e.global.x >= r.x &&
+    e.global.x <= r.x + r.w &&
+    e.global.y >= r.y &&
+    e.global.y <= r.y + r.h
+  )) {
+    windActive = true;
+    windX = e.global.x;
+    windY = e.global.y;
+  }
+});
+
+app.stage.on("pointermove", (e) => {
+  if (windActive) {
+    windX = e.global.x;
+    windY = e.global.y;
+  }
+});
+
+app.stage.on("pointerup", () => {
+  windActive = false;
+});
+
+// ===== ループ =====
+app.ticker.add(() => {
+  while (petals.length < targetPetalCount) createPetal();
+
+  petals.forEach(p => {
+    if (windActive) {
+      const dx = p.x - windX;
+      const dy = p.y - windY;
+      const dist = Math.hypot(dx, dy);
+      if (dist < WIND_RADIUS && dist > 0.1) {
+        p.vx += (dx / dist) * WIND_POWER;
+        p.vy += (dy / dist) * WIND_POWER;
+      }
+    }
+
+    p.x += p.vx;
+    p.y += p.vy;
+    p.rotation += p.rotationSpeed;
+
+    const MARGIN = 20;
+    if (
+      p.x < -MARGIN ||
+      p.x > app.screen.width + MARGIN ||
+      p.y < -MARGIN ||
+      p.y > app.screen.height + MARGIN
+    ) {
+      p.x = Math.random() * app.screen.width;
+      p.y = -10;
+      p.vx = (Math.random() - 0.5) * 0.4;
+      p.vy = 0.5 + Math.random() * 1.5;
+    }
+  });
+});
+
 
 // ===== 初期化 =====
 async function init() {
@@ -178,18 +303,22 @@ async function init() {
   logo.interactive = true;
   logo.buttonMode = true;
 
+  logoRects.push({
+    x: logo.x - logo.width / 2,
+    y: logo.y - logo.height / 2,
+    w: logo.width,
+    h: logo.height,
+  });
+
   logo.on("pointerdown", () => {
     if (!gameStarted) {
       gameStarted = true;
       return;
     }
-
     clickCount++;
     targetPetalCount = clickCount;
-
     updateText();
     updatePhotos();
-    playAudioIfNeeded();   // ← ここで再生判定
   });
 
   uiLayer.addChild(logo);
