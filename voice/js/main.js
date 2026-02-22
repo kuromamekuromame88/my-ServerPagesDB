@@ -28,6 +28,14 @@ const localVideo  = document.getElementById("localVideo");
 /* ===============================
    状態管理（★追加）
 ================================ */
+
+/* ===============================
+   画面共有状態
+================================ */
+let isScreenSharing = false;
+let cameraTrackBackup = null;   // カメラ映像保持用
+let screenTrack = null;
+
 /* ===============================
    状態管理（★修正）
 ================================ */
@@ -146,6 +154,23 @@ function removeRemoteVideo(userId) {
 }
 
 
+//置き換え関数
+function replaceVideoTrackForAllPeers(newTrack) {
+
+  // --- P2P ---
+  if (pc) {
+    const sender = pc.getSenders().find(s => s.track?.kind === "video");
+    if (sender) sender.replaceTrack(newTrack);
+  }
+
+  // --- Group ---
+  for (const peer of callState.peers.values()) {
+    const sender = peer.getSenders().find(s => s.track?.kind === "video");
+    if (sender) sender.replaceTrack(newTrack);
+  }
+}
+
+
 //グループ通話用Peerの作成関数
 async function createGroupPeer(targetId) {
   if (callState.peers.has(targetId)) {
@@ -213,6 +238,89 @@ async function stopMedia(){
   document.querySelector(".mic")?.checked = false;
   videoTrack.enabled = document.querySelector(".cam")?.checked = false;
 };
+
+
+//画面共有開始関数
+async function startScreenShare() {
+
+  if (isScreenSharing) return;
+
+  if (!localStream) {
+    await startMedia();
+  }
+
+  try {
+    const displayStream = await navigator.mediaDevices.getDisplayMedia({
+      video: true,
+      audio: false
+    });
+
+    screenTrack = displayStream.getVideoTracks()[0];
+
+    // カメラをバックアップ
+    cameraTrackBackup = videoTrack;
+
+    // 全peerの映像差し替え
+    replaceVideoTrackForAllPeers(screenTrack);
+
+    // 自分のプレビュー変更
+    const newStream = new MediaStream([
+      ...(audioTrack ? [audioTrack] : []),
+      screenTrack
+    ]);
+    localVideo.srcObject = newStream;
+
+    videoTrack = screenTrack;
+    isScreenSharing = true;
+
+    // 画面共有がブラウザUIで停止された場合
+    screenTrack.onended = () => {
+      stopScreenShare();
+    };
+
+  } catch (err) {
+    console.error("画面共有開始エラー:", err);
+  }
+}
+
+//停止関数
+function stopScreenShare() {
+
+  if (!isScreenSharing) return;
+  if (!cameraTrackBackup) return;
+
+  // 全peerをカメラへ戻す
+  replaceVideoTrackForAllPeers(cameraTrackBackup);
+
+  // プレビュー戻す
+  const restoredStream = new MediaStream([
+    ...(audioTrack ? [audioTrack] : []),
+    cameraTrackBackup
+  ]);
+  localVideo.srcObject = restoredStream;
+
+  // 画面トラック停止
+  screenTrack?.stop();
+
+  videoTrack = cameraTrackBackup;
+  screenTrack = null;
+  cameraTrackBackup = null;
+  isScreenSharing = false;
+}
+
+//切り替え関数(EventHandring用)
+async function toggleScreenShare() {
+  if (isScreenSharing) {
+    stopScreenShare();
+  } else {
+    await startScreenShare();
+  }
+}
+
+document.querySelector("#tSS").addEventListener("change", async()=>{
+  console.log("切り替えました!");
+  await toggleScreenShare();
+});
 
 let RUID;
 const RUIDAPI = "https://tool-webs.onrender.com/api/RUID";
@@ -534,6 +642,7 @@ async function startcall(targetId) {
    通話終了
 ================================ */
 function endCall(sendSignal = true) {
+  stopScreenShare();
   if (sendSignal && currentTarget) {
     ws.send(JSON.stringify({
       app: "voice",
@@ -585,6 +694,7 @@ function cleanupGroupCall() {
 
 function leaveGroupCall() {
   if (callState.mode !== "group") return;
+  stopScreenShare();
 
   ws.send(JSON.stringify({
     app: "voice",
@@ -764,7 +874,7 @@ async function updateUserStatus(data) {
 }*/
 
 // 初回 & 定期更新
-requestUserStatus();
+setTimeout(requestUserStatus, 1000);
 setInterval(requestUserStatus, 5000);
 
 

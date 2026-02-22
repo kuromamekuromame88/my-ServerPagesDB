@@ -231,6 +231,14 @@ async function startMedia() {
   localVideo.srcObject = localStream;
 }
 
+async function stopMedia(){
+  if(!localStream) return;
+  //切断
+  localStream = null;
+  document.querySelector(".mic")?.checked = false;
+  videoTrack.enabled = document.querySelector(".cam")?.checked = false;
+};
+
 
 //画面共有開始関数
 async function startScreenShare() {
