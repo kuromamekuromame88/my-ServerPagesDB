@@ -236,7 +236,7 @@ async function stopMedia(){
   //切断
   localStream = null;
   document.querySelector(".mic")?.checked = false;
-  videoTrack.enabled = document.querySelector(".cam")?.checked = false;
+  document.querySelector(".cam")?.checked = false;
 };
 
 
