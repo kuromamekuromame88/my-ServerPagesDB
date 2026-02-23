@@ -814,6 +814,7 @@ async function init(){
     console.log("ログアウトを検知しました。ログインUIを表示します!");
     loginUI.style.display = "block";
     usernameSetup.style.display = "none";
+    connectWebSocket();
     return;
   }else{
     if (nickname) {
