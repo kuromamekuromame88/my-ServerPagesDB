@@ -754,6 +754,7 @@ function connectWebSocket() {
 function waitwscon(ws, timeoutMs = 10000) {
   return new Promise((resolve, reject) => {
     // すでに接続済みなら即解決
+    if(!ws) connectWebSocket();
     if (ws.readyState === WebSocket.OPEN) {
       resolve();
       return;
