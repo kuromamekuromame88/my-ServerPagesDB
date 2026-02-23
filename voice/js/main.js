@@ -231,13 +231,27 @@ async function startMedia() {
   localVideo.srcObject = localStream;
 }
 
-async function stopMedia(){
+function stopMedia(){
   if(!localStream) return;
-  //切断
+
+  // トラックを停止
+  localStream.getTracks().forEach(track => {
+    track.stop();
+  });
+
+  // video要素があるなら解除
+  const video = document.querySelector("video");
+  if(video){
+    video.srcObject = null;
+  }
+
+  // 参照を破棄
   localStream = null;
+
+  // UI更新
   document.querySelector(".mic")?.checked = false;
   document.querySelector(".cam")?.checked = false;
-};
+}
 
 
 //画面共有開始関数
