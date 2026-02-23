@@ -249,8 +249,8 @@ function stopMedia(){
   localStream = null;
 
   // UI更新
-  document.querySelector(".mic")?.checked = false;
-  document.querySelector(".cam")?.checked = false;
+  document.querySelector(".mic").checked = false;
+  document.querySelector(".cam").checked = false;
 }
 
 
