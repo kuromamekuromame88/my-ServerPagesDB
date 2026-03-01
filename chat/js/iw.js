@@ -216,7 +216,8 @@ class IframeWindow {
     }
 
     function maximize() {
-      if (state.maximized) return;
+      if(state.maximized) return;
+      if(state.minimized) restore();
       state.prev = {
         x: state.x,
         y: state.y,
