@@ -3,7 +3,6 @@ class IframeWindow {
 
   win(name, option = {}) {
     const BAR_HEIGHT = 32;
-
     const state = {
       x: option.pos?.[0] ?? 0,
       y: option.pos?.[1] ?? 0,
@@ -14,9 +13,7 @@ class IframeWindow {
       prev: null,
       prevSize: null
     };
-
     const body = document.body;
-
     const win = document.createElement("div");
     Object.assign(win.style, {
       position: "fixed",
@@ -27,7 +24,6 @@ class IframeWindow {
       flexDirection: "column",
       overflow: "hidden"
     });
-
     win.setAttribute("id", `iw-${name}`);
 
     function focus() {
@@ -40,7 +36,6 @@ class IframeWindow {
       win.style.width = state.w + "px";
       win.style.height = (state.minimized ? BAR_HEIGHT : state.h) + "px";
     }
-
     applyRect();
 
     // ===== Top Bar =====
@@ -120,8 +115,6 @@ class IframeWindow {
         iframe.srcdoc = content.con ?? "";
       }
     }
-
-
     setContent(option.content);
 
     // ===== Resize Handle =====
@@ -200,59 +193,59 @@ class IframeWindow {
     });
 
     // ===== Controls =====
-  function minimize() {
-    if (state.minimized) restore();
-    state.minimized = true;
-    iframe.style.display = "none";
-    resize.style.display = "none";
-    applyRect();
-  }
-
-  function restore() {
-    if (state.minimized) {
-      state.minimized = false;
-      iframe.style.display = "block";
-      resize.style.display = state.maximized ? "none" : "block";
+    function minimize() {
+      if (state.minimized) restore();
+      state.minimized = true;
+      iframe.style.display = "none";
+      resize.style.display = "none";
+      applyRect();
     }
-    if (state.maximized) {
-      Object.assign(state, state.prev);
-      state.maximized = false;
-      resize.style.display = "block";
+
+    function restore() {
+      if (state.minimized) {
+        state.minimized = false;
+        iframe.style.display = "block";
+        resize.style.display = state.maximized ? "none" : "block";
+      }
+      if (state.maximized) {
+        Object.assign(state, state.prev);
+        state.maximized = false;
+        resize.style.display = "block";
+      }
+      applyRect();
     }
-    applyRect();
-  }
 
-  function maximize() {
-    if (state.maximized) return;
-    state.prev = {
-      x: state.x,
-      y: state.y,
-      w: state.w,
-      h: state.h
-    };
-    state.x = 0;
-    state.y = 0;
-    state.w = window.innerWidth;
-    state.h = window.innerHeight;
-    state.maximized = true;
-    resize.style.display = "none";
-    applyRect();
-  }
+    function maximize() {
+      if (state.maximized) return;
+      state.prev = {
+        x: state.x,
+        y: state.y,
+        w: state.w,
+        h: state.h
+      };
+      state.x = 0;
+      state.y = 0;
+      state.w = window.innerWidth;
+      state.h = window.innerHeight;
+      state.maximized = true;
+      resize.style.display = "none";
+      applyRect();
+    }
 
-  //API関数群
-  function clamp(v, min, max) {
-    return Math.min(Math.max(v, min), max);
-  }
+    //API関数群
+    function clamp(v, min, max) {
+      return Math.min(Math.max(v, min), max);
+    }
 
-  function setSize(w, h) {
-    if (state.maximized) restore();
-    state.w = Math.max(200, w);
-    state.h = Math.max(120, h);
-    // 画面外にはみ出さないように
-    state.x = clamp(state.x, 0, window.innerWidth - state.w);
-    state.y = clamp(state.y, 0, window.innerHeight - BAR_HEIGHT);
-    applyRect();
-  }
+    function setSize(w, h) {
+      if (state.maximized) restore();
+      state.w = Math.max(200, w);
+      state.h = Math.max(120, h);
+      // 画面外にはみ出さないように
+      state.x = clamp(state.x, 0, window.innerWidth - state.w);
+      state.y = clamp(state.y, 0, window.innerHeight - BAR_HEIGHT);
+      applyRect();
+    }
 
     function setPosition(x, y) {
       state.x = clamp(x, 0, window.innerWidth - state.w);
@@ -260,7 +253,7 @@ class IframeWindow {
       applyRect();
     }
 
-    btnMin.onclick = state.minimized ? restore() : minimize();
+    btnMin.onclick = /*state.minimized ? restore() : */minimize();
     btnMax.onclick = () => state.maximized ? restore() : maximize();
     btnClose.onclick = () => win.remove();
 
