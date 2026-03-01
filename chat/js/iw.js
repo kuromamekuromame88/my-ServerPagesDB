@@ -201,7 +201,7 @@ class IframeWindow {
 
     // ===== Controls =====
   function minimize() {
-    if (state.minimized) return;
+    if (state.minimized) restore();
     state.minimized = true;
     iframe.style.display = "none";
     resize.style.display = "none";
