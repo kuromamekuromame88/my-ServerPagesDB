@@ -97,6 +97,7 @@ class IframeWindow {
     const btns = document.createElement("div");
     btns.append(btnMin, btnMax, btnClose);
     bar.append(title, btns);
+    bar.style.gap = "2px";
 
     // ===== iframe =====
     const iframe = document.createElement("iframe");
