@@ -260,7 +260,7 @@ class IframeWindow {
       applyRect();
     }
 
-    btnMin.onclick = minimize;
+    btnMin.onclick = state.maximized ? restore() : minimize();
     btnMax.onclick = () => state.maximized ? restore() : maximize();
     btnClose.onclick = () => win.remove();
 
