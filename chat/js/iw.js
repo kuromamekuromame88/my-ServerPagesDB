@@ -67,6 +67,8 @@ class IframeWindow {
       padding: "0px",
       height: "16px",
       width: "16px",
+      border: "none",
+      background: "#dedede",
     };
 
     const btnMin = document.createElement("button");
@@ -76,16 +78,8 @@ class IframeWindow {
     const btnClose = document.createElement("button");
     btnClose.innerHTML = `<svg width="16" height="16"><line x1="4" y1="4" x2="12" y2="12" stroke="black"/><line x1="12" y1="4" x2="4" y2="12" stroke="black"/></svg>`;
 
-    const elements = [btnMin, btnMax, btnClose];
-    elements.forEach(e=>{
-      Object.assign(e.style, buttonStyle);
-    });
-
     [btnMin, btnMax, btnClose].forEach(b => {
-      b.style.border = "none";
-      b.style.background = "#dedede";
-      b.width = "16px";
-      b.height = "16px";
+      Object.assign(b.style, buttonStyle);
       b.addEventListener("pointerdown", e => e.stopPropagation());
     });
 
