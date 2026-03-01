@@ -58,8 +58,8 @@ class IframeWindow {
     title.style.padding = "30px";
 
     const buttonStyle = {
-      margin: "0px",
-      padding: "2px",
+      margin: "2px",
+      padding: "0px",
       height: "16px",
       width: "16px",
       border: "none",
