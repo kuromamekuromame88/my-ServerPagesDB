@@ -544,7 +544,7 @@ function patchImgEvent(e){
   const dbtnstyle = {
     position: "absolute",
     left: "calc(100vw - 100px)",
-    top: "calc(100vh - 30px)",
+    top: "calc(100vh - 50px)",
     boeder: "none",
     width: "max-content",
     height: "30px",
