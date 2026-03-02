@@ -507,7 +507,8 @@ async function downloadFromURL(downurl){
     }
 
     var temp=downurl.split("/");
-    const fileName=temp[temp.length];
+    console.log(temp);
+    const fileName=temp[temp.length-1];
     // Blob に変換
     const blob = await res.blob();
 
