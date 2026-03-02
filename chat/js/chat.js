@@ -498,6 +498,33 @@ async function addOpenLinkEvent(){
   });
 }
 
+async function downloadFromURL(url){
+  try{
+    const res = await fetch(url);
+    if(!res.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    // Blob に変換
+    const blob = await res.blob();
+
+    // 一時的な URL を作成
+    const url = window.URL.createObjectURL(blob);
+
+    var temp=url.split("/");
+    const fileName=temp[temp.length];
+    // a タグを作成してクリックイベントを発火
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+
+    // 後処理
+    a.remove();
+    window.URL.revokeObjectURL(url);
+  }catch(e){alert(e);}  
+};
+
 function patchImgEvent(e){
   const imgcon = document.createElement("div");
   imgcon.classList.add("imgcontainer");
@@ -505,6 +532,12 @@ function patchImgEvent(e){
     imgcon.remove();
   });
   const image = document.createElement("img");
+  const dloadb = document.createElement("button");
+  dloadb.innerText = "ダウンロード";
+  dloadb.addEventListener("click", (ev)=>{
+    ev.stopPropagation();
+     e.src;
+  });
   image.src = e.src;
   image.classList.add("image");
   image.addEventListener("click", (e)=>{
