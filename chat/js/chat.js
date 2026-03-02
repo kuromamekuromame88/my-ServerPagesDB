@@ -543,7 +543,7 @@ function patchImgEvent(e){
   });
   const dbtnstyle = {
     position: "absolute",
-    left: "calc(100vw - 100px)",
+    left: "calc(100vw - 120px)",
     top: "calc(100vh - 50px)",
     boeder: "none",
     "border-radious": "5px",
