@@ -546,10 +546,12 @@ function patchImgEvent(e){
     left: "calc(100vw - 100px)",
     top: "calc(100vh - 50px)",
     boeder: "none",
+    "border-radious": "5px",
     width: "max-content",
     height: "30px",
     background: "#000",
     color: "#fff",
+    "font-weight": "bold",
   };
   Object.assign(dloadb.style, dbtnstyle);
 
