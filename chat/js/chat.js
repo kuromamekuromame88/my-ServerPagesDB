@@ -500,6 +500,7 @@ async function addOpenLinkEvent(){
 
 async function downloadFromURL(url){
   try{
+    if(!url) return;
     const res = await fetch(url);
     if(!res.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
@@ -536,7 +537,7 @@ function patchImgEvent(e){
   dloadb.innerText = "ダウンロード";
   dloadb.addEventListener("click", (ev)=>{
     ev.stopPropagation();
-     e.src;
+    //e.src;
   });
   image.src = e.src;
   image.classList.add("image");
