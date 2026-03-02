@@ -549,11 +549,13 @@ function patchImgEvent(e){
     color: "#fff",
   };
   Object.assign(dloadb.style, dbtnstyle);
+
   image.src = e.src;
   image.classList.add("image");
   image.addEventListener("click", (e)=>{
     e.stopPropagation();
   });
+  imgcon.appendChild(dloadb);
   imgcon.appendChild(image);
   document.querySelector("body").appendChild(imgcon);
 }
