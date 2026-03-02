@@ -37,7 +37,7 @@
   <body>
     <script>
       function o(){
-        if(document.getElementById("instances").value){
+        if(document.getElementById("instances").checked){
           document.getElementById("irm").src = "https://cloud2.0816041taisei.workers.dev/?url="+document.getElementById("url").value;
         }else{
           document.getElementById("irm").src = "https://tool-webs.onrender.com/proxy?url="+document.getElementById("url").value;
