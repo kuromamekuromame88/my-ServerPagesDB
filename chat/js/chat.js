@@ -498,21 +498,22 @@ async function addOpenLinkEvent(){
   });
 }
 
-async function downloadFromURL(url){
+async function downloadFromURL(downurl){
   try{
-    if(!url) return;
-    const res = await fetch(url);
+    if(!downurl) return;
+    const res = await fetch(downurl);
     if(!res.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
+
+    var temp=downurl.split("/");
+    const fileName=temp[temp.length];
     // Blob に変換
     const blob = await res.blob();
 
     // 一時的な URL を作成
     const url = window.URL.createObjectURL(blob);
 
-    var temp=url.split("/");
-    const fileName=temp[temp.length];
     // a タグを作成してクリックイベントを発火
     const a = document.createElement("a");
     a.href = url;
