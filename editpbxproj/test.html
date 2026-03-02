@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>フォルダツリー生成ツール</title>
+<style>
+  body {
+    font-family: 'Courier New', monospace;
+    padding: 20px;
+    background-color: #f9f9f9;
+  }
+
+  h2 {
+    color: #333;
+  }
+
+  textarea {
+    width: 100%;
+    height: 200px;
+    font-family: monospace;
+    font-size: 14px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: vertical;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+  }
+
+  button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    margin-right: 10px;
+  }
+
+  button:hover {
+    background-color: #45a049;
+  }
+
+  pre {
+    background-color: #fff;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    line-height: 1.4;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+</style>
+</head>
+<body>
+
+<h2>JSONでフォルダ構造を定義</h2>
+<textarea id="jsonInput"></textarea>
+
+<br>
+<button onclick="generateTree()">ツリー生成</button>
+<button onclick="pickDirectory()">フォルダを選択して自動生成</button>
+
+<h2>フォルダツリー</h2>
+<pre id="tree"></pre>
+
+<script>
+function jsonToTree(obj, isLastArray = []) {
+  const keys = Object.keys(obj);
+  let result = "";
+
+  keys.forEach((key, index) => {
+    const isLast = index === keys.length - 1;
+    let pointer = isLast ? "└─ " : "├─ ";
+    let linePrefix = "";
+
+    for (let i = 0; i < isLastArray.length; i++) {
+      linePrefix += isLastArray[i] ? "   " : "│  ";
+    }
+
+    const value = obj[key];
+    const type = (value && typeof value === "object") ? "folder" : "file";
+
+    result += linePrefix + pointer + (type === "folder" ? "📁 " : "📄 ") + key + "\n";
+
+    if (value && typeof value === "object") {
+      result += jsonToTree(value, [...isLastArray, isLast]);
+    }
+  });
+
+  return result;
+}
+
+function generateTree() {
+  let jsonStr = document.getElementById("jsonInput").value;
+  let treeArea = document.getElementById("tree");
+
+  try {
+    const data = JSON.parse(jsonStr);
+    treeArea.textContent = jsonToTree(data);
+  } catch (e) {
+    treeArea.textContent = "JSONの解析に失敗しました。\n" + e;
+  }
+}
+
+// -------------------------------
+// フォルダ選択 → JSON生成
+// -------------------------------
+
+async function pickDirectory() {
+  if (!window.showDirectoryPicker) {
+    alert("このブラウザはフォルダ読み取りに対応していません。Chrome系で実行してください。");
+    return;
+  }
+
+  try {
+    const dirHandle = await window.showDirectoryPicker();
+    const structure = {};
+    structure[dirHandle.name] = await readDirectory(dirHandle);
+
+    const jsonStr = JSON.stringify(structure, null, 2);
+    document.getElementById("jsonInput").value = jsonStr;
+
+    generateTree();
+
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+async function readDirectory(dirHandle) {
+  const result = {};
+
+  for await (const entry of dirHandle.values()) {
+    if (entry.kind === "directory") {
+      result[entry.name] = await readDirectory(entry);
+    } else {
+      result[entry.name] = null;
+    }
+  }
+
+  return result;
+}
+
+</script>
+
+</body>
+</html>
