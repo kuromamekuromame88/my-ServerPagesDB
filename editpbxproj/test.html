@@ -84,7 +84,7 @@ function jsonToTree(obj, isLastArray = []) {
     const value = obj[key];
     const type = (value && typeof value === "object") ? "folder" : "file";
 
-    result += linePrefix + pointer + (type === "folder" ? "📁 " : "📄 ") + key + "\n";
+    result += linePrefix + pointer + (type === "folder" ? `📁 ` : `<input type="checkbox"> 📄 `) + key + "\n";
 
     if (value && typeof value === "object") {
       result += jsonToTree(value, [...isLastArray, isLast]);
