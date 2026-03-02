@@ -539,8 +539,16 @@ function patchImgEvent(e){
   dloadb.innerText = "ダウンロード";
   dloadb.addEventListener("click", (ev)=>{
     ev.stopPropagation();
-    //e.src;
+    downloadFromURL(e.src);
   });
+  const dbtnstyle = {
+    position: "absolute",
+    right: "calc(100vw - 100px)",
+    botton: "calc(100vh - 100px)",
+    background: "#000",
+    color: "#fff",
+  };
+  Object.assign(dloadb.style, dbtnstyle);
   image.src = e.src;
   image.classList.add("image");
   image.addEventListener("click", (e)=>{
