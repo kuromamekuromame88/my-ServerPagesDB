@@ -53,7 +53,7 @@
 <textarea id="jsonInput"></textarea>
 
 <button onclick="generateTree()">ツリー生成</button>
-<button onclick="pickDirectory()">フォルダを選択して自動生成</button>
+<button onclick="pickProjectRoot()">プロジェクトルートを選択</button>
 <button onclick="generatePBXProj()">pbxproj生成</button>
 
 <h2>フォルダツリー</h2>
@@ -70,29 +70,17 @@ let rootModel = null;
 
 const uuidSet = new Set();
 
-/**
- * 用途付きUUID生成
- * suffix:
- *  G = Group
- *  A = FileReference
- *  B = BuildFile
- *  P = Project
- */
 function generateTypedPBXUUID(suffix) {
   let uuid;
-
   do {
     const bytes = new Uint8Array(12);
     crypto.getRandomValues(bytes);
-
     const base = Array.from(bytes)
       .map(b => b.toString(16).padStart(2, "0"))
       .join("")
       .toUpperCase()
       .substring(0, 23);
-
     uuid = base + suffix;
-
   } while (uuidSet.has(uuid));
 
   uuidSet.add(uuid);
@@ -210,7 +198,6 @@ function generatePBXProj() {
 
   files.forEach(file => {
 
-    // FileReference（全ファイル）
     fileRefSection +=
 `	${file.fileRefUUID} /* ${file.name} */ = {
 		isa = PBXFileReference;
@@ -220,7 +207,6 @@ function generatePBXProj() {
 	};
 `;
 
-    // BuildFile（チェック済みのみ）
     if (file.build) {
       buildSection +=
 `	${file.buildFileUUID} /* ${file.name} in Sources */ = {
@@ -257,23 +243,57 @@ ${fileRefSection}
   document.getElementById("output").value = result;
 }
 
-/* ------------------ フォルダ選択 ------------------ */
+/* ------------------ ルート選択ロジック ------------------ */
 
-async function pickDirectory() {
+async function pickProjectRoot() {
+
   if (!window.showDirectoryPicker) {
-    alert("このブラウザは対応していません（Chrome系で実行してください）");
+    alert("Chrome系ブラウザで実行してください");
     return;
   }
 
-  const dirHandle = await window.showDirectoryPicker();
+  const rootHandle = await window.showDirectoryPicker();
+
+  let projectName = null;
+  let sourceFolderHandle = null;
+
+  // 直下から .xcodeproj を探す
+  for await (const entry of rootHandle.values()) {
+    if (entry.kind === "directory" && entry.name.endsWith(".xcodeproj")) {
+      projectName = entry.name.replace(".xcodeproj", "");
+      break;
+    }
+  }
+
+  if (!projectName) {
+    alert(".xcodeprojフォルダが見つかりません");
+    return;
+  }
+
+  // 同名フォルダを探す
+  for await (const entry of rootHandle.values()) {
+    if (entry.kind === "directory" && entry.name === projectName) {
+      sourceFolderHandle = entry;
+      break;
+    }
+  }
+
+  if (!sourceFolderHandle) {
+    alert(projectName + " フォルダが見つかりません");
+    return;
+  }
+
   const structure = {};
-  structure[dirHandle.name] = await readDirectory(dirHandle);
+  structure[sourceFolderHandle.name] =
+    await readDirectory(sourceFolderHandle);
 
   document.getElementById("jsonInput").value =
     JSON.stringify(structure, null, 2);
 
   generateTree();
 }
+
+/* ------------------ 再帰読み込み ------------------ */
 
 async function readDirectory(dirHandle) {
   const result = {};
