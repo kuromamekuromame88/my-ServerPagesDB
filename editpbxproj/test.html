@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>フォルダツリー生成ツール</title>
+<title>Xcode用pbxproj生成ツール</title>
 <style>
   body {
     font-family: 'Courier New', monospace;
@@ -53,12 +53,21 @@
     white-space: pre-wrap;
     word-break: break-word;
   }
+
+  /*checkbox用*/
+  .isbuild{
+    width: 16px;
+    height: 16px;
+  }
 </style>
 </head>
 <body>
 
 <h2>JSONでフォルダ構造を定義</h2>
-<textarea id="jsonInput"></textarea>
+<textarea id="jsonInput">
+/*例*/
+
+</textarea>
 
 <br>
 <button onclick="generateTree()">ツリー生成</button>
@@ -84,7 +93,7 @@ function jsonToTree(obj, isLastArray = []) {
     const value = obj[key];
     const type = (value && typeof value === "object") ? "folder" : "file";
 
-    result += linePrefix + pointer + (type === "folder" ? `📁 ` : `<input type="checkbox"> 📄 `) + key + "\n";
+    result += linePrefix + pointer + (type === "folder" ? `📁 ` : `<input type="checkbox" class="isbuild">📄 `) + key + "\n";
 
     if (value && typeof value === "object") {
       result += jsonToTree(value, [...isLastArray, isLast]);
@@ -100,7 +109,7 @@ function generateTree() {
 
   try {
     const data = JSON.parse(jsonStr);
-    treeArea.textContent = jsonToTree(data);
+    treeArea.innerHTML/*textContent*/ = jsonToTree(data);
   } catch (e) {
     treeArea.textContent = "JSONの解析に失敗しました。\n" + e;
   }
