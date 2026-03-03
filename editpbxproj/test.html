@@ -66,7 +66,19 @@
 <h2>JSONでフォルダ構造を定義</h2>
 <textarea id="jsonInput">
 /*例*/
-
+// !$*UTF8*$!
+/*
+  PBXBuildFile - ビルド対象のファイルの登録
+  PBXFileReference - ファイルの実体
+  PBXGroup - フォルダ（ファイルの集まり）
+*/
+{
+  archiveVersion = 1;
+  classes = {
+  };
+  objectVersion = 55;
+  objects = {};
+}
 </textarea>
 
 <br>
@@ -77,6 +89,9 @@
 <pre id="tree"></pre>
 
 <script>
+
+const objects = [];
+
 function jsonToTree(obj, isLastArray = []) {
   const keys = Object.keys(obj);
   let result = "";
@@ -93,7 +108,13 @@ function jsonToTree(obj, isLastArray = []) {
     const value = obj[key];
     const type = (value && typeof value === "object") ? "folder" : "file";
 
-    result += linePrefix + pointer + (type === "folder" ? `📁 ` : `<input type="checkbox" class="isbuild">📄 `) + key + "\n";
+    //フォルダ・ファイルに付いての情報を保存
+    objects.push({
+      type: type,
+      key: key,
+      uuid: "uniqueid",//ここにファイル特有のIDを付与
+    });
+    result += linePrefix + pointer + (type === "folder" ? `📁 ` : `<input type="checkbox" class="isbuild" id="${}">📄 `) + key + "\n";
 
     if (value && typeof value === "object") {
       result += jsonToTree(value, [...isLastArray, isLast]);
