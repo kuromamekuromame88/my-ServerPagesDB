@@ -4,12 +4,47 @@
 <meta charset="UTF-8">
 <title>Xcode用pbxproj生成ツール</title>
 <style>
-  body { font-family: 'Courier New', monospace; padding: 20px; background:#f9f9f9; }
-  textarea { width:100%; height:200px; font-family:monospace; margin-bottom:10px; }
-  button { padding:8px 16px; margin-right:10px; cursor:pointer; }
-  #tree { background:#fff; padding:15px; border:1px solid #ddd; }
-  .node { margin-left:20px; }
-  .folder { font-weight:bold; }
+  body {
+    font-family: 'Courier New', monospace;
+    padding: 20px;
+    background-color: #f9f9f9;
+  }
+
+  textarea {
+    width: 100%;
+    height: 180px;
+    font-family: monospace;
+    font-size: 14px;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+
+  button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-right: 10px;
+  }
+
+  button:hover {
+    background-color: #45a049;
+  }
+
+  #tree {
+    margin-top: 20px;
+    background: #fff;
+    padding: 15px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+  }
+
+  .node { margin-left: 20px; }
+  .folder { font-weight: bold; }
+  .file { color: #333; }
 </style>
 </head>
 <body>
@@ -18,6 +53,7 @@
 <textarea id="jsonInput"></textarea>
 
 <button onclick="generateTree()">ツリー生成</button>
+<button onclick="pickDirectory()">フォルダを選択して自動生成</button>
 <button onclick="generatePBXProj()">pbxproj生成</button>
 
 <h2>フォルダツリー</h2>
@@ -29,114 +65,152 @@
 <script>
 
 let rootModel = null;
+
+/* ------------------ UUID管理 ------------------ */
+
 const uuidSet = new Set();
 
-/* ---------------- UUID生成 ---------------- */
-
+/**
+ * 用途付きUUID生成
+ * suffix:
+ *  G = Group
+ *  A = FileReference
+ *  B = BuildFile
+ *  P = Project
+ */
 function generateTypedPBXUUID(suffix) {
   let uuid;
+
   do {
     const bytes = new Uint8Array(12);
     crypto.getRandomValues(bytes);
+
     const base = Array.from(bytes)
-      .map(b => b.toString(16).padStart(2,"0"))
+      .map(b => b.toString(16).padStart(2, "0"))
       .join("")
       .toUpperCase()
-      .substring(0,23);
+      .substring(0, 23);
+
     uuid = base + suffix;
-  } while(uuidSet.has(uuid));
+
+  } while (uuidSet.has(uuid));
 
   uuidSet.add(uuid);
   return uuid;
 }
 
-/* ---------------- 型判定 ---------------- */
+/* ------------------ 拡張子判定 ------------------ */
 
-function detectFileType(name){
-  if(name.endsWith(".swift")) return "sourcecode.swift";
-  if(name.endsWith(".m")) return "sourcecode.c.objc";
-  if(name.endsWith(".h")) return "sourcecode.c.h";
+function detectFileType(name) {
+  if (name.endsWith(".swift")) return "sourcecode.swift";
+  if (name.endsWith(".m")) return "sourcecode.c.objc";
+  if (name.endsWith(".h")) return "sourcecode.c.h";
   return "text";
 }
 
-/* ---------------- モデル生成 ---------------- */
+/* ------------------ JSON → 内部モデル変換 ------------------ */
 
-function convertToModel(name,value){
-  if(value && typeof value==="object"){
+function convertToModel(name, value) {
+
+  if (value && typeof value === "object") {
     return {
       name,
-      type:"folder",
+      type: "folder",
       uuid: generateTypedPBXUUID("G"),
-      children:Object.entries(value).map(([k,v])=>convertToModel(k,v))
+      children: Object.entries(value).map(([k, v]) =>
+        convertToModel(k, v)
+      )
     };
+
   } else {
     return {
       name,
-      type:"file",
+      type: "file",
       fileRefUUID: generateTypedPBXUUID("A"),
       buildFileUUID: generateTypedPBXUUID("B"),
-      build:false,
+      build: false,
       fileType: detectFileType(name)
     };
   }
 }
 
-/* ---------------- ツリー生成 ---------------- */
+/* ------------------ ツリー生成 ------------------ */
 
-function generateTree(){
+function generateTree() {
+  const jsonStr = document.getElementById("jsonInput").value;
+  const treeArea = document.getElementById("tree");
+  treeArea.innerHTML = "";
+
   uuidSet.clear();
-  const treeArea=document.getElementById("tree");
-  treeArea.innerHTML="";
-  const data=JSON.parse(document.getElementById("jsonInput").value);
-  const rootKey=Object.keys(data)[0];
-  rootModel=convertToModel(rootKey,data[rootKey]);
-  renderNode(rootModel,treeArea);
+
+  try {
+    const data = JSON.parse(jsonStr);
+    const rootKey = Object.keys(data)[0];
+    rootModel = convertToModel(rootKey, data[rootKey]);
+    renderNode(rootModel, treeArea);
+  } catch (e) {
+    treeArea.textContent = "JSON解析エラー:\n" + e;
+  }
 }
 
-function renderNode(node,container){
-  const div=document.createElement("div");
+/* ------------------ HTMLツリー描画 ------------------ */
+
+function renderNode(node, container) {
+  const div = document.createElement("div");
   div.classList.add("node");
 
-  if(node.type==="folder"){
+  if (node.type === "folder") {
     div.classList.add("folder");
-    div.textContent="📁 "+node.name+" ["+node.uuid+"]";
+    div.textContent = "📁 " + node.name + "  [" + node.uuid + "]";
     container.appendChild(div);
-    node.children.forEach(child=>renderNode(child,container));
+    node.children.forEach(child => renderNode(child, container));
   } else {
-    const checkbox=document.createElement("input");
-    checkbox.type="checkbox";
-    checkbox.onchange=()=>node.build=checkbox.checked;
+
+    div.classList.add("file");
+
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.style.marginRight = "5px";
+
+    checkbox.onchange = () => node.build = checkbox.checked;
+
     div.appendChild(checkbox);
-    div.append("📄 "+node.name+
-      " [Ref:"+node.fileRefUUID+
-      " | Build:"+node.buildFileUUID+"]");
+
+    div.append(
+      "📄 " + node.name +
+      "  [Ref:" + node.fileRefUUID +
+      " | Build:" + node.buildFileUUID + "]"
+    );
+
     container.appendChild(div);
   }
 }
 
-/* ---------------- pbxproj生成 ---------------- */
+/* ------------------ ファイル収集 ------------------ */
 
-function collectFiles(node, list=[]){
-  if(node.type==="file"){
+function collectFiles(node, list = []) {
+  if (node.type === "file") {
     list.push(node);
   } else {
-    node.children.forEach(c=>collectFiles(c,list));
+    node.children.forEach(c => collectFiles(c, list));
   }
   return list;
 }
 
-function generatePBXProj(){
+/* ------------------ pbxproj生成 ------------------ */
 
-  if(!rootModel) return;
+function generatePBXProj() {
+
+  if (!rootModel) return;
 
   const files = collectFiles(rootModel);
 
   let buildSection = "/* Begin PBXBuildFile section */\n";
   let fileRefSection = "/* Begin PBXFileReference section */\n";
 
-  files.forEach(file=>{
+  files.forEach(file => {
 
-    // FileReferenceは全ファイル生成
+    // FileReference（全ファイル）
     fileRefSection +=
 `	${file.fileRefUUID} /* ${file.name} */ = {
 		isa = PBXFileReference;
@@ -146,8 +220,8 @@ function generatePBXProj(){
 	};
 `;
 
-    // buildチェックがあるものだけBuildFile生成
-    if(file.build){
+    // BuildFile（チェック済みのみ）
+    if (file.build) {
       buildSection +=
 `	${file.buildFileUUID} /* ${file.name} in Sources */ = {
 		isa = PBXBuildFile;
@@ -181,6 +255,38 @@ ${fileRefSection}
 `;
 
   document.getElementById("output").value = result;
+}
+
+/* ------------------ フォルダ選択 ------------------ */
+
+async function pickDirectory() {
+  if (!window.showDirectoryPicker) {
+    alert("このブラウザは対応していません（Chrome系で実行してください）");
+    return;
+  }
+
+  const dirHandle = await window.showDirectoryPicker();
+  const structure = {};
+  structure[dirHandle.name] = await readDirectory(dirHandle);
+
+  document.getElementById("jsonInput").value =
+    JSON.stringify(structure, null, 2);
+
+  generateTree();
+}
+
+async function readDirectory(dirHandle) {
+  const result = {};
+
+  for await (const entry of dirHandle.values()) {
+    if (entry.kind === "directory") {
+      result[entry.name] = await readDirectory(entry);
+    } else {
+      result[entry.name] = null;
+    }
+  }
+
+  return result;
 }
 
 </script>
