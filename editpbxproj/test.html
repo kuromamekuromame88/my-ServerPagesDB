@@ -185,7 +185,45 @@ function collectFiles(node, list = []) {
   return list;
 }
 
+/* ------------------ PBXGroup生成 ------------------ */
+
+function generateGroupSection(root) {
+
+  let groupSection = "/* Begin PBXGroup section */\n";
+
+  function walk(node) {
+
+    if (node.type !== "folder") return;
+
+    const childrenUUIDs = node.children.map(child => {
+      if (child.type === "folder") return child.uuid;
+      return child.fileRefUUID;
+    });
+
+    groupSection +=
+`	${node.uuid} /* ${node.name} */ = {
+		isa = PBXGroup;
+		children = (
+${childrenUUIDs.map(id => `			${id},`).join("\n")}
+		);
+		path = "${node.name}";
+		sourceTree = "<group>";
+	};
+`;
+
+    node.children.forEach(walk);
+  }
+
+  walk(root);
+
+  groupSection += "/* End PBXGroup section */\n";
+
+  return groupSection;
+}
+
 /* ------------------ pbxproj生成 ------------------ */
+
+
 
 function generatePBXProj() {
 
