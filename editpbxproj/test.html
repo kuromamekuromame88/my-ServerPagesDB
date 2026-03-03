@@ -16,6 +16,7 @@
     font-family: monospace;
     font-size: 14px;
     padding: 10px;
+    padding: 10px;
     border-radius: 5px;
     margin-bottom: 10px;
   }
@@ -93,13 +94,13 @@ function detectFileType(name) {
   if (name.endsWith(".swift")) return "sourcecode.swift";
   if (name.endsWith(".m")) return "sourcecode.c.objc";
   if (name.endsWith(".h")) return "sourcecode.c.h";
+  if (name.endsWith(".plist")) return "text.plist.xml";
   return "text";
 }
 
 /* ------------------ JSON → 内部モデル変換 ------------------ */
 
 function convertToModel(name, value) {
-
   if (value && typeof value === "object") {
     return {
       name,
@@ -109,7 +110,6 @@ function convertToModel(name, value) {
         convertToModel(k, v)
       )
     };
-
   } else {
     return {
       name,
@@ -128,7 +128,6 @@ function generateTree() {
   const jsonStr = document.getElementById("jsonInput").value;
   const treeArea = document.getElementById("tree");
   treeArea.innerHTML = "";
-
   uuidSet.clear();
 
   try {
@@ -153,23 +152,28 @@ function renderNode(node, container) {
     container.appendChild(div);
     node.children.forEach(child => renderNode(child, container));
   } else {
-
     div.classList.add("file");
 
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.style.marginRight = "5px";
 
-    checkbox.onchange = () => node.build = checkbox.checked;
+    checkbox.onchange = () => {
+      // SwiftのみBuild可
+      if (node.fileType === "sourcecode.swift") {
+        node.build = checkbox.checked;
+      } else {
+        checkbox.checked = false;
+        alert("SwiftファイルのみBuild対象にできます");
+      }
+    };
 
     div.appendChild(checkbox);
-
     div.append(
       "📄 " + node.name +
       "  [Ref:" + node.fileRefUUID +
       " | Build:" + node.buildFileUUID + "]"
     );
-
     container.appendChild(div);
   }
 }
@@ -185,22 +189,64 @@ function collectFiles(node, list = []) {
   return list;
 }
 
+/* ------------------ PBXBuildFile生成 ------------------ */
+
+function generateBuildFileSection(files) {
+
+  let section = "/* Begin PBXBuildFile section */\n";
+
+  files
+    .filter(f => f.build && f.fileType === "sourcecode.swift")
+    .forEach(file => {
+
+      section +=
+`	${file.buildFileUUID} /* ${file.name} in Sources */ = {
+		isa = PBXBuildFile;
+		fileRef = ${file.fileRefUUID} /* ${file.name} */;
+	};
+`;
+    });
+
+  section += "/* End PBXBuildFile section */\n";
+  return section;
+}
+
+/* ------------------ PBXFileReference生成 ------------------ */
+
+function generateFileRefSection(files) {
+
+  let section = "/* Begin PBXFileReference section */\n";
+
+  files.forEach(file => {
+    section +=
+`	${file.fileRefUUID} /* ${file.name} */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = ${file.fileType};
+		path = "${file.name}";
+		sourceTree = "<group>";
+	};
+`;
+  });
+
+  section += "/* End PBXFileReference section */\n";
+  return section;
+}
+
 /* ------------------ PBXGroup生成 ------------------ */
 
 function generateGroupSection(root) {
 
-  let groupSection = "/* Begin PBXGroup section */\n";
+  let section = "/* Begin PBXGroup section */\n";
 
   function walk(node) {
 
     if (node.type !== "folder") return;
 
-    const childrenUUIDs = node.children.map(child => {
-      if (child.type === "folder") return child.uuid;
-      return child.fileRefUUID;
-    });
+    const childrenUUIDs = node.children.map(child =>
+      child.type === "folder" ? child.uuid : child.fileRefUUID
+    );
 
-    groupSection +=
+    section +=
 `	${node.uuid} /* ${node.name} */ = {
 		isa = PBXGroup;
 		children = (
@@ -215,15 +261,11 @@ ${childrenUUIDs.map(id => `			${id},`).join("\n")}
   }
 
   walk(root);
-
-  groupSection += "/* End PBXGroup section */\n";
-
-  return groupSection;
+  section += "/* End PBXGroup section */\n";
+  return section;
 }
 
 /* ------------------ pbxproj生成 ------------------ */
-
-
 
 function generatePBXProj() {
 
@@ -231,35 +273,8 @@ function generatePBXProj() {
 
   const files = collectFiles(rootModel);
 
-  let buildSection = "/* Begin PBXBuildFile section */\n";
-  let fileRefSection = "/* Begin PBXFileReference section */\n";
-
-  files.forEach(file => {
-
-    fileRefSection +=
-`	${file.fileRefUUID} /* ${file.name} */ = {
-		isa = PBXFileReference;
-		lastKnownFileType = ${file.fileType};
-		path = "${file.name}";
-		sourceTree = "<group>";
-	};
-`;
-
-    if (file.build) {
-      buildSection +=
-`	${file.buildFileUUID} /* ${file.name} in Sources */ = {
-		isa = PBXBuildFile;
-		fileRef = ${file.fileRefUUID} /* ${file.name} */;
-	};
-`;
-    }
-
-  });
-
-  buildSection += "/* End PBXBuildFile section */\n";
-  fileRefSection += "/* End PBXFileReference section */\n";
-
-  // ★ ここでGroup生成
+  const buildSection = generateBuildFileSection(files);
+  const fileRefSection = generateFileRefSection(files);
   const groupSection = generateGroupSection(rootModel);
 
   const projectUUID = generateTypedPBXUUID("P");
@@ -283,72 +298,6 @@ ${groupSection}
 `;
 
   document.getElementById("output").value = result;
-}
-
-/* ------------------ ルート選択ロジック ------------------ */
-
-async function pickProjectRoot() {
-
-  if (!window.showDirectoryPicker) {
-    alert("Chrome系ブラウザで実行してください");
-    return;
-  }
-
-  const rootHandle = await window.showDirectoryPicker();
-
-  let projectName = null;
-  let sourceFolderHandle = null;
-
-  // 直下から .xcodeproj を探す
-  for await (const entry of rootHandle.values()) {
-    if (entry.kind === "directory" && entry.name.endsWith(".xcodeproj")) {
-      projectName = entry.name.replace(".xcodeproj", "");
-      break;
-    }
-  }
-
-  if (!projectName) {
-    alert(".xcodeprojフォルダが見つかりません");
-    return;
-  }
-
-  // 同名フォルダを探す
-  for await (const entry of rootHandle.values()) {
-    if (entry.kind === "directory" && entry.name === projectName) {
-      sourceFolderHandle = entry;
-      break;
-    }
-  }
-
-  if (!sourceFolderHandle) {
-    alert(projectName + " フォルダが見つかりません");
-    return;
-  }
-
-  const structure = {};
-  structure[sourceFolderHandle.name] =
-    await readDirectory(sourceFolderHandle);
-
-  document.getElementById("jsonInput").value =
-    JSON.stringify(structure, null, 2);
-
-  generateTree();
-}
-
-/* ------------------ 再帰読み込み ------------------ */
-
-async function readDirectory(dirHandle) {
-  const result = {};
-
-  for await (const entry of dirHandle.values()) {
-    if (entry.kind === "directory") {
-      result[entry.name] = await readDirectory(entry);
-    } else {
-      result[entry.name] = null;
-    }
-  }
-
-  return result;
 }
 
 </script>
