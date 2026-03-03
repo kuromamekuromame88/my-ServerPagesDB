@@ -221,6 +221,9 @@ function generatePBXProj() {
   buildSection += "/* End PBXBuildFile section */\n";
   fileRefSection += "/* End PBXFileReference section */\n";
 
+  // ★ ここでGroup生成
+  const groupSection = generateGroupSection(rootModel);
+
   const projectUUID = generateTypedPBXUUID("P");
 
   const result =
@@ -233,6 +236,7 @@ function generatePBXProj() {
 
 ${buildSection}
 ${fileRefSection}
+${groupSection}
 
 	};
 
