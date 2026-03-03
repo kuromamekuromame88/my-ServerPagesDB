@@ -63,19 +63,30 @@
 let rootModel = null;
 
 /* ------------------ UUID管理 ------------------ */
+
 const uuidSet = new Set();
 
-function generatePBXUUID() {
+/**
+ * 用途付きUUID生成
+ * suffix:
+ *  G = Group
+ *  A = FileReference
+ *  B = BuildFile
+ */
+function generateTypedPBXUUID(suffix) {
   let uuid;
 
   do {
     const bytes = new Uint8Array(12); // 96bit
     crypto.getRandomValues(bytes);
 
-    uuid = Array.from(bytes)
+    const base = Array.from(bytes)
       .map(b => b.toString(16).padStart(2, "0"))
       .join("")
-      .toUpperCase();
+      .toUpperCase()
+      .substring(0, 23); // 23桁にする
+
+    uuid = base + suffix;
 
   } while (uuidSet.has(uuid));
 
@@ -84,6 +95,7 @@ function generatePBXUUID() {
 }
 
 /* ------------------ 拡張子判定 ------------------ */
+
 function detectFileType(name) {
   if (name.endsWith(".swift")) return "sourcecode.swift";
   if (name.endsWith(".m")) return "sourcecode.c.objc";
@@ -92,13 +104,14 @@ function detectFileType(name) {
 }
 
 /* ------------------ JSON → 内部モデル変換 ------------------ */
+
 function convertToModel(name, value) {
 
   if (value && typeof value === "object") {
     return {
       name,
       type: "folder",
-      uuid: generatePBXUUID(),
+      uuid: generateTypedPBXUUID("G"),
       children: Object.entries(value).map(([k, v]) =>
         convertToModel(k, v)
       )
@@ -109,9 +122,8 @@ function convertToModel(name, value) {
       name,
       type: "file",
 
-      // pbxprojで必要になるUUIDを分離
-      fileRefUUID: generatePBXUUID(),
-      buildFileUUID: generatePBXUUID(),
+      fileRefUUID: generateTypedPBXUUID("A"),
+      buildFileUUID: generateTypedPBXUUID("B"),
 
       build: false,
       fileType: detectFileType(name)
@@ -120,12 +132,13 @@ function convertToModel(name, value) {
 }
 
 /* ------------------ ツリー生成 ------------------ */
+
 function generateTree() {
   const jsonStr = document.getElementById("jsonInput").value;
   const treeArea = document.getElementById("tree");
   treeArea.innerHTML = "";
 
-  uuidSet.clear(); // 再生成時はUUIDリセット
+  uuidSet.clear(); // 再生成時はリセット
 
   try {
     const data = JSON.parse(jsonStr);
@@ -141,6 +154,7 @@ function generateTree() {
 }
 
 /* ------------------ HTMLツリー描画 ------------------ */
+
 function renderNode(node, container) {
   const div = document.createElement("div");
   div.classList.add("node");
@@ -148,7 +162,8 @@ function renderNode(node, container) {
   if (node.type === "folder") {
 
     div.classList.add("folder");
-    div.textContent = "📁 " + node.name +
+    div.textContent =
+      "📁 " + node.name +
       "  [" + node.uuid + "]";
 
     container.appendChild(div);
@@ -182,6 +197,7 @@ function renderNode(node, container) {
 }
 
 /* ------------------ フォルダ選択 ------------------ */
+
 async function pickDirectory() {
   if (!window.showDirectoryPicker) {
     alert("このブラウザは対応していません（Chrome系で実行してください）");
