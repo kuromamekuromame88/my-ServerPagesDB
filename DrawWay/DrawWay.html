@@ -59,6 +59,15 @@
       .devicetype{
         font-weight: bold;
         color: #fff;
+        position: absolute;
+        top: 5px;
+      }
+
+      .statetext{
+        text-align: center;
+        max-width: max-content;
+        max-height: max-content;
+
       }
 
       #UI{
@@ -88,8 +97,10 @@
     <div id="game">
       <div class="changeDev">
         <input type="checkbox" id="ChangeDevice">
-        <span class="devicetype mobile">モバイル</span>
-        <span class="devicetype pc">PC</span>
+        <div class="statetext">
+          <span class="devicetype mobile">モバイル</span>
+          <span class="devicetype pc">PC</span>
+        </div>
       </div>
     </div>
     <div class="ui" id="UI">
