@@ -27,6 +27,17 @@
         top: 0;
       }
 
+      .changeDev{
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        max-height: 30px; 
+      }
+
+      #ChangeDevice:checked{
+
+      }
+
       #UI{
         display:none;
         position: absolute;
@@ -45,11 +56,19 @@
         padding: 10px;
         max-height: 5vh;
       }
+
+
     </style>
     <script src="https://cdn.jsdelivr.net/npm/matter-js@0.20.0/build/matter.min.js"></script>
   </head>
   <body>
-    <div id="game"></div>
+    <div id="game">
+      <div class="changeDev">
+        <input type="checkbox" id="ChangeDevice">
+        <span class="devicetype">モバイル</span>
+        <span class="devicetype">PC</span>
+      </div>
+    </div>
     <div class="ui" id="UI">
       <div class="left">
         <button id="left">←</button>
