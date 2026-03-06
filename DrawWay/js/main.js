@@ -23,7 +23,7 @@ const tilesize = 32;
 const playersize = 30;
 
 //デバイスの判定
-dicument.getElementById("ChangeDevice").addEventListener("change",()=>{
+document.getElementById("ChangeDevice").addEventListener("change",()=>{
   document.getElementById("UI").style.display = this.checked? "block":"none";
 });
 
