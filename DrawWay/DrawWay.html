@@ -33,10 +33,12 @@
         right: 20px;
         max-height: 30px; 
         max-width: max-content;
-        z-index: 1000000000;
+        z-index: 100000000;
         background-color: #000;
         border-radius: 10px;
       }
+
+
 
       .devicetype.mobile {
         opacity: 0;
@@ -46,6 +48,10 @@
       .devicetype.pc {
         opacity: 1;
         transform: scale(1);
+      }
+
+      #ChangeDevice{
+        z-index: 10;
       }
 
       #ChangeDevice:checked + .devicetype.mobile{
