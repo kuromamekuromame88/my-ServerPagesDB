@@ -12,7 +12,10 @@ const render = Render.create({
   },
 });
 
+
 var boxA = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2, 80, 80);
+
+var ground = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2+100, 500, 80, {isStatic: true});
 
 Composite.add(engine.world, [boxA]);
 
