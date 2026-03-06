@@ -28,3 +28,9 @@ var runner = Runner.create();
 
 //本体のエンジンを起動
 Runner.run(runner, engine);
+
+//画面リサイズに対応
+window.addEventListener("resize", ()=>{
+  render.canvas.width = window.innerWidth;
+  render.canvas.height = window.innerHeight;
+});
