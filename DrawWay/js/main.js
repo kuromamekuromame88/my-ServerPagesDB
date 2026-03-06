@@ -9,11 +9,12 @@ const render = Render.create({
   options:{
     width: window.innerWidth,
     height: window.innerHeight,
+    background: "#444",
+    //デバッグ表示
     wireframes: true,
     showVelocity: true,
     showCollisions: true,
     hasBounds: true,
-    background: "#444",
   },
 });
 
