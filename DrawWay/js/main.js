@@ -11,7 +11,7 @@ const render = Render.create({
 });
 
 //テスト用にオブジェクトの追加
-var boxA = Bodies.rectangle(0, 0, 80, 80);
+var boxA = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2, 80, 80);
 
 //物体を世界に追加
 Composite.add(engine.world, [boxA]);
