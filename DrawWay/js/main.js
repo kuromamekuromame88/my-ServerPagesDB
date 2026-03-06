@@ -6,8 +6,10 @@ const engine = Engine.create();
 
 //レンダラーの作成
 const render = Render.create({
-    element: document.getElementById("game"),
-    engine: engine
+  element: document.getElementById("game"),
+  engine: engine,
+  width: window.innerWidth,
+  height: window.innerHeight,
 });
 
 //テスト用にオブジェクトの追加
