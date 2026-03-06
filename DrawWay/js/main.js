@@ -18,10 +18,11 @@ const render = Render.create({
   },
 });
 
+const tilesize = 32;
 
-var boxA = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2, 80, 80);
+var boxA = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2-200, 80, 80);
 
-var ground = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2+100, 500, 80, {isStatic: true});
+var ground = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2+200, 500, 80, {isStatic: true});
 
 Composite.add(engine.world, [boxA, ground]);
 
