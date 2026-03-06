@@ -35,12 +35,31 @@
         width: 100vW;
         height: 70vh;
       }
+
+      #UI button{
+        font-weight: bold;
+        color: #fff;
+        background-color: #000;
+        border: none;
+        border-radius: 10px;
+        padding: 10px;
+        max-height: 5vh;
+      }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/matter-js@0.20.0/build/matter.min.js"></script>
   </head>
   <body>
     <div id="game"></div>
-    <div class="ui" id="UI"></div>
+    <div class="ui" id="UI">
+      <div class="left">
+        <button id="left">←</button>
+        <button id="right">→</button>
+      </div>
+      <div class="right">
+        <button id="jump">ジャンプ</button>
+        <button id="makeobject">物体を描画</button>
+      </div>
+    </div>
     <script src="https://tool-webs.onrender.com/DrawWay/js/main.js"></script>
   </body>
 </html>

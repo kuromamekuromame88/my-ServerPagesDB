@@ -22,6 +22,8 @@ const render = Render.create({
 const tilesize = 32;
 const playersize = 30;
 
+
+
 var boxA = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2-200, tilesize, tilesize);
 
 var ground = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2+200, 500, 80, {isStatic: true});
