@@ -1,2 +1,26 @@
-// Import Matter.js
-const { Engine, Render, Runner, Bodies, World } = Matter;
+//Matter.jsの読み込み
+const { Engine, Render, Runner, Bodies, World, Composite } = Matter;
+
+//エンジン作成
+const engine = Engine.create();
+
+//レンダラーの作成
+const render = Render.create({
+    element: document.body,
+    engine: engine
+});
+
+//テスト用にオブジェクトの追加
+var boxA = Bodies.rectangle(0, 0, 80, 80);
+
+//物体を世界に追加
+Composite.add(engine.world, [boxA]);
+
+//レンダラー内で実行
+Render.run(render);
+
+//レンダラーの作成
+var runner = Runner.create();
+
+//本体のエンジンを起動
+Runner.run(runner, engine);
