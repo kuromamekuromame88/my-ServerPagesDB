@@ -9,6 +9,10 @@ const render = Render.create({
   options:{
     width: window.innerWidth,
     height: window.innerHeight,
+    wireframes: true,
+    showVelocity: true,
+    showCollisions: true,
+    hasBounds: true,
   },
 });
 
@@ -26,8 +30,6 @@ Runner.run(runner, engine);
 
 //画面リサイズ
 window.addEventListener("resize", ()=>{
-  render.options.width = window.innerWidth;
-  render.options.height = window.innerHeight;
   render.canvas.width = window.innerWidth;
   render.canvas.height = window.innerHeight;
 });
