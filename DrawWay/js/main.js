@@ -23,7 +23,7 @@ Runner.run(runner, engine);
 
 //画面リサイズ
 window.addEventListener("resize", ()=>{
-  render.canvas.width = window.innerWidth;
-  render.canvas.height = window.innerHeight;
+  render.options.width = window.innerWidth;
+  render.options.height = window.innerHeight;
 });
 
