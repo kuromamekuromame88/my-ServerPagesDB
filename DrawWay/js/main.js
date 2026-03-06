@@ -17,7 +17,7 @@ var boxA = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2, 80, 80);
 
 var ground = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2+100, 500, 80, {isStatic: true});
 
-Composite.add(engine.world, [boxA]);
+Composite.add(engine.world, [boxA, ground]);
 
 
 Render.run(render);
@@ -28,5 +28,7 @@ Runner.run(runner, engine);
 window.addEventListener("resize", ()=>{
   render.options.width = window.innerWidth;
   render.options.height = window.innerHeight;
+  render.canvas.width = window.innerWidth;
+  render.canvas.height = window.innerHeight;
 });
 
