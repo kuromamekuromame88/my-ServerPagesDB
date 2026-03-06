@@ -6,7 +6,7 @@ const engine = Engine.create();
 
 //レンダラーの作成
 const render = Render.create({
-    element: document.body,
+    element: document.getElementById("game"),
     engine: engine
 });
 
