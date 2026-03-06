@@ -8,8 +8,10 @@ const engine = Engine.create();
 const render = Render.create({
   element: document.getElementById("game"),
   engine: engine,
-  width: window.innerWidth,
-  height: window.innerHeight,
+  options:{
+    width: window.innerWidth,
+    height: window.innerHeight,
+  },
 });
 
 //テスト用にオブジェクトの追加
