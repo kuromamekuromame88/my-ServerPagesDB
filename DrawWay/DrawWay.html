@@ -34,8 +34,14 @@
         max-height: 30px; 
       }
 
-      #ChangeDevice:checked{
+      #ChangeDevice:checked + mobile{
+        opacity: 1;
+        transform: scale(1);
+      }
 
+      #ChangeDevice:checked + pc{
+        opacity: 0;
+        transform: scale(0.9);
       }
 
       #UI{
@@ -65,8 +71,8 @@
     <div id="game">
       <div class="changeDev">
         <input type="checkbox" id="ChangeDevice">
-        <span class="devicetype">モバイル</span>
-        <span class="devicetype">PC</span>
+        <span class="devicetype mobile">モバイル</span>
+        <span class="devicetype pc">PC</span>
       </div>
     </div>
     <div class="ui" id="UI">
