@@ -13,6 +13,7 @@ const render = Render.create({
     showVelocity: true,
     showCollisions: true,
     hasBounds: true,
+    background: "#444",
   },
 });
 
