@@ -36,12 +36,22 @@
         z-index: 1000000000;
       }
 
-      #ChangeDevice:checked + mobile{
+      .mobile {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+
+      .pc {
         opacity: 1;
         transform: scale(1);
       }
 
-      #ChangeDevice:checked + #game > div > span.devicetype.pc{
+      #ChangeDevice:checked + .mobile{
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      #ChangeDevice:checked + .pc{
         opacity: 0;
         transform: scale(0.9);
       }
