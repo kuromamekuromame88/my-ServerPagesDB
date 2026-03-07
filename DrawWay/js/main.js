@@ -24,7 +24,13 @@ const playersize = 30;
 
 
 
-var boxA = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2-200, tilesize, tilesize);
+var boxA = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2-200, tilesize, tilesize, {
+  render: {
+    fillStyle: '#fff',
+    strokeStyle: '#000',
+    lineWidth: 10,
+  }
+});
 
 var ground = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2+200, 500, 80, {isStatic: true});
 
