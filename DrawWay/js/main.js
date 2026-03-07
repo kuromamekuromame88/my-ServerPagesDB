@@ -33,6 +33,9 @@ window.addEventListener("resize", ()=>{
 const tilesize = 32;
 const playersize = 30;
 
+
+//オブジェクト配置関数群
+
 function StartScene(){
   Composite.clear(engine.world, false);
   var boxA = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2-200, tilesize, tilesize, {
@@ -54,5 +57,13 @@ function StartScene(){
   Composite.add(engine.world, [boxA, ground]);
 }
 StartScene();
+
+function PlayScene(){
+
+}
+
+function EditScene(){
+
+}
 
 
