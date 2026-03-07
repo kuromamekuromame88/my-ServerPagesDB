@@ -50,13 +50,17 @@ function StartLoop(){
 function StartScene(){
   Composite.clear(engine.world, false);
   //PC・Mobile切り替え用
-  chengeDevice = Bodies.rectangle(window.innerWidth-50, 50, 30, 30, {
+  chengeDevice = Bodies.rectangle(window.innerWidth-25, 25, 30, 30, {
     isStatic: true,
     render: {
       fillStyle: '#fff',
       strokeStyle: '#000',
       lineWidth: 10,
-      sprite: {texture: "./DrawWay/assets/mobile32.png"},//pc32.pngも用意
+      sprite: {
+        texture: "./DrawWay/assets/mobile.png",
+        xScale: 0.1,
+        yScale: 0.1,
+      },//pc32.pngも用意
     }
   });
   player = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2-200, tilesize, tilesize, {
