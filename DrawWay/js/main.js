@@ -56,7 +56,7 @@ function StartLoop(){
   ctx.font = '20px sans-serif';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillText('This is title', box.position.x, box.position.y);
+  ctx.fillText('This is title', Title.position.x, Title.position.y);
   ctx.restore();
 }
 
