@@ -33,11 +33,26 @@ window.addEventListener("resize", ()=>{
 const tilesize = 32;
 const playersize = 30;
 
+//ゲームループ保持関数
+let loopfunc = null;
 
-//オブジェクト配置関数群
+//シーン定義関数群
+
+
+//タイトル画面
+function StartLoop(){
+  
+}
 
 function StartScene(){
   Composite.clear(engine.world, false);
+  var chengeDevice = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2-200, 30, 30, {
+    render: {
+      fillStyle: '#fff',
+      strokeStyle: '#000',
+      lineWidth: 10,
+    }
+  });
   var boxA = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2-200, tilesize, tilesize, {
     render: {
       fillStyle: '#fff',
@@ -54,16 +69,29 @@ function StartScene(){
     }
   });
 
-  Composite.add(engine.world, [boxA, ground]);
+  Composite.add(engine.world, [boxA, ground, chengeDevice]);
+  loopfunc=StartLoop;
 }
 StartScene();
 
+
+//プレイ中の画面
+function PlayLoop(){
+  
+}
+
 function PlayScene(){
-
+  loopfunc=PlayLoop;
 }
 
-function EditScene(){
-
+//入力統合管理
+function UScontrol(){
+  
 }
 
 
+function loop(){
+  if(loopfunc) loopfunc();
+  requestAnimationFrame(loop);
+}
+loop();
