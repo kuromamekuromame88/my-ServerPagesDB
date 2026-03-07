@@ -46,11 +46,14 @@ function StartLoop(){
 
 function StartScene(){
   Composite.clear(engine.world, false);
+  //PC・Mobile切り替え用
   var chengeDevice = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2-200, 30, 30, {
+    isStatic: true,
     render: {
       fillStyle: '#fff',
       strokeStyle: '#000',
       lineWidth: 10,
+      sprite: {texture: "./mobile.png"},//pc.pngも用意
     }
   });
   var boxA = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2-200, tilesize, tilesize, {
