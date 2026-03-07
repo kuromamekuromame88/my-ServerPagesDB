@@ -37,14 +37,27 @@ const playersize = 30;
 let loopfunc = null;
 
 //オブジェクト変数
-var chengeDevice, player, ground;
+var chengeDevice, Title, player, ground;
 
 //シーン定義関数群
 
 
 //タイトル画面
 function StartLoop(){
-  
+  const ctx = render.context;
+  ctx.clearRect(0, 0, render.options.width, render.options.height);
+
+  // Matter.js の標準描画
+  Render.world(render);
+
+  // テキスト描画
+  ctx.save();
+  ctx.fillStyle = '#000';
+  ctx.font = '20px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('This is title', box.position.x, box.position.y);
+  ctx.restore();
 }
 
 function StartScene(){
@@ -63,6 +76,11 @@ function StartScene(){
       },//pc32.pngも用意
     }
   });
+  //タイトル
+  Title = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2-300, 200, 100, {
+    render: { fillStyle: 'transparent' } // 透明な枠を作る
+  });
+  //プレイヤー
   player = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2-200, tilesize, tilesize, {
     render: {
       fillStyle: '#fff',
@@ -70,6 +88,7 @@ function StartScene(){
       lineWidth: 10,
     }
   });
+
   ground = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2+200, 500, 80, {
     isStatic: true,
     render: {
