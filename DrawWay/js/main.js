@@ -53,7 +53,7 @@ function StartScene(){
       fillStyle: '#fff',
       strokeStyle: '#000',
       lineWidth: 10,
-      sprite: {texture: "./DrawWay/assets/mobile.png"},//pc.pngも用意
+      sprite: {texture: "./DrawWay/assets/mobile32.png"},//pc32.pngも用意
     }
   });
   var boxA = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2-200, tilesize, tilesize, {
