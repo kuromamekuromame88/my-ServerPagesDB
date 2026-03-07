@@ -77,7 +77,7 @@ function StartScene(){
     }
   });
   //タイトル
-  Title = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2-300, 200, 100, {
+  Title = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2, 200, 100, {
     render: { fillStyle: 'transparent' } // 透明な枠を作る
   });
   //プレイヤー
