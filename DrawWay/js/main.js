@@ -53,7 +53,7 @@ function StartLoop(){
   // テキスト描画
   ctx.save();
   ctx.fillStyle = '#000';
-  ctx.font = '20px sans-serif';
+  ctx.font = `${window.innerWidth/3}px sans-serif`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.fillText('This is title', Title.position.x, Title.position.y);
