@@ -18,25 +18,6 @@ const render = Render.create({
   },
 });
 
-//定数
-const tilesize = 32;
-const playersize = 30;
-
-
-
-var boxA = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2-200, tilesize, tilesize, {
-  render: {
-    fillStyle: '#fff',
-    strokeStyle: '#000',
-    lineWidth: 10,
-  }
-});
-
-var ground = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2+200, 500, 80, {isStatic: true});
-
-Composite.add(engine.world, [boxA, ground]);
-
-
 Render.run(render);
 var runner = Runner.create();
 Runner.run(runner, engine);
@@ -46,4 +27,32 @@ window.addEventListener("resize", ()=>{
   render.canvas.width = window.innerWidth;
   render.canvas.height = window.innerHeight;
 });
+
+
+//定数
+const tilesize = 32;
+const playersize = 30;
+
+function StartScene(){
+  Composite.clear(engine.world, false);
+  var boxA = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2-200, tilesize, tilesize, {
+    render: {
+      fillStyle: '#fff',
+      strokeStyle: '#000',
+      lineWidth: 10,
+    }
+  });
+  var ground = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2+200, 500, 80, {
+    isStatic: true,
+    render: {
+      fillStyle: '#000',
+      strokeStyle: '#000',
+      lineWidth: 10,
+    }
+  });
+
+  Composite.add(engine.world, [boxA, ground]);
+}
+StartScene();
+
 
