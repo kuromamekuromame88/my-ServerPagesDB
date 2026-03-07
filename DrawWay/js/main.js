@@ -36,6 +36,9 @@ const playersize = 30;
 //ゲームループ保持関数
 let loopfunc = null;
 
+//オブジェクト変数
+var chengeDevice, player, ground;
+
 //シーン定義関数群
 
 
@@ -47,7 +50,7 @@ function StartLoop(){
 function StartScene(){
   Composite.clear(engine.world, false);
   //PC・Mobile切り替え用
-  var chengeDevice = Bodies.rectangle(window.innerWidth-50, 50, 30, 30, {
+  chengeDevice = Bodies.rectangle(window.innerWidth-50, 50, 30, 30, {
     isStatic: true,
     render: {
       fillStyle: '#fff',
@@ -56,14 +59,14 @@ function StartScene(){
       sprite: {texture: "./DrawWay/assets/mobile32.png"},//pc32.pngも用意
     }
   });
-  var boxA = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2-200, tilesize, tilesize, {
+  player = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2-200, tilesize, tilesize, {
     render: {
       fillStyle: '#fff',
       strokeStyle: '#000',
       lineWidth: 10,
     }
   });
-  var ground = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2+200, 500, 80, {
+  ground = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2+200, 500, 80, {
     isStatic: true,
     render: {
       fillStyle: '#000',
@@ -72,7 +75,7 @@ function StartScene(){
     }
   });
 
-  Composite.add(engine.world, [boxA, ground, chengeDevice]);
+  Composite.add(engine.world, [player, ground, chengeDevice]);
   loopfunc=StartLoop;
 }
 StartScene();
