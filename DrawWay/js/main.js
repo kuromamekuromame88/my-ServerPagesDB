@@ -22,10 +22,6 @@ const render = Render.create({
 const tilesize = 32;
 const playersize = 30;
 
-//デバイスの判定
-document.getElementById("ChangeDevice").addEventListener("change",()=>{
-  document.getElementById("UI").style.display = this.checked? "block":"none";
-});
 
 
 var boxA = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2-200, tilesize, tilesize);

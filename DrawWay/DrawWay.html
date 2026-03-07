@@ -27,62 +27,6 @@
         top: 0;
       }
 
-      .changeDev{
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        max-height: 30px; 
-        max-width: 50px;
-        z-index: 100000000;
-        background-color: #000;
-        border-radius: 10px;
-      }
-
-
-
-      .devicetype.mobile {
-        opacity: 0;
-        transform: scale(0.9);
-        z-index: 0;
-      }
-
-      .devicetype.pc {
-        opacity: 1;
-        transform: scale(1);
-        z-index: 0;
-      }
-
-      #ChangeDevice{
-        z-index: 10;
-        position: absolute;
-        top: 5px;
-        left: 5px;
-      }
-
-      #ChangeDevice:checked + .devicetype.mobile{
-        opacity: 1;
-        transform: scale(1);
-      }
-
-      #ChangeDevice:checked + .devicetype.pc{
-        opacity: 0;
-        transform: scale(0.9);
-      }
-
-      .devicetype{
-        font-weight: bold;
-        color: #fff;
-        position: absolute;
-        top: 5px;
-      }
-
-      .statetext{
-        text-align: center;
-        max-width: max-content;
-        max-height: max-content;
-
-      }
-
       #UI{
         display:none;
         position: absolute;
@@ -108,13 +52,6 @@
   </head>
   <body>
     <div id="game">
-      <div class="changeDev">
-        <input type="checkbox" id="ChangeDevice">
-        <div class="statetext">
-          <span class="devicetype mobile">モバイル</span>
-          <span class="devicetype pc">PC</span>
-        </div>
-      </div>
     </div>
     <div class="ui" id="UI">
       <div class="left">
