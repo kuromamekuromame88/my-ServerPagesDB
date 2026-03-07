@@ -47,7 +47,7 @@ function StartLoop(){
 function StartScene(){
   Composite.clear(engine.world, false);
   //PC・Mobile切り替え用
-  var chengeDevice = Bodies.rectangle(window.innerWidth-50, window.innerHeight-50, 30, 30, {
+  var chengeDevice = Bodies.rectangle(window.innerWidth-50, 50, 30, 30, {
     isStatic: true,
     render: {
       fillStyle: '#fff',
