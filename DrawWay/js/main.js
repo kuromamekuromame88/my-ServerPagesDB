@@ -11,7 +11,7 @@ const render = Render.create({
     height: window.innerHeight,
     background: "#444",
     //デバッグ表示
-    wireframes: true,
+    wireframes: false,
     showVelocity: true,
     showCollisions: true,
     hasBounds: true,
