@@ -78,7 +78,8 @@ function StartScene(){
   });
   //タイトル
   Title = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2, 200, 100, {
-    render: { fillStyle: 'transparent' } // 透明な枠を作る
+    render: { /*fillStyle: 'transparent'*/ }, // 透明な枠を作る
+    isStatic: true,
   });
   //プレイヤー
   player = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2-200, tilesize, tilesize, {
