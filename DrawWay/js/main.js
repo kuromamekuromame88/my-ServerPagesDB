@@ -9,7 +9,7 @@ const render = Render.create({
   options:{
     width: window.innerWidth,
     height: window.innerHeight,
-    background: "#444",
+    background: "#fff",
     //デバッグ表示
     wireframes: false,
     showVelocity: true,
