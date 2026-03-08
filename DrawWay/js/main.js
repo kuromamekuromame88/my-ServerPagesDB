@@ -50,14 +50,16 @@ function StartLoop(){
   // Matter.js の標準描画
   Render.world(render);
 
-  // テキスト描画
+  // タイトル描画
   ctx.save();
   ctx.fillStyle = '#000';
   ctx.font = `${window.innerHeight/5}px sans-serif`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillText('This is title', Title.position.x, Title.position.y);
+  ctx.fillText('DrawWay', Title.position.x, Title.position.y);
   ctx.restore();
+
+
 }
 
 function StartScene(){
