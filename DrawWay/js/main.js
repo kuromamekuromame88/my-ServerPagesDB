@@ -60,6 +60,7 @@ function StartLoop(){
   ctx.restore();
 
 
+
 }
 
 function StartScene(){
@@ -121,6 +122,22 @@ function UScontrol(){
   
 }
 
+//タッチ座標を変数に反映
+let pointer = {
+  x:0,
+  y:0,
+  isdown:false,
+}
+window.addEventListener("pointermove", (e)=>{
+  pointer.x = e.clientX;
+  pointer.y = e.clientY;
+});
+window.addEventListener("pointerdown", (e)=>{
+  pointer.isdown = true;
+});
+window.addEventListener("pointerup", (e)=>{
+  pointer.isdown = false;
+});
 
 function loop(){
   if(loopfunc) loopfunc();
