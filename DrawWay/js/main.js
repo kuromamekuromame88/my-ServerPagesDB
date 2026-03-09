@@ -37,7 +37,7 @@ const playersize = 30;
 let loopfunc = null;
 
 //オブジェクト変数
-var chengeDevice, Title, player, ground;
+var chengeDevice, Title, StartButton, player, ground;
 
 //シーン定義関数群
 
@@ -57,6 +57,7 @@ function StartLoop(){
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.fillText('DrawWay', Title.position.x, Title.position.y);
+  ctx.fillText('Click To Start', StartButton.position.x, StartButton.position.y);
   ctx.restore();
 
 
@@ -76,15 +77,25 @@ function StartScene(){
         texture: "./DrawWay/assets/mobile.png",
         xScale: 0.2,
         yScale: 0.2,
-      },//pc32.pngも用意
+      },
     }
   });
   //タイトル
-  Title = Bodies.rectangle(window.innerWidth/2-100, window.innerHeight/2, 200, 100, {
+  Title = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2-100, 200, 100, {
     render: { /*fillStyle: 'transparent'*/ }, // 透明な枠を作る
     isStatic: true,
   });
-  
+
+  //プレイ開始ボタン
+  StartButton = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2+200, 100, 30, {
+    isStatic: true,
+    render: {
+      fillStyle: "#fff",
+      strokeStyle: "#000",
+      lineWidth: 10,
+    }
+  });
+
   //プレイヤー
   player = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2-200, tilesize, tilesize, {
     render: {
@@ -103,7 +114,7 @@ function StartScene(){
     }
   });
 
-  Composite.add(engine.world, [player, ground, chengeDevice]);
+  Composite.add(engine.world, [/*player, ground,*/ chengeDevice, Title]);
   loopfunc=StartLoop;
 }
 StartScene();
