@@ -66,7 +66,7 @@ function StartLoop(){
 function StartScene(){
   Composite.clear(engine.world, false);
   //PC・Mobile切り替え用
-  chengeDevice = Bodies.rectangle(window.innerWidth-25, 25, 30, 30, {
+  chengeDevice = Bodies.rectangle(window.innerWidth-50, 50, 30, 30, {
     isStatic: true,
     render: {
       fillStyle: '#fff',
@@ -80,10 +80,11 @@ function StartScene(){
     }
   });
   //タイトル
-  Title = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2, 200, 100, {
+  Title = Bodies.rectangle(window.innerWidth/2-100, window.innerHeight/2, 200, 100, {
     render: { /*fillStyle: 'transparent'*/ }, // 透明な枠を作る
     isStatic: true,
   });
+  
   //プレイヤー
   player = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2-200, tilesize, tilesize, {
     render: {
