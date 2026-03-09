@@ -53,7 +53,7 @@ function StartLoop(){
   // タイトル描画
   ctx.save();
   ctx.fillStyle = '#000';
-  ctx.font = `${window.innerWidth<300 ? window.innerHeight/8:window.innerHeight/5}px sans-serif`;
+  ctx.font = `${window.innerWidth<500 ? window.innerHeight/10:window.innerHeight/5}px sans-serif`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.fillText('DrawWay', Title.position.x, Title.position.y);
