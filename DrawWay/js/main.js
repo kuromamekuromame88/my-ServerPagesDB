@@ -45,7 +45,7 @@ alert(window.innerWidth);
 //タイトル画面
 function StartLoop(){
   const ctx = render.context;
-  ctx.clearRect(0, 0, render.options.width, render.options.height);
+  ctx.clearRect(0, 0, render.canvas.width, render.canvas.height);
 
   // Matter.js の標準描画
   Render.world(render);
@@ -57,7 +57,7 @@ function StartLoop(){
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.fillText('DrawWay', Title.position.x, Title.position.y);
-  ctx.font = `${window.innerWidth<500 ? window.innerHeight/16:window.innerHeight/8}px sans-serif`;
+  ctx.font = `${window.innerWidth<500 ? window.innerHeight/20:window.innerHeight/10}px sans-serif`;
   ctx.fillText('Click To Start', StartButton.position.x, StartButton.position.y);
   ctx.restore();
 
@@ -88,7 +88,7 @@ function StartScene(){
   });
 
   //プレイ開始ボタン
-  StartButton = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2+200, 100, 30, {
+  StartButton = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2+200, 300, 100, {
     isStatic: true,
     render: {
       fillStyle: "#fff",
