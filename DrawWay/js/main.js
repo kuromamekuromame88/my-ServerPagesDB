@@ -41,7 +41,7 @@ var chengeDevice, Title, player, ground;
 
 //シーン定義関数群
 
-
+alert(window.innerWidth);
 //タイトル画面
 function StartLoop(){
   const ctx = render.context;
@@ -74,8 +74,8 @@ function StartScene(){
       lineWidth: 10,
       sprite: {
         texture: "./DrawWay/assets/mobile.png",
-        xScale: 0.1,
-        yScale: 0.1,
+        xScale: 0.3,
+        yScale: 0.3,
       },//pc32.pngも用意
     }
   });
