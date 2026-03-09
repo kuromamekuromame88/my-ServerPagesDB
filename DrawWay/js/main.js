@@ -114,7 +114,7 @@ function StartScene(){
     }
   });
 
-  Composite.add(engine.world, [/*player, ground,*/ chengeDevice, Title]);
+  Composite.add(engine.world, [/*player, ground,*/ chengeDevice, Title, StartButton]);
   loopfunc=StartLoop;
 }
 StartScene();
