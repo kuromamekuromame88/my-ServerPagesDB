@@ -19,9 +19,9 @@ main{
 .bg-box {
   width: 100%;
   height: 100vh;
-  background: url(/icon/icon16x16.ico) repeat;
+  background: url(https://tool-webs.onrender.com/icon/icon16x16.ico) repeat;
   animation: animation 20s linear infinite;
-  background-size: 250px 250px;
+  background-size: 16px 16px;
 }
 
 @keyframes animation {
