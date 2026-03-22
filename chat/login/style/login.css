@@ -46,8 +46,9 @@ main{
 }
 
 .LoginUserInfo input[type=text], .LoginUserInfo input[type=password]{
-  width: 60%;
-  height: 16px;
+  width: 100%;
+  height: 32px;
+  text-align: center;
 }
 
 
