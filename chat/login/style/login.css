@@ -28,6 +28,20 @@ main{
   background-size: 320px 320px;
 }
 
+@media screen and (max-width: 959px) {
+	/* 959px以下に適用されるCSS（タブレット用） */
+}
+@media screen and (max-width: 480px) {
+  main{
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    background: url(https://tool-webs.onrender.com/icon/icon16x16.ico) repeat;
+    animation: animation 20s linear infinite;
+    background-size: 320px 320px;
+  }
+	/* 480px以下に適用されるCSS（スマホ用） */
+}
 
 .LoginModal{
   position: relative;
