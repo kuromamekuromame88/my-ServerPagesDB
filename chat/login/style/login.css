@@ -13,7 +13,6 @@ html, body, main {
   from {
     background-position: 0 0
   }
-
   to {
     background-position: -320px 320px;
   }
@@ -24,7 +23,6 @@ main{
   align-items: center;
   display: flex;
   justify-content: center;
-
   background: url(https://tool-webs.onrender.com/icon/icon320x320.ico) repeat;
   animation: animation 20s linear infinite;
   background-size: 320px 320px;
