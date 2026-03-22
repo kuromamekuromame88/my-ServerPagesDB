@@ -1,5 +1,5 @@
 
-html, body {
+html, body, main {
   padding: 0px;
   margin: 0px;
   height: 100vh;
@@ -14,8 +14,6 @@ main{
 
 .LoginModal{
   position: relative;
-  /*left: 50vw;
-  top: 50vh;*/
   max-width: 50vw;
   max-height: 50vW;
   background-color: #fff;
