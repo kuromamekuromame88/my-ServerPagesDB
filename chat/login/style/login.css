@@ -37,7 +37,7 @@ main{
     align-items: center;
     display: flex;
     justify-content: center;
-    background: url(https://tool-webs.onrender.com/icon/icon16x16.ico) repeat;
+    background: url(https://tool-webs.onrender.com/icon/icon320x320.ico) repeat;
     animation: animation 20s linear infinite;
     background-size: 16px 16px;
   }
