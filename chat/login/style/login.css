@@ -50,6 +50,7 @@ main{
 .SubmitButtons{
   display: flex;
   flex-direction: column;
+  gap: 10px;
 }
 
 .SubmitButtons button{
@@ -58,4 +59,6 @@ main{
   font-size: 16px;
   background-color: #fff;
   box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
+  border-radius: 12px;
+  padding: 10px;
 }
