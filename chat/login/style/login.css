@@ -26,7 +26,7 @@ main{
   background: url(https://tool-webs.onrender.com/icon/icon320x320.ico) repeat;
   animation: animation 20s linear infinite;
   background-size: 80px 80px;
-  filter: saturate(50%);
+  filter: brightness(50%);
 }
 
 .LoginModal{
