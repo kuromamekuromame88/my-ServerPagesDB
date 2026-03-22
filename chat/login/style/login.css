@@ -52,6 +52,22 @@ main{
   text-align: center;
 }
 
+.LoginUserInfo{
+  color: #000;
+  font-weight: bold;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.LoginUserInfo input[type=text], .LoginUserInfo input[type=password]{
+  width: 200px;
+  height: 32px;
+  font-size: 24px;
+  text-align: center;
+}
+
 /*@media screen and (max-width: 959px) {
 	/* 959px以下に適用されるCSS（タブレット用） */
 /*}*/
@@ -88,22 +104,12 @@ main{
     font-weight: bold;
     text-align: center;
   }
-}
-
-.LoginUserInfo{
-  color: #000;
-  font-weight: bold;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.LoginUserInfo input[type=text], .LoginUserInfo input[type=password]{
-  width: 200px;
-  height: 32px;
-  font-size: 25px;
-  text-align: center;
+  .LoginUserInfo input[type=text], .LoginUserInfo input[type=password]{
+    width: 100px;
+    height: 16px;
+    font-size: 12px;
+    text-align: center;
+  }
 }
 
 
