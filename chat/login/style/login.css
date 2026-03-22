@@ -10,12 +10,12 @@ main{
 }
 
 .LoginModal{
-  position: fixed;
-  left: 50vw;
-  top: 50vh;
+  position: relative;
+  /*left: 50vw;
+  top: 50vh;*/
   max-width: 50vw;
   max-height: 50vW;
-  background-color: gray;
+  background-color: #fff;
   box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
   align-items: center;
   justify-content: center;
