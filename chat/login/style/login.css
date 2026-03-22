@@ -42,6 +42,12 @@ main{
   text-align: center;
   display: flex;
   flex-direction: column;
+  gap: 5px;
+}
+
+.LoginUserInfo input[type=text], .LoginUserInfo input[type=password]{
+  width: 60%;
+  height: 16px;
 }
 
 
