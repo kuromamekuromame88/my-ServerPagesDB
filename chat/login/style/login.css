@@ -66,3 +66,6 @@ main{
   background-color: #ddd;
 }
 
+.SubmitButtons button:active{
+  background-color: #aaa;
+}
