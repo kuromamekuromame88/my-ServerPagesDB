@@ -24,6 +24,7 @@ main{
   padding: 10px;
   margin: auto;
   display: flex;
+  flex-direction: row;
 }
 
 .LoginTitle{
