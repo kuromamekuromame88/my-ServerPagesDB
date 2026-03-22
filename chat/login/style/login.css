@@ -28,22 +28,6 @@ main{
   background-size: 160px 160px;
 }
 
-/*@media screen and (max-width: 959px) {
-	/* 959px以下に適用されるCSS（タブレット用） */
-/*}*/
-
-@media screen and (max-width: 480px) {
-  main{
-    align-items: center;
-    display: flex;
-    justify-content: center;
-    background: url(https://tool-webs.onrender.com/icon/icon320x320.ico) repeat;
-    animation: animation 20s linear infinite;
-    background-size: 80px 80px;
-  }
-	/* 480px以下に適用されるCSS（スマホ用） */
-}
-
 .LoginModal{
   position: relative;
   width: 250px;
@@ -66,6 +50,44 @@ main{
   font-size: 24px;
   font-weight: bold;
   text-align: center;
+}
+
+/*@media screen and (max-width: 959px) {
+	/* 959px以下に適用されるCSS（タブレット用） */
+/*}*/
+
+@media screen and (max-width: 480px) {
+  /* 480px以下に適用されるCSS（スマホ用） */
+  main{
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    background: url(https://tool-webs.onrender.com/icon/icon320x320.ico) repeat;
+    animation: animation 20s linear infinite;
+    background-size: 80px 80px;
+  }
+  .LoginModal{
+    position: relative;
+    width: 50vw;
+    height: max-content;
+    background-color: #fff;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    padding: 20px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow: hidden;
+  }
+  .LoginTitle{
+    color: #000;
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+  }
 }
 
 .LoginUserInfo{
