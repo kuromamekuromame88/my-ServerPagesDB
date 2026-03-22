@@ -38,7 +38,7 @@ main{
     justify-content: center;
     background: url(https://tool-webs.onrender.com/icon/icon16x16.ico) repeat;
     animation: animation 20s linear infinite;
-    background-size: 320px 320px;
+    background-size: 16px 16px;
   }
 	/* 480px以下に適用されるCSS（スマホ用） */
 }
