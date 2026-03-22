@@ -98,5 +98,5 @@ main{
 
 .SubmitButtons button:active{
   background-color: #aaa;
-  transform: scale(0.9);
+  transform: scale(1.0);
 }
