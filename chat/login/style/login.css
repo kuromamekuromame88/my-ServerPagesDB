@@ -14,6 +14,28 @@ main{
   justify-content: center;
 }
 
+/*背景アニメーション*/
+
+.bg-box {
+  width: 100%;
+  height: 100vh;
+  background: url(/icon/icon16x16.ico) repeat;
+  animation: animation 20s linear infinite;
+  background-size: 250px 250px;
+}
+
+@keyframes animation {
+  from {
+    background-position: 0 0;
+  }
+
+  to {
+    background-position: 250px -250px;
+  }
+}
+
+
+
 .LoginModal{
   position: relative;
   width: 250px;
