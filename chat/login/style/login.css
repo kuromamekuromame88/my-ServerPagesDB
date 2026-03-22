@@ -65,13 +65,11 @@ main{
 }
 
 .SubmitButtons button:hover{
-  background-color: #ddd;
-  
-  transform: scale(1.2);
+  /*background-color: #ddd;*/
+  transform: scale(1.1);
 }
 
 .SubmitButtons button:active{
   background-color: #aaa;
-
-  transform: scale(0.8);
+  transform: scale(0.9);
 }
