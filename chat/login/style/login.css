@@ -1,3 +1,4 @@
+
 html, body {
   padding: 0px;
   margin: 0px;
@@ -10,6 +11,8 @@ main{
 
 .LoginModal{
   position: fixed;
+  left: 50vw;
+  top: 50vh;
   max-width: 50vw;
   max-height: 50vW;
   background-color: gray;
@@ -17,4 +20,5 @@ main{
   align-items: center;
   justify-content: center;
   border-radius: 12px;
+  padding: 10px;
 }
