@@ -1,4 +1,10 @@
 
+document.querySelector(".MakeAccount").addEventListener("click", ()=>{
+  location.href = "https://tool-webs.onrender.com/chat/register";
+});
+
+document.querySelector(".Login").addEventListener("click", login);
+
 async function login(){
   const un=document.getElementById("user").value;
   const pw=document.getElementById("pass").value;
