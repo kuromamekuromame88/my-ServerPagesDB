@@ -39,7 +39,7 @@ main{
 .LoginUserInfo{
   color: #000;
   font-weight: bold;
-  text-align: right;
+  text-align: center;
   display: flex;
   flex-direction: column;
 }
