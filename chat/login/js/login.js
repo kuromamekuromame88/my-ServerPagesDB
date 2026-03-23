@@ -26,7 +26,12 @@ async function login(){
       body: JSON.stringify(payload)
     });
     const result=await r.json();
-    showlog(result.state?"認証に成功しました！":"認証に失敗しました！", result.state);
+    showlog(result.state?"認証に成功しました！リダイレクトします...":"認証に失敗しました！", !result.state);
+    if(!resut.state) return;
+    const sid = result?.sid;
+    setTimeout(()=>{
+      location.href=`https://tool-webs.onrender.com/chat?login=true&userID=${un}&sid=${sid}`
+    }, 100);
   }catch(e){
     console.log(e);
   }
