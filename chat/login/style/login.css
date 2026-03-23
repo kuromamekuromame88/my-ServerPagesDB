@@ -53,6 +53,11 @@ main{
   text-align: center;
 }
 
+.LoginMessage{
+  font-size: 10px;
+  text-align: center;
+}
+
 .LoginUserInfo{
   color: #000;
   font-weight: bold;
