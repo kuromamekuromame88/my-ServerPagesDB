@@ -21,7 +21,7 @@ async function login(){
       body: JSON.stringify(payload)
     });
     const result=await r.json();
-    if(result.ok) return;
+    alert(result.state?"認証に成功しました！":"認証に失敗しました！");
   }catch(e){
     console.log(e);
   }
