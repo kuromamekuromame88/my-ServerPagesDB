@@ -31,7 +31,7 @@ async function login(){
     const sid = result?.sid;
     setTimeout(()=>{
       location.href=`https://tool-webs.onrender.com/chat?login=true&userID=${un}&sid=${sid}`
-    }, 100);
+    }, 1000);
   }catch(e){
     console.log(e);
   }
