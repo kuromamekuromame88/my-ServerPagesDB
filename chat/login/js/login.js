@@ -7,7 +7,7 @@ document.querySelector(".Login").addEventListener("click", login);
 
 function showlog(e, isError){
   document.querySelector(".LoginMessage").innerText=e;
-  document.querySelector(".LoginMessage").style.color=isError?"red":"black"; 
+  document.querySelector(".LoginMessage").style.color=isError?"red":"green"; 
 }
 
 async function login(){
