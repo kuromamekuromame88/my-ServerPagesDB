@@ -15,7 +15,7 @@ async function login(){
   const un=document.getElementById("user").value;
   const pw=document.getElementById("pass").value;
   if(!un|| !pw){
-    showlog("ユーザーID、パスワードを入力してください。");
+    showlog("ユーザーID、パスワードを入力してください。",true);
     return;
   }
   const payload={
