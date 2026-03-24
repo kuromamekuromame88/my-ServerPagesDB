@@ -4,6 +4,16 @@ function showlog(e, isError){
   document.querySelector(".LoginMessage").style.color=isError?"red":"green"; 
 }
 
+function check(){
+  //ログイン状態の保存
+  if(!localStorage.getItem("KEEPLOGIN")) localStorage.setItem("KEEPLOGIN", false);
+  if(document.getElementById("keeplogin").checked){
+    localStorage.setItem("KEEPLOGIN", true);
+  }else{
+    localStorage.setItem("KEEPLOGIN", false);
+  }
+}
+
 async function login(){
   const un=document.getElementById("user").value;
   const pw=document.getElementById("pass").value;
@@ -27,13 +37,7 @@ async function login(){
     showlog(result.state?"認証に成功しました！リダイレクトします...":"認証に失敗しました！", !result.state);
     if(!result.state) return;
 
-    //ログイン状態の保存
-    if(!localStorage.getItem("KEEPLOGIN")) localStorage.setItem("KEEPLOGIN", false);
-    if(document.getElementById("keeplogin").checked){
-      localStorage.setItem("KEEPLOGIN", true);
-    }else{
-      localStorage.setItem("KEEPLOGIN", false);
-    }
+    check();
 
     const sid = result?.sid;
     setTimeout(()=>{
@@ -55,6 +59,7 @@ document.addEventListener("keydown", e=>{
 
 if(localStorage.getItem("KEEPLOGIN")=="true"){
   showlog("ログインします...");
+  check();
   setTimeout(()=>{
     location.href=`https://tool-webs.onrender.com/chat?login=true&keeplogin=true`;
   }, 500);
