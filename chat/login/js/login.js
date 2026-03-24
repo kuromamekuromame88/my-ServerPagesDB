@@ -7,9 +7,17 @@ function showlog(e, isError){
   document.querySelector(".LoginMessage").style.color=isError?"red":"green"; 
 }
 
+document.addEventListener("keydown", e=>{
+ if(e.key=="Enter") login();
+});
+
 async function login(){
   const un=document.getElementById("user").value;
   const pw=document.getElementById("pass").value;
+  if(!un|| !pw){
+    showlog("ユーザーID、パスワードを入力してください。");
+    return;
+  }
   const payload={
     user: un,
     pass: pw,
