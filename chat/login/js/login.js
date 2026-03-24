@@ -57,8 +57,10 @@ document.addEventListener("keydown", e=>{
  if(e.key=="Enter") login();
 });
 
+
 if(localStorage.getItem("KEEPLOGIN")=="true"){
-  showlog("ログインします...");
+  document.getElementById("keeplogin").checked = true;
+  showlog("自動ログインします...");
   check();
   setTimeout(()=>{
     location.href=`https://tool-webs.onrender.com/chat?login=true&keeplogin=true`;
