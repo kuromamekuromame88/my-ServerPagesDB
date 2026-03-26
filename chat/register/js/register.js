@@ -18,7 +18,7 @@ async function MakeAccount(){
       body: JSON.stringify(payload)
     });
     const result=await r.json();
-    showlog(result.state?"認証に成功しました！リダイレクトします...":"認証に失敗しました！", !result.state);
+    showlog(result.state?"登録に成功しました！リダイレクトします...":"登録に失敗しました！", !result.state);
     if(!result.state) return;
     const sid = result?.sid;
     setTimeout(()=>{
