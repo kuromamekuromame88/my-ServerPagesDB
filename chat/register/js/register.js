@@ -10,7 +10,7 @@ async function MakeAccount(){
     pass: pw,
   };
   try{
-    const r=await fetch("/api/webchat/login", {
+    const r=await fetch("/api/webchat/regist", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
