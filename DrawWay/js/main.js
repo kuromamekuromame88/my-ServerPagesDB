@@ -210,6 +210,7 @@ window.addEventListener("pointermove", (e)=>{
 });
 window.addEventListener("pointerdown", (e)=>{
   pointer.isdown = true;
+  e.preventDefault(); // ←スクロール防止
 });
 window.addEventListener("pointerup", (e)=>{
   pointer.isdown = false;
