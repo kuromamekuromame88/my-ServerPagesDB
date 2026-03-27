@@ -156,11 +156,27 @@ StartScene();
 
 //プレイ中の画面
 function PlayLoop(){
-  
+
+  if(Inputs.left){
+    Matter.Body.setVelocity(player, {x:-5, y:player.velocity.y});
+  }
+
+  if(Inputs.right){
+    Matter.Body.setVelocity(player, {x:5, y:player.velocity.y});
+  }
+
+  if(Inputs.jump){
+    Matter.Body.setVelocity(player, {x:player.velocity.x, y:-10});
+  }
+
 }
 
 function PlayScene(){
-  loopfunc=PlayLoop;
+  Composite.clear(engine.world, false);
+
+  Composite.add(engine.world, [player, ground]);
+
+  loopfunc = PlayLoop;
 }
 
 
