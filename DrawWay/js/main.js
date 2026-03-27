@@ -41,7 +41,31 @@ var chengeDevice, Title, StartButton, player, ground;
 
 //シーン定義関数群
 
-alert(window.innerWidth);
+
+//ゲーム画面内のボタンのタッチ判定
+function isPointerOver(body){
+  return Matter.Bounds.contains(body.bounds, {
+    x: pointer.x,
+    y: pointer.y
+  });
+}
+
+let lastPointerDown = false;
+
+function button(body, onClick){
+  if(isPointerOver(body)){
+    // ホバー演出
+    body.render.opacity = 0.6;
+
+    // クリック検知（押した瞬間だけ）
+    if(pointer.isdown && !lastPointerDown){
+      onClick();
+    }
+  }else{
+    body.render.opacity = 1;
+  }
+}
+
 //タイトル画面
 function StartLoop(){
   const ctx = render.context;
@@ -61,7 +85,16 @@ function StartLoop(){
   ctx.fillText('Click To Start', StartButton.position.x, StartButton.position.y);
   ctx.restore();
 
+  // スタートボタン
+  button(StartButton, ()=>{
+    console.log("ゲーム開始");
+    PlayScene();
+  });
 
+  // デバイス切り替え
+  button(chengeDevice, ()=>{
+    console.log("デバイス切り替え");
+  });
 
 }
 
@@ -131,9 +164,38 @@ function PlayScene(){
 }
 
 //入力統合管理
-function UScontrol(){
-  
+const Inputs = {
+  left: false,
+  right: false,
+  jump: false,
+  draw: false,
+};
+
+//イベント付与
+function bindButton(id, key){
+  const btn = document.getElementById(id);
+
+  btn.addEventListener("touchstart", ()=> Inputs[key] = true);
+  btn.addEventListener("touchend", ()=> Inputs[key] = false);
+
+  btn.addEventListener("mousedown", ()=> Inputs[key] = true);
+  btn.addEventListener("mouseup", ()=> Inputs[key] = false);
 }
+bindButton("left", "left");
+bindButton("right", "right");
+bindButton("jump", "jump");
+bindButton("makeobject", "draw");
+
+//キーボードの入力処理の反映
+function Keycontrols(f,e){
+  if(e.key=="Right"||e.key=="A") Inputs["right"] = f;
+  if(e.key=="Left"||e.key=="D") Inputs["left"] = f;
+  if(e.key=="Up"||e.key=="W"||e.key=="Space") Inputs["jump"] = f;
+  if(e.key=="Down"||e.key=="E") Inputs["draw"] = f;
+}
+document.addEventListener("keydown", (e)=>{Keycontrols(1,e)});
+document.addEventListener("keyup", (e)=>{Keycontrols(0,e)});
+
 
 //タッチ座標を変数に反映
 let pointer = {
