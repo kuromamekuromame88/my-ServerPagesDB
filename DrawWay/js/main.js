@@ -39,8 +39,6 @@ let loopfunc = null;
 //オブジェクト変数
 var chengeDevice, Title, StartButton, player, ground;
 
-//シーン定義関数群
-
 
 //ゲーム画面内のボタンのタッチ判定
 function isPointerOver(body){
@@ -65,6 +63,8 @@ function button(body, onClick){
     body.render.opacity = 1;
   }
 }
+
+//シーン定義関数群
 
 //タイトル画面
 function StartLoop(){
@@ -163,6 +163,18 @@ function PlayScene(){
   loopfunc=PlayLoop;
 }
 
+
+//コース編集中の画面
+function EditorLoop(){
+  
+}
+
+function EditorScene(){
+  loopfunc=EditorLoop;
+}
+
+
+
 //入力統合管理
 const Inputs = {
   left: false,
@@ -217,11 +229,10 @@ window.addEventListener("pointerup", (e)=>{
 });
 
 
-//ループ処理
+//全体的なループ処理
 function loop(){
   if(loopfunc) loopfunc();
   requestAnimationFrame(loop);
-
 
   lastPointerDown = pointer.isdown;
 }
