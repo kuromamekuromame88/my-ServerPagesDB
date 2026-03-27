@@ -69,7 +69,7 @@ function button(body, onClick){
 //タイトル画面
 function StartLoop(){
   const ctx = render.context;
-  ctx.clearRect(0, 0, render.canvas.width, render.canvas.height);
+  //ctx.clearRect(0, 0, render.canvas.width, render.canvas.height);
 
   // Matter.js の標準描画
   Render.world(render);
@@ -204,8 +204,9 @@ let pointer = {
   isdown:false,
 }
 window.addEventListener("pointermove", (e)=>{
-  pointer.x = e.clientX;
-  pointer.y = e.clientY;
+  const rect = render.canvas.getBoundingClientRect();
+  pointer.x = e.clientX - rect.left;
+  pointer.y = e.clientY - rect.top;
 });
 window.addEventListener("pointerdown", (e)=>{
   pointer.isdown = true;
@@ -219,5 +220,8 @@ window.addEventListener("pointerup", (e)=>{
 function loop(){
   if(loopfunc) loopfunc();
   requestAnimationFrame(loop);
+
+
+  lastPointerDown = pointer.isdown;
 }
 loop();
