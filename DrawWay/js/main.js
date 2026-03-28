@@ -164,8 +164,8 @@ function PlayLoop(){
 
   let vx = player.velocity.x;
 
-  if(Inputs.left) vx -= 0.5;
-  if(Inputs.right) vx += 0.5;
+  if(Inputs.left) vx -= 0.25;
+  if(Inputs.right) vx += 0.25;
 
   // 減速
   vx *= 0.99;
