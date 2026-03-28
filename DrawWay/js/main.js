@@ -108,7 +108,7 @@ function StartScene(){
   
   //タイトル
   Title = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2-100, 200, 100, {
-    render: { /*fillStyle: 'transparent'*/ }, // 透明な枠を作る
+    render: { fillStyle: 'transparent' }, // 透明な枠を作る
     isStatic: true,
   });
 
@@ -135,6 +135,7 @@ function StartScene(){
 
   Composite.add(engine.world, [Title]);
   document.getElementById("startBtn").addEventListener("click", ()=>{
+    console.log(this);
     this.style.display="none";
     PlayScene();
   });
