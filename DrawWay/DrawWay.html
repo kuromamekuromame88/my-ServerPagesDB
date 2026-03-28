@@ -38,7 +38,7 @@
         bottom: 0;
         width: 100vw;
         height: 200px;
-        z-index: 10;
+        z-index: -1000000000000;
 
         display: flex;
         justify-content: space-between; /* 左右に分離 */
@@ -54,6 +54,7 @@
       @media (max-width: 768px) {
         #UI{
           display: block !important;
+          z-index: 10;
         }
       }
 
