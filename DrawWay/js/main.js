@@ -220,7 +220,7 @@ function bindButton(id, key){
   const btn = document.getElementById(id);
   function t(){
     Inputs[key]=true;
-    if(key=="jump"||!Inputs.jumpPressed) Inputs.jumpPressed=true;
+    if(key=="jump"&&!Inputs.jumpPressed) Inputs.jumpPressed=true;
   }
   function f(){Inputs[key]=false;}
   btn.addEventListener("touchstart", t);
