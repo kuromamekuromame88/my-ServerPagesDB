@@ -90,14 +90,12 @@ function button(body, onClick){
 //タイトル画面
 function StartLoop(){
   const ctx = render.context;
-  //ctx.clearRect(0, 0, render.canvas.width, render.canvas.height);
-
   // Matter.js の標準描画
   Render.world(render);
 
   // タイトル描画
   ctx.save();
-  ctx.fillStyle = '#000';
+  //ctx.fillStyle = '#000';
   ctx.font = `${window.innerWidth<500 ? window.innerHeight/10:window.innerHeight/5}px sans-serif`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
@@ -120,7 +118,10 @@ function StartScene(){
       fillStyle: '#fff',
       strokeStyle: '#000',
       lineWidth: 10,
-    }
+    },
+    friction: 0.5,       // 動摩擦
+    frictionStatic: 0.8, // 静止摩擦
+    frictionAir: 0.01,   // 空気抵抗
   });
 
   ground = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2+200, 500, 80, {
@@ -133,8 +134,10 @@ function StartScene(){
   });
 
   Composite.add(engine.world, [Title]);
-  document.getElementById("startBtn").style.display="block";
-  document.getElementById("startBtn").addEventListener("click", PlayScene);
+  document.getElementById("startBtn").addEventListener("click", ()=>{
+    this.style.display="none";
+    PlayScene();
+  });
   loopfunc=StartLoop;
 }
 StartScene();
