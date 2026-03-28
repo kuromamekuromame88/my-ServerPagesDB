@@ -102,9 +102,6 @@ function StartLoop(){
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.fillText('DrawWay', Title.position.x, Title.position.y);
-  ctx.font = `${window.innerWidth<500 ? window.innerHeight/20:window.innerHeight/10}px sans-serif`;
-  ctx.fillText('Click To Start', StartButton.position.x, StartButton.position.y);
-  ctx.restore();
 
 }
 
@@ -135,7 +132,7 @@ function StartScene(){
     }
   });
 
-  Composite.add(engine.world, [/*player, ground,*/ chengeDevice, Title]);
+  Composite.add(engine.world, [Title]);
   document.getElementById("startBtn").style.display="block";
   document.getElementById("startBtn").addEventListener("click", PlayScene);
   loopfunc=StartLoop;
