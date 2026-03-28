@@ -94,6 +94,24 @@
         height: 60px;
       }
 
+      #startBtn{
+        display: none;
+        position: absolute;
+        left: 50%;
+        top: 60%;
+        transform: translate(-50%, -50%);
+  
+        padding: 20px 40px;
+        font-size: 24px;
+
+        z-index: 100;
+
+        border: 3px solid black;
+        background: white;
+        cursor: pointer;
+      }
+
+
       button{
         touch-action: manipulation;
       }
@@ -104,6 +122,9 @@
   </head>
   <body>
     <div id="game">
+    </div>
+    <div id="Buttons">
+      <button id="startBtn">Click To Start</button>
     </div>
     <div class="ui" id="UI">
       <div class="left">

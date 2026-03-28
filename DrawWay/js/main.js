@@ -47,7 +47,7 @@ const gs = {
 let loopfunc = null;
 
 //オブジェクト変数
-var chengeDevice, Title, StartButton, player, ground;
+var Title, player, ground;
 
 
 //ゲーム画面内のボタンのタッチ判定
@@ -106,49 +106,15 @@ function StartLoop(){
   ctx.fillText('Click To Start', StartButton.position.x, StartButton.position.y);
   ctx.restore();
 
-  // スタートボタン
-  button(StartButton, ()=>{
-    console.log("ゲーム開始");
-    PlayScene();
-  });
-
-  // デバイス切り替え
-  button(chengeDevice, ()=>{
-    console.log("デバイス切り替え");
-  });
-
 }
 
 function StartScene(){
   Composite.clear(engine.world, false);
-  //PC・Mobile切り替え用
-  chengeDevice = Bodies.rectangle(window.innerWidth-50, 50, 30, 30, {
-    isStatic: true,
-    render: {
-      fillStyle: '#fff',
-      strokeStyle: '#000',
-      lineWidth: 10,
-      sprite: {
-        texture: "./DrawWay/assets/mobile.png",
-        xScale: 0.2,
-        yScale: 0.2,
-      },
-    }
-  });
+  
   //タイトル
   Title = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2-100, 200, 100, {
     render: { /*fillStyle: 'transparent'*/ }, // 透明な枠を作る
     isStatic: true,
-  });
-
-  //プレイ開始ボタン
-  StartButton = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2+200, 300, 100, {
-    isStatic: true,
-    render: {
-      fillStyle: "#fff",
-      strokeStyle: "#000",
-      lineWidth: 10,
-    }
   });
 
   //プレイヤー
@@ -169,7 +135,9 @@ function StartScene(){
     }
   });
 
-  Composite.add(engine.world, [/*player, ground,*/ chengeDevice, Title, StartButton]);
+  Composite.add(engine.world, [/*player, ground,*/ chengeDevice, Title]);
+  document.getElementById("startBtn").style.display="block";
+  document.getElementById("startBtn").addEventListener("click", PlayScene);
   loopfunc=StartLoop;
 }
 StartScene();
