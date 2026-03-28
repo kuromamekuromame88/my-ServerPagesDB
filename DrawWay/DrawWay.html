@@ -39,6 +39,14 @@
         width: 100vw;
         height: 200px;
         z-index: 10;
+
+        display: flex;
+        justify-content: space-between; /* 左右に分離 */
+        align-items: flex-end; /* 下に寄せる */
+
+        padding: 20px;
+        box-sizing: border-box;
+
         pointer-events: none;
       }
 
@@ -49,25 +57,16 @@
         }
       }
 
-      /* 左側（移動） */
-      #UI .left{
-        position: absolute;
-        left: 20px;
-        bottom: 20px;
+      #UI .left,
+      #UI .right{
         display: flex;
         gap: 10px;
         pointer-events: auto;
       }
 
-      /* 右側（アクション） */
       #UI .right{
-        position: absolute;
-        right: 20px;
-        bottom: 20px;
-        display: flex;
         flex-direction: column;
-        gap: 10px;
-        pointer-events: auto;
+        align-items: flex-end;
       }
 
       #UI button{
