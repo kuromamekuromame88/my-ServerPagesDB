@@ -95,8 +95,8 @@ function StartLoop(){
 
   // タイトル描画
   ctx.save();
-  //ctx.fillStyle = '#000';
-  ctx.font = `${window.innerWidth<500 ? window.innerHeight/10:window.innerHeight/5}px sans-serif`;
+  ctx.fillStyle = '#000';
+  ctx.font = `${window.innerWidth<500 ? window.innerHeight/10:window.innerHeight/4}px sans-serif`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.fillText('DrawWay', Title.position.x, Title.position.y);
@@ -119,8 +119,8 @@ function StartScene(){
       strokeStyle: '#000',
       lineWidth: 10,
     },
-    friction: 0.5,       // 動摩擦
-    frictionStatic: 0.8, // 静止摩擦
+    friction: 0.2,       // 動摩擦
+    frictionStatic: 0.4, // 静止摩擦
     frictionAir: 0.01,   // 空気抵抗
   });
 
