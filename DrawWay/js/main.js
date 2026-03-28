@@ -163,7 +163,7 @@ function PlayLoop(){
   if(Inputs.right) vx += 0.5;
 
   // 減速
-  vx *= 0.9;
+  vx *= 0.99999;
 
   Matter.Body.setVelocity(player, {
     x: vx,
