@@ -216,15 +216,17 @@ bindButton("makeobject", "draw");
 
 //キーボードの入力処理の反映
 function Keycontrols(f,e){
-  console.log("判定処理が実行されました！");
-  if(e.key=="Right"||e.key=="A") Inputs["right"] = f;
-  if(e.key=="Left"||e.key=="D") Inputs["left"] = f;
-  if(e.key=="Up"||e.key=="W"||e.key=="Space") Inputs["jump"] = f;
-  if(e.key=="Down"||e.key=="E") Inputs["draw"] = f;
-}
-document.querySelector("canvas").addEventListener("keypress", (e)=>{Keycontrols(1,e)});
-document.querySelector("canvas").addEventListener("keyup", (e)=>{Keycontrols(0,e)});
 
+  if(e.code === "ArrowRight" || e.code === "KeyD") Inputs.right = f;
+  if(e.code === "ArrowLeft" || e.code === "KeyA") Inputs.left = f;
+  if(e.code === "ArrowUp" || e.code === "KeyW" || e.code === "Space") Inputs.jump = f;
+  if(e.code === "ArrowDown" || e.code === "KeyE") Inputs.draw = f;
+}
+window.addEventListener("click", ()=>{
+  window.focus();
+});
+document.addEventListener("keydown", (e)=>{Keycontrols(1,e)});
+document.addEventListener("keyup", (e)=>{Keycontrols(0,e)});
 
 //タッチ座標を変数に反映
 let pointer = {
