@@ -32,23 +32,73 @@
       }
 
       #UI{
-        /*display: none;*/
+        display: none;
         position: absolute;
         left: 0;
         bottom: 0;
         width: 100vw;
         height: 200px;
         z-index: 10;
+        pointer-events: none;
+      }
+
+      /* スマホ用 */
+      @media (max-width: 768px) {
+        #UI{
+          display: block !important;
+        }
+      }
+
+      /* 左側（移動） */
+      #UI .left{
+        position: absolute;
+        left: 20px;
+        bottom: 20px;
+        display: flex;
+        gap: 10px;
+        pointer-events: auto;
+      }
+
+      /* 右側（アクション） */
+      #UI .right{
+        position: absolute;
+        right: 20px;
+        bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        pointer-events: auto;
       }
 
       #UI button{
         font-weight: bold;
         color: #fff;
-        background-color: #000;
-        border: none;
-        border-radius: 10px;
-        padding: 10px;
-        max-height: 5vh;
+        background: rgba(0,0,0,0.6);
+        border: 2px solid #fff;
+        border-radius: 50%;
+        width: 70px;
+        height: 70px;
+        font-size: 20px;
+
+        backdrop-filter: blur(5px);
+
+        transition: transform 0.1s, background 0.1s;
+      }
+
+      /* 押したとき */
+      #UI button:active{
+        transform: scale(0.9);
+        background: rgba(255,255,255,0.3);
+      }
+
+      #jump{
+        width: 80px;
+        height: 80px;
+      }
+
+      #makeobject{
+        width: 60px;
+        height: 60px;
       }
 
       button{
