@@ -212,12 +212,16 @@ const Inputs = {
 //イベント付与
 function bindButton(id, key){
   const btn = document.getElementById(id);
+  function t(){
+    Inputs[key]=true;
+    if(key=="jump"||!Inputs.jumpPressed) Inputs.jumpPressed=true;
+  }
+  function f(){Inputs[key]=false;}
+  btn.addEventListener("touchstart", t);
+  btn.addEventListener("touchend", f);
 
-  btn.addEventListener("touchstart", ()=> Inputs[key] = true);
-  btn.addEventListener("touchend", ()=> Inputs[key] = false);
-
-  btn.addEventListener("mousedown", ()=> Inputs[key] = true);
-  btn.addEventListener("mouseup", ()=> Inputs[key] = false);
+  btn.addEventListener("mousedown", t);
+  btn.addEventListener("mouseup", f);
 }
 bindButton("left", "left");
 bindButton("right", "right");
