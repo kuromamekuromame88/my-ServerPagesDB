@@ -29,6 +29,11 @@ window.addEventListener("resize", ()=>{
 });
 
 
+//ユーティリティー関数
+function isMobile(){
+  return window.matchMedia("(pointer: coarse)").matches;
+}
+
 //定数
 const tilesize = 32;
 const playersize = 30;
@@ -181,6 +186,7 @@ function PlayLoop(){
 }
 
 function PlayScene(){
+  if(isMobile()) document.querySelector("#UI").style.display="flex";
   Composite.clear(engine.world, false);
 
   Composite.add(engine.world, [player, ground]);
