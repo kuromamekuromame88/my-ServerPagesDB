@@ -157,18 +157,27 @@ StartScene();
 //プレイ中の画面
 function PlayLoop(){
 
-  if(Inputs.left){
-    Matter.Body.setVelocity(player, {x:-5, y:player.velocity.y});
-  }
+  let vx = player.velocity.x;
 
-  if(Inputs.right){
-    Matter.Body.setVelocity(player, {x:5, y:player.velocity.y});
-  }
+  if(Inputs.left) vx -= 0.5;
+  if(Inputs.right) vx += 0.5;
 
-  if(Inputs.jump){
-    Matter.Body.setVelocity(player, {x:player.velocity.x, y:-10});
-  }
+  // 減速
+  vx *= 0.9;
 
+  Matter.Body.setVelocity(player, {
+    x: vx,
+    y: player.velocity.y
+  });
+
+  // ジャンプ
+  if(Inputs.jumpPressed){
+    Matter.Body.setVelocity(player, {
+      x: player.velocity.x,
+      y: -10
+    });
+    Inputs.jumpPressed = false;
+  }
 }
 
 function PlayScene(){
@@ -197,6 +206,7 @@ const Inputs = {
   right: false,
   jump: false,
   draw: false,
+  jumpPressed: false,
 };
 
 //イベント付与
@@ -216,7 +226,11 @@ bindButton("makeobject", "draw");
 
 //キーボードの入力処理の反映
 function Keycontrols(f,e){
-
+  if(f === 1 && !e.repeat){
+    if(e.code === "ArrowUp" || e.code === "KeyW" || e.code === "Space"){
+      Inputs.jumpPressed = true;
+    }
+  }
   if(e.code === "ArrowRight" || e.code === "KeyD") Inputs.right = f;
   if(e.code === "ArrowLeft" || e.code === "KeyA") Inputs.left = f;
   if(e.code === "ArrowUp" || e.code === "KeyW" || e.code === "Space") Inputs.jump = f;
