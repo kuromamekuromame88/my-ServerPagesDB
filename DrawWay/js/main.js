@@ -216,6 +216,7 @@ bindButton("makeobject", "draw");
 
 //キーボードの入力処理の反映
 function Keycontrols(f,e){
+  console.log("判定処理が実行されました！");
   if(e.key=="Right"||e.key=="A") Inputs["right"] = f;
   if(e.key=="Left"||e.key=="D") Inputs["left"] = f;
   if(e.key=="Up"||e.key=="W"||e.key=="Space") Inputs["jump"] = f;
