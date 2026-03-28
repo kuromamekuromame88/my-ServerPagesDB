@@ -38,6 +38,11 @@ function isMobile(){
 const tilesize = 32;
 const playersize = 30;
 
+//ゲーム内設定フラグ変数
+const gs = {
+  isPC: false,
+};
+
 //ゲームループ保持関数
 let loopfunc = null;
 
@@ -61,7 +66,7 @@ function button(body, onClick){
     body.render.opacity = 0.6;
 
     // クリック検知（押した瞬間だけ）
-    if(pointer.isdown && !lastPointerDown){
+    if(isPointerOver(body)&&pointer.isdown && !lastPointerDown){
       onClick();
     }
   }else{
