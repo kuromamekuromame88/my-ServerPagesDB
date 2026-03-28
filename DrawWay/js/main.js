@@ -70,14 +70,14 @@ function button(body, onClick){
   body.render.opacity = over ? 0.6 : 1;
 
   // 押した瞬間
-  if(pointer.isdown && !lastPointerDown){
+  if(pointer.isdown && !lastPointerDown && isPointerOver(body)){
     if(over){
       pressTarget = body; // 押した対象を記録
     }
   }
 
   // 離した瞬間
-  if(!pointer.isdown && lastPointerDown){
+  if(!pointer.isdown && lastPointerDown && !isPointerOver(body)){
     if(over && pressTarget === body){
       onClick(); // クリック成立
     }
