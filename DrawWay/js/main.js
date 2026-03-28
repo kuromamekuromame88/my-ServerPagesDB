@@ -60,17 +60,28 @@ function isPointerOver(body){
 
 let lastPointerDown = false;
 
-function button(body, onClick){
-  if(isPointerOver(body)){
-    // ホバー演出
-    body.render.opacity = 0.6;
+let pressTarget = null;
 
-    // クリック検知（押した瞬間だけ）
-    if(isPointerOver(body)&&pointer.isdown && !lastPointerDown){
-      onClick();
+function button(body, onClick){
+
+  const over = isPointerOver(body);
+
+  // ホバー
+  body.render.opacity = over ? 0.6 : 1;
+
+  // 押した瞬間
+  if(pointer.isdown && !lastPointerDown){
+    if(over){
+      pressTarget = body; // 押した対象を記録
     }
-  }else{
-    body.render.opacity = 1;
+  }
+
+  // 離した瞬間
+  if(!pointer.isdown && lastPointerDown){
+    if(over && pressTarget === body){
+      onClick(); // クリック成立
+    }
+    pressTarget = null;
   }
 }
 
