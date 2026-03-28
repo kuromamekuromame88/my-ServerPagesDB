@@ -222,8 +222,8 @@ function Keycontrols(f,e){
   if(e.key=="Up"||e.key=="W"||e.key=="Space") Inputs["jump"] = f;
   if(e.key=="Down"||e.key=="E") Inputs["draw"] = f;
 }
-document.addEventListener("keypress", (e)=>{Keycontrols(1,e)});
-document.addEventListener("keyup", (e)=>{Keycontrols(0,e)});
+document.querySelector("canvas").addEventListener("keypress", (e)=>{Keycontrols(1,e)});
+document.querySelector("canvas").addEventListener("keyup", (e)=>{Keycontrols(0,e)});
 
 
 //タッチ座標を変数に反映
