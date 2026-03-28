@@ -135,8 +135,7 @@ function StartScene(){
 
   Composite.add(engine.world, [Title]);
   document.getElementById("startBtn").addEventListener("click", ()=>{
-    console.log(this);
-    this.style.display="none";
+    document.getElementById("startBtn").style.display="none";
     PlayScene();
   });
   loopfunc=StartLoop;
