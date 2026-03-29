@@ -119,8 +119,8 @@ function StartScene(){
       strokeStyle: '#000',
       lineWidth: 10,
     },
-    friction: 0.2,       // 動摩擦
-    frictionStatic: 0.4, // 静止摩擦
+    friction: 0.01,       // 動摩擦
+    frictionStatic: 0.01, // 静止摩擦
     frictionAir: 0.01,   // 空気抵抗
   });
 
