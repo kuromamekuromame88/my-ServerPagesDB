@@ -147,25 +147,19 @@ StartScene();
 //プレイ中の画面
 function PlayLoop(){
 
-  let vx = player.velocity.x;
+  const force = 0.002;
 
-  if(Inputs.left) vx -= 0.25;
-  if(Inputs.right) vx += 0.25;
+  if(Inputs.left){
+    Matter.Body.applyForce(player, player.position, { x: -force, y: 0 });
+  }
 
-  // 減速
-  vx *= 0.99;
-
-  Matter.Body.setVelocity(player, {
-    x: vx,
-    y: player.velocity.y
-  });
+  if(Inputs.right){
+    Matter.Body.applyForce(player, player.position, { x: force, y: 0 });
+  }
 
   // ジャンプ
   if(Inputs.jumpPressed){
-    Matter.Body.setVelocity(player, {
-      x: player.velocity.x,
-      y: -10
-    });
+    Matter.Body.applyForce(player, player.position, { x: 0, y: -0.05 });
     Inputs.jumpPressed = false;
   }
 }
