@@ -64,8 +64,12 @@
 
       #UI button{
         user-select: none;
+        /* 必要に応じてベンダープレフィックスを追加 */
+        -webkit-user-select: none; /* Safari用 */
+        -moz-user-select: none;    /* Firefox用 */
+        -ms-user-select: none;     /* Internet Explorer/Edge用 */
         touch-action: manipulation;
-        
+
         font-weight: bold;
         color: #fff;
         background: rgba(0,0,0,0.6);
