@@ -120,7 +120,7 @@ function StartScene(){
       lineWidth: 10,
     },
     friction: 0.01,       // 動摩擦
-    frictionStatic: 1, // 静止摩擦
+    frictionStatic: 0.1, // 静止摩擦
     frictionAir: 0.01,   // 空気抵抗
   });
 
@@ -130,7 +130,8 @@ function StartScene(){
       fillStyle: '#000',
       strokeStyle: '#000',
       lineWidth: 10,
-    }
+    },
+    frictionStatic: 0.5,
   });
 
   Composite.add(engine.world, [Title]);
