@@ -49,10 +49,7 @@ Matter.Events.on(engine, "collisionStart", (event)=>{
 
     const { bodyA, bodyB } = pair;
 
-    if(
-      (bodyA === player && bodyB === ground) ||
-      (bodyA === ground && bodyB === player)
-    ){
+    if(bodyA === player||bodyB === player){
       isGrounded = true;
     }
 
@@ -63,10 +60,7 @@ Matter.Events.on(engine, "collisionEnd", (event)=>{
 
     const { bodyA, bodyB } = pair;
 
-    if(
-      (bodyA === player && bodyB === ground) ||
-      (bodyA === ground && bodyB === player)
-    ){
+    if(bodyA === player||bodyB === player){
       isGrounded = false;
     }
 
