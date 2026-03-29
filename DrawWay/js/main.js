@@ -49,7 +49,7 @@ let isOnWall = false;
 let wallDirection = 0; // -1:左壁 1:右壁
 
 // 衝突判定（改良版）
-Matter.Events.on(engine, "collisionActive", (event)=>{
+/*Matter.Events.on(engine, "collisionActive", (event)=>{
   isGrounded = false;
   isOnWall = false;
 
@@ -66,17 +66,49 @@ Matter.Events.on(engine, "collisionActive", (event)=>{
       const ny = normal.y * dir;
 
       // 地面判定（下方向）
-      if(ny < -0.5){
+      if(ny < -0.7){
         isGrounded = true;
       }
 
       // 壁判定（左右）
-      if(Math.abs(nx) > 0.5){
+      if(Math.abs(nx) > 0.5 && player.velocity.y > 0){
         isOnWall = true;
         wallDirection = nx > 0 ? 1 : -1;
       }
     }
   });
+});*/
+
+let groundContacts = 0;
+let wallContacts = 0;
+
+Matter.Events.on(engine, "collisionActive", (event)=>{
+  groundContacts = 0;
+  wallContacts = 0;
+
+  event.pairs.forEach(pair => {
+    const { bodyA, bodyB, collision } = pair;
+
+    if(bodyA === player || bodyB === player){
+      const normal = collision.normal;
+      const dir = bodyA === player ? 1 : -1;
+
+      const nx = normal.x * dir;
+      const ny = normal.y * dir;
+
+      if(ny < -0.7){
+        groundContacts++;
+      }
+
+      if(Math.abs(nx) > 0.7 && player.velocity.y > 0){
+        wallContacts++;
+        wallDirection = nx > 0 ? 1 : -1;
+      }
+    }
+  });
+
+  isGrounded = groundContacts > 0;
+  isOnWall = wallContacts > 0;
 });
 
 //ゲームループ保持関数
