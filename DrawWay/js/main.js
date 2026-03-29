@@ -147,7 +147,7 @@ StartScene();
 //プレイ中の画面
 function PlayLoop(){
 
-  const force = 0.002;
+  const force = 0.001;
 
   if(Inputs.left){
     Matter.Body.applyForce(player, player.position, { x: -force, y: 0 });
