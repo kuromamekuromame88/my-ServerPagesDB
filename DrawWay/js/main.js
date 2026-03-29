@@ -77,7 +77,7 @@ Matter.Events.on(engine, "collisionEnd", (event)=>{
 let loopfunc = null;
 
 //オブジェクト変数
-var Title, player, ground;
+var Title, player, ground, groundB;
 
 
 //ゲーム画面内のボタンのタッチ判定
@@ -163,6 +163,17 @@ function StartScene(){
     },
     frictionStatic: 0.5,
   });
+
+  groundB = Bodies.rectangle(window.innerWidth/2+200, window.innerHeight/2, 80, 200, {
+    isStatic: true,
+    render: {
+      fillStyle: '#000',
+      strokeStyle: '#000',
+      lineWidth: 10,
+    },
+    frictionStatic: 0.5,
+  });
+
 
   Composite.add(engine.world, [Title]);
   document.getElementById("startBtn").addEventListener("click", ()=>{
