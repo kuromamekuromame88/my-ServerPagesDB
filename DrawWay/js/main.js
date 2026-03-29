@@ -209,7 +209,7 @@ function PlayScene(){
   if(isMobile()) document.querySelector("#UI").style.display="flex";
   Composite.clear(engine.world, false);
 
-  Composite.add(engine.world, [player, ground]);
+  Composite.add(engine.world, [player, ground, groundB]);
 
   loopfunc = PlayLoop;
 }
