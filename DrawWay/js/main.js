@@ -43,6 +43,36 @@ const gs = {
   isPC: false,
 };
 
+let isGrounded = false;
+Matter.Events.on(engine, "collisionStart", (event)=>{
+  event.pairs.forEach(pair => {
+
+    const { bodyA, bodyB } = pair;
+
+    if(
+      (bodyA === player && bodyB === ground) ||
+      (bodyA === ground && bodyB === player)
+    ){
+      isGrounded = true;
+    }
+
+  });
+});
+Matter.Events.on(engine, "collisionEnd", (event)=>{
+  event.pairs.forEach(pair => {
+
+    const { bodyA, bodyB } = pair;
+
+    if(
+      (bodyA === player && bodyB === ground) ||
+      (bodyA === ground && bodyB === player)
+    ){
+      isGrounded = false;
+    }
+
+  });
+});
+
 //ゲームループ保持関数
 let loopfunc = null;
 
@@ -158,7 +188,7 @@ function PlayLoop(){
   }
 
   // ジャンプ
-  if(Inputs.jumpPressed){
+  if(Inputs.jumpPressed && isGrounded){
     Matter.Body.applyForce(player, player.position, { x: 0, y: -0.05 });
     Inputs.jumpPressed = false;
   }
