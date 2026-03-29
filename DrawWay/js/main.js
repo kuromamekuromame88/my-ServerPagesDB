@@ -119,9 +119,9 @@ function StartScene(){
       strokeStyle: '#000',
       lineWidth: 10,
     },
-    friction: 0.01,       // 動摩擦
-    frictionStatic: 0.01, // 静止摩擦
-    frictionAir: 0.01,   // 空気抵抗
+    friction: 10,       // 動摩擦
+    frictionStatic: 10, // 静止摩擦
+    frictionAir: 10,   // 空気抵抗
   });
 
   ground = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2+200, 500, 80, {
