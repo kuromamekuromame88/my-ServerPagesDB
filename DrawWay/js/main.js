@@ -43,27 +43,39 @@ const gs = {
   isPC: false,
 };
 
+// 追加フラグ
 let isGrounded = false;
-Matter.Events.on(engine, "collisionStart", (event)=>{
+let isOnWall = false;
+let wallDirection = 0; // -1:左壁 1:右壁
+
+// 衝突判定（改良版）
+Matter.Events.on(engine, "collisionActive", (event)=>{
+  isGrounded = false;
+  isOnWall = false;
+
   event.pairs.forEach(pair => {
+    const { bodyA, bodyB, collision } = pair;
 
-    const { bodyA, bodyB } = pair;
+    if(bodyA === player || bodyB === player){
+      const normal = collision.normal;
 
-    if(bodyA === player||bodyB === player){
-      isGrounded = true;
+      // プレイヤーがAかBかで向きを調整
+      const dir = bodyA === player ? 1 : -1;
+
+      const nx = normal.x * dir;
+      const ny = normal.y * dir;
+
+      // 地面判定（下方向）
+      if(ny < -0.5){
+        isGrounded = true;
+      }
+
+      // 壁判定（左右）
+      if(Math.abs(nx) > 0.5){
+        isOnWall = true;
+        wallDirection = nx > 0 ? 1 : -1;
+      }
     }
-
-  });
-});
-Matter.Events.on(engine, "collisionEnd", (event)=>{
-  event.pairs.forEach(pair => {
-
-    const { bodyA, bodyB } = pair;
-
-    if(bodyA === player||bodyB === player){
-      isGrounded = false;
-    }
-
   });
 });
 
@@ -143,9 +155,10 @@ function StartScene(){
       strokeStyle: '#000',
       lineWidth: 10,
     },
-    friction: 0.1,       // 動摩擦
-    frictionStatic: 0.4, // 静止摩擦
-    frictionAir: 0.01,   // 空気抵抗
+    friction: 0,
+    frictionStatic: 0,
+    frictionAir: 0.02,
+    inertia: Infinity // ←回転禁止
   });
 
   ground = Bodies.rectangle(window.innerWidth/2, window.innerHeight/2+200, 500, 80, {
@@ -182,21 +195,36 @@ StartScene();
 //プレイ中の画面
 function PlayLoop(){
 
-  const force = 0.001;
+  const speed = 5;
 
+  // 現在の速度取得
+  let vx = player.velocity.x;
+  let vy = player.velocity.y;
+
+  // 横移動（スーッと動く）
   if(Inputs.left){
-    Matter.Body.applyForce(player, player.position, { x: -force, y: 0 });
-  }
-
-  if(Inputs.right){
-    Matter.Body.applyForce(player, player.position, { x: force, y: 0 });
+    vx = -speed;
+  }else if(Inputs.right){
+    vx = speed;
+  }else{
+    vx *= 0.8; // 減速（滑らか）
   }
 
   // ジャンプ
-  if(Inputs.jumpPressed && isGrounded){
-    Matter.Body.applyForce(player, player.position, { x: 0, y: -0.05 });
+  if(Inputs.jumpPressed){
+
+    if(isGrounded){
+      vy = -10;
+    }
+    else if(isOnWall){
+      vy = -10;
+      vx = 8 * -wallDirection; // 壁の反対へ飛ぶ
+    }
+
     Inputs.jumpPressed = false;
   }
+
+  Matter.Body.setVelocity(player, { x: vx, y: vy });
 }
 
 function PlayScene(){
