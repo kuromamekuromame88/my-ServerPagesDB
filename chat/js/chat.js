@@ -814,7 +814,6 @@ function waitwscon(ws, timeoutMs = 10000) {
 // ------------------- UI表示 -------------------
 function showChatUI() {
   console.log("showChatUIが呼び出されました!")
-  loginUI.style.display = "none";
   usernameSetup.style.display = "none";
   chatUI.style.display = "block";
 }
