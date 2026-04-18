@@ -1,6 +1,10 @@
 
 document.querySelector(".MakeAccount").addEventListener("click", MakeAccount);
 
+function showlog(e, isError){
+  document.querySelector(".LoginMessage").innerText=e;
+  document.querySelector(".LoginMessage").style.color=isError?"red":"green"; 
+}
 
 async function MakeAccount(){
   const un=document.getElementById("userN").value;
@@ -26,6 +30,7 @@ async function MakeAccount(){
       location.href=`https://tool-webs.onrender.com/chat?login=true&userID=${uid}&sid=${sid}`
     }, 1000);
   }catch(e){
+    showlog(e);
     console.log(e);
   }
 }
