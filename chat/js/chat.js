@@ -873,10 +873,6 @@ async function init(){
   console.log("init()が呼び出されました！");
 
   if(localStorage.getItem("logout") === "true"){
-    console.log("ログアウトを検知しました。ログインページに還移します!");
-    location.href="https://tool-webs.onrender.com/chat/login";
-    return;
-  }else{
     const u = new URL(location.href);
     const params = new URLSearchParams(u.search);
     const isLogin = params.get("login");
@@ -892,6 +888,11 @@ async function init(){
       showChatUI();
       return;
     }
+  }else{
+    console.log("ログアウトを検知しました。ログインページに還移します!");
+    location.href="https://tool-webs.onrender.com/chat/login";
+    return;
+
   }
 }
 
