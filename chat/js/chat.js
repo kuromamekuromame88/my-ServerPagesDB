@@ -107,7 +107,7 @@ let nickname = localStorage.getItem("nickname");
 
 let userID = localStorage.getItem("userID") || null;
 
-let PASSWORD = localStorage.getItem("PASSWORD") || "PASSWORD";
+let PASSWORD;
 
 
 
@@ -818,12 +818,12 @@ function showChatUI() {
 }
 
 //間違って閉じないようにするためのダイアログ表示機能
-window.addEventListener('beforeunload', (e) => {
+/*window.addEventListener('beforeunload', (e) => {
   const message = '入力内容が保存されない可能性があります。ページを離れますか？';
   e.preventDefault();
   e.returnValue = message;
   return message;
-});
+});*/
 
 document.getElementById("logout").addEventListener("click", ()=>{
   localStorage.setItem("logout", true);
@@ -857,7 +857,6 @@ async function init(){
 
   }
 }
-
 init();
 
 //-------------------画像アップロード----------------
@@ -908,7 +907,6 @@ imgUpload.addEventListener("click", (e) => {
     formData.append('file', file);
 
     try {
-
       let data;
       if(ps){
         // fetchでアップロード
@@ -1013,7 +1011,7 @@ UserSettingsChangeModal.onclick = (e) => {
 openUserSettingsChange.onclick = () => {
   newNicknameInput.value = nickname;
   UserSettingsChangeModal.style.display = "flex";
-  currentPasswordInput.value = localStorage.getItem("PASSWORD");
+  currentPasswordInput.value = PASSWORD;
 };
 
 cancelNicknameChange.onclick = () => {
@@ -1041,7 +1039,10 @@ changePassword.onclick = () => {
   if (!currentpass || !newpass) return alert("現在のパスワードと新しいパスワードを入力してください");
   if (currentpass === newpass) return alert("新しいパスワードは現在のパスワードと異なる必要があります。");
   localStorage.setItem("PASSWORD", newpass);
-  if(!ws) return;
+  if(!ws){
+    alert("websocketの接続が切断されています。ページを再リロードてください。");
+    return;
+  }
   ws.send(JSON.stringify({
     app: "webchat",
     type: "changepass",
