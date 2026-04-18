@@ -58,15 +58,10 @@ const currentPasswordInput = document.getElementById("currentPasswordInput");
 const newPasswordInput = document.getElementById("newPasswordInput");
 const changePassword = document.getElementById("changePassword");
 
-const loginUI = document.getElementById("loginUI");
-const loginUserIDInput = document.getElementById("loginUserIDInput");
-const loginPasswordInput = document.getElementById("loginPasswordInput");
-const loginButton = document.getElementById("loginButton");
-
 let wr = new URL(window.location.href);
 const params = new URLSearchParams(wr.search);
 wr = params.get('room');
- 
+
 
 //ルームの保持変数
 let room = wr || "Main";
@@ -1060,26 +1055,6 @@ changePassword.onclick = () => {
   }));
   alert("パスワード変更リクエストを送信しました。");
 }
-
-
-//ログイン画面認証関係
-connectWebSocket();
-loginButton.addEventListener("click", async()=>{
-  const luser = loginUserIDInput.value;
-  const lpass = loginPasswordInput.value;
-  if(!luser || !lpass){
-    alert("ユーザーIDとパスワードを入力してください。");
-    return;
-  }
-  connectWebSocket();
-  await waitwscon(ws);
-  ws.send(JSON.stringify({
-    app: "webchat",
-    type: "login",
-    user: luser,
-    pass: lpass
-  }));
-});
 
 
 //定期登録系
