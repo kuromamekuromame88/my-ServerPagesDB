@@ -841,6 +841,7 @@ function showChatUI() {
   chatUI.style.display = "block";
 }
 
+//間違って閉じないようにするためのダイアログ表示機能
 window.addEventListener('beforeunload', (e) => {
   const message = '入力内容が保存されない可能性があります。ページを離れますか？';
   e.preventDefault();
@@ -852,7 +853,7 @@ document.getElementById("logout").addEventListener("click", ()=>{
   localStorage.setItem("logout", true);
   localStorage.setItem("KEEPLOGIN", false);
   setTimeout(()=>{
-    location.reload();
+    location.href="https://tool-webs.onrender.com/chat/login";
   }, 500);
 });
 
