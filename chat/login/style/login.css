@@ -34,7 +34,7 @@ main{
   width: 250px;
   height: max-content;
   background-color: #fff;
-  box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.5);
   align-items: center;
   justify-content: center;
   border-radius: 12px;
