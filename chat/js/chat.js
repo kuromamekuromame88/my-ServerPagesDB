@@ -841,7 +841,7 @@ function showChatUI() {
   chatUI.style.display = "block";
 }
 
-window.addEventListener("close", (e)=>{
+window.addEventListener("beforeunload", (e)=>{
   if(!comfirm("タブが閉じられます!")){
     e.preventDefault();
   }
