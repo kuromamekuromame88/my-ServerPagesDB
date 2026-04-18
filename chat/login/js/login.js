@@ -43,6 +43,7 @@ async function login(){
     setTimeout(()=>{
       location.href=`https://tool-webs.onrender.com/chat?login=true&userID=${un}&sid=${sid}`;
     }, 1000);
+    localStorage.setItem("logout", true);
   }catch(e){
     console.log(e);
   }

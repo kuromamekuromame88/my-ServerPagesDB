@@ -873,28 +873,23 @@ async function init(){
   console.log("init()が呼び出されました！");
 
   if(localStorage.getItem("logout") === "true"){
-    console.log("ログアウトを検知しました。ログインUIを表示します!");
-    loginUI.style.display = "block";
-    usernameSetup.style.display = "none";
-    connectWebSocket();
+    console.log("ログアウトを検知しました。ログインページに還移します!");
+    location.href="https://tool-webs.onrender.com/chat/login";
     return;
   }else{
-    if (nickname) {
-      console.log("すでにログインされているようです。ChatUIを表示します!");
+    const u = new URL(location.href);
+    const params = new URLSearchParams(u.search);
+    const isLogin = params.get("login");
+    const uid = params.get("userID");
+    const sid = params.get("sid");
+    if(isLogin=="true") {
+      console.log("ログイン認証が済んでいるようです。ChatUIを表示します!");
       usernameSetup.style.display = "none";
       loginUI.style.display = "none";
       connectWebSocket();
       await waitwscon(ws);
-      if(!(localStorage.getItem("logout") === "true")) localStorage.setItem("logout", false);
+      //if(!(localStorage.getItem("logout") === "true")) localStorage.setItem("logout", false);
       showChatUI();
-      ws.send(JSON.stringify({
-        app:"webchat",
-        type:"regist",
-        userID:userID,
-        nickname:nickname,
-        pass: localStorage.getItem("PASSWORD") || "PASSWORD",
-        quiet: true
-      }));
       return;
     }
   }
