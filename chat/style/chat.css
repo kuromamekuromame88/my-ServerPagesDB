@@ -1,11 +1,5 @@
 
     /* ----------------- chat ----------------- */
-    #chatUI{
-      z-index: -2;
-      overflow: hidden;
-      height: 100vh;
-      width: 100vw;
-    }
 
     .chat-container {
       max-width: 100vw;
