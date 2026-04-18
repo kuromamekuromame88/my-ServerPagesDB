@@ -846,8 +846,6 @@ async function init(){
     const sid = params.get("sid");
     if(isLogin=="true") {
       console.log("ログイン認証が済んでいるようです。ChatUIを表示します!");
-      usernameSetup.style.display = "none";
-      loginUI.style.display = "none";
       connectWebSocket();
       await waitwscon(ws);
       //if(!(localStorage.getItem("logout") === "true")) localStorage.setItem("logout", false);
