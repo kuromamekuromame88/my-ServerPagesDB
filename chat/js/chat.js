@@ -2,7 +2,7 @@
 * やるべきことリスト
 * すべて再構築
 * fetchAPIをwebsocketに統一
-* ログインの強化
+* ログインの強化、分離
 * UIの改善
 * 不明ユーザーへの即時対処
 * メタバースの完成
@@ -841,8 +841,15 @@ function showChatUI() {
   chatUI.style.display = "block";
 }
 
+window.addEventListener("close", (e)=>{
+  if(!comfirm("タブが閉じられます!")){
+    e.preventDefault();
+  }
+});
+
 document.getElementById("logout").addEventListener("click", ()=>{
   localStorage.setItem("logout", true);
+  localStorage.setItem("KEEPLOGIN", false);
   setTimeout(()=>{
     location.reload();
   }, 500);
