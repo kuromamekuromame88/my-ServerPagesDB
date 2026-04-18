@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <link rel="icon" href="https://tool-webs.onrender.com/icon/icon16x16.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://tool-webs.onrender.com/icon/icon320x320.ico" type="image/x-icon">
+  <title>WebChat</title>
+
+  <!-- Pixi.js（追加） -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.4.0/pixi.min.js"></script>
+  
+
+  <!-- Markdownパーサー -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <!-- XSS対策用 -->
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+
+  <!-- 自作ウィンドウライブラリ -->
+  <!--<script src="https://kuromamekuromame88.github.io/iframe-window-js/src/IframeWindow.js"></script>-->
+  <script src="chat/js/iw.js"></script>
+
+
+  <!-- メインのcss -->
+  <link rel="stylesheet" href="chat/style/main.css">
+  
+  <!-- チャットの部分のcss-->
+  <link rel="stylesheet" href="chat/style/chat.css">
+  
+  <style>
+
+    /* ----------------- メタバースキャンバス ----------------- */
+    #metacanvas {
+      display: none;
+      width: 100% !important;
+      height: calc(100vh - 60px) !important;
+      background: #ddd !important;
+      overflow: hidden !important;
+    }
+
+        /* ----------------- 🌟 モバイル向けスタイル追加 🌟 ----------------- */
+    @media (max-width: 1000px) {
+      /* top-bar: ボタンを縦に積み重ねるか、アイコン化する */
+      .top-bar {
+        height: auto; /* 高さを自動調整 */
+        flex-direction: column; /* 縦並びにする */
+        padding: 8px;
+        align-items: flex-start;
+      }
+
+      .top-bar .logo {
+        margin-bottom: 8px;
+      }
+
+      .top-bar .nav-buttons {
+        display: flex;
+        flex-wrap: wrap; /* ボタンが多すぎる場合、折り返す */
+        gap: 4px; /* ボタン間のスペースを小さく */
+        width: 100%;
+      }
+      
+      .top-bar .nav-buttons button,
+      .top-bar .nav-buttons .roomselect button {
+        padding: 6px 4px;
+        font-size: 14px;
+        flex-grow: 1; /* スペースに合わせてボタンを広げる */
+        min-width: 42px; /* 最小幅を確保 */
+      }
+      
+      /* ルーム選択メニュー */
+      .roomselect {
+        flex-grow: 1;
+      }
+      .room-menu {
+        width: 250px; /* メニューの幅を固定 */
+      }
+      .room-create input {
+        width: calc(100% - 60px);
+      }
+      
+      /* userStatusBar: モバイルでは右側から引き出す形式を想定し、初期は非表示 */
+      #userStatusBar {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 250px; /* 幅を固定 */
+        height: 100vh;
+        transform: translateX(100%); /* 画面外に隠す */
+        transition: transform 0.3s ease-in-out;
+        z-index: 1000;
+        background: #fff; /* 背景色を設定して見やすく */
+        box-shadow: -2px 0 5px rgba(0,0,0,0.2);
+        padding: 10px;
+      }
+      
+      #userStatusBar.open {
+        transform: translateX(0); /* 表示 */
+      }
+
+      /* chatUI: ユーザーリスト非表示に合わせて幅を調整 */
+      #chatUI {
+        width: 100%;
+        left: 0;
+      }
+
+      body{
+        padding-top: 140px;
+        overflow: hidden;
+      }
+      
+      /* chat-container: top-barの高さが可変なので、vhからtop-barの最大高さを引く */
+      .chat-container {
+        width: 90vw !important;
+        margin-left: 1vw !important;
+        height: calc(100vh - 200px) !important; /* input-areaとtop-barに合わせて調整 */
+      }
+
+      /* input-area: 縦に広がりすぎないように調整 */
+      .input-area {
+        flex-direction: row;
+        padding: 8px;
+        gap: 8px;
+        border-top: 1px solid #ccc;
+      }
+
+      .input-area textarea {
+        height: 80px; /* 高さを固定 */
+        width: 45vw;
+        resize: none; /* ユーザーによるリサイズを禁止 */
+      }
+
+      .input-area #sendButton,
+      .input-area #img_upload {
+        width: 20vw; /* 幅をいっぱいに広げる */
+        padding: 10px;
+        margin: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- top-bar -->
+  <header class="top-bar">
+    <a href="/" class="logo">tool-webs</a>
+
+    <div class="nav-buttons">
+      <!-- ▼ ルーム選択ドロップダウン -->
+      <div class="room" id="room"></div>
+      <div class="roomselect">
+        <button id="roomToggleBtn">ルーム選択 ▾</button>
+
+        <div id="roomMenu" class="room-menu">
+          <div class="room-list">
+            <!-- JS で動的にルームボタンを追加 -->
+          </div>
+
+          <div class="room-create">
+            <input id="new-room-name" type="text" placeholder="新しいルーム名" />
+            <button id="create-room-btn">＋作成</button>
+          </div>
+        </div>
+      </div>
+      <button title="メッセージ読込" onclick="onReachTop();">メッセージ読込</button>
+      <button id="openVoice" title="ビデオ付き通話" style="background-color: #0068a9;">📞</button>
+      <button id="openYoutube" title="youtubePlayerを表示" style="background-color:#c80000;">▶</button>
+      <button id="openCookie" title="cookieclicker" style="background-color:#bec800;">🍪</button>
+      <button id="openChat" title="チャット">💬</button>
+      <button id="openBoard" title="メタバース">🗺️</button>
+      <button id="toggleUserList" style="display: none;">👤 ユーザー</button>
+      <button id="openUserSettingsChange" title="設定">⚙️設定</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- 初回登録UI -->
+    <div id="usernameSetup" class="username-setup">
+      <h2>ニックネームとパスワードを入力してください（後で変更可）</h2>
+      <p>※ユーザーIDは自動生成されます</p>
+      <p>※サーバーに保存するように変更されました</p>
+      <input type="text" id="usernameInput" placeholder="ニックネーム">
+      <input type="text" id="passwordInput" placeholder="パスワード">
+      <button id="saveUsername">登録</button>
+      <button id="gotoLogin">すでにあるアカウントでログイン</button>
+    </div>
+
+    <!-- ログインUI -->
+    <div id="loginUI" class="login-ui" style="display:none;"><!-- 一旦非表示-->
+      <h2>ユーザーIDとパスワードを入力してください</h2>
+      <input type="text" id="loginUserIDInput" placeholder="ユーザーIDを入力">
+      <input type="text" id="loginPasswordInput" placeholder="パスワードを入力">
+      <button id="loginButton">ログイン</button>
+      <button id="gotoRegist">アカウントを新規作成</button>
+    </div>
+
+    <!-- 設定変更モーダル -->
+    <div id="UserSettingsChangeModal">
+      <div id="UserSettingsChangeBox" class="UserSettings-change-box">
+        <button id="cancelNicknameChange" style="background:#999;">キャンセル</button>
+        <h3>ニックネーム変更</h3>
+        <input type="text" id="newNicknameInput" placeholder="新しいニックネーム">
+        <button id="changeNickname">変更</button>
+        <h3>パスワード確認</h3>
+        <span>
+          ※前バージョンにすでに登録されていたユーザーは、
+          <br>
+          パスワードをPASSWORDに設定しています。ここで変更してください。
+        </span>
+        <input type="NowPassword" id="currentPasswordInput" placeholder="現在のパスワード">
+        <input type="newPassword" id="newPasswordInput" placeholder="新しいパスワード">
+        <button id="changePassword">変更</button>
+        <button id="logout">ログアウト</button>
+      </div>
+    </div>
+
+    <!-- チャットUI -->
+    <div id="chatUI" style="display:none;">
+      <div class="chat-container" id="chatContainer"></div>
+      <div class="input-area">
+        <button id="img_upload">画像を送信</button>
+        <!--<button id="img_send">URL画像</button>-->
+        <textarea id="messageInput" placeholder="メッセージを入力 (Shift+Enterで改行)"></textarea>
+        <button id="sendButton">送信</button>
+      </div>
+    </div>
+
+    <div id="userStatusBar" class="user-status-bar">
+      <h3>ユーザー</h3>
+      <div id="userList"></div>
+    </div>
+
+    <!--機能拡張拡張用Canvas-->
+    <div id="metacanvas"></div>
+
+    <script src="chat/js/window.js"></script>
+    <script src="chat/js/chat.js"></script>
+    <script src="chat/js/meta.js"></script>
+  </main>
+</body>
+</html>
