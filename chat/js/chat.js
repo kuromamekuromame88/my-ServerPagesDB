@@ -842,9 +842,11 @@ function showChatUI() {
 }
 
 window.addEventListener("beforeunload", (e)=>{
-  if(!comfirm("タブが閉じられます!")){
-    e.preventDefault();
+  e.preventDefault();
+  if(comfirm("タブが閉じられます!")){
+    window.close();
   }
+  e.returnValue="aa";
 });
 
 document.getElementById("logout").addEventListener("click", ()=>{
