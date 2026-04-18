@@ -597,23 +597,6 @@ function connectWebSocket() {
       return;
     }
 
-    if(msg.type === "authresult"){
-      if(msg.state || msg.state === "true"){
-        alert("認証に成功しました！");
-        localStorage.setItem("logout", false);
-        userID = msg.userID;
-        nickname = msg.nickname; 
-        PASSWORD = loginPasswordInput.value;
-        localStorage.setItem("userID", userID);
-        localStorage.setItem("nickname", nickname);
-        localStorage.setItem("PASSWORD", PASSWORD);
-        ws.close();
-        showChatUI();
-      }else{
-        alert("認証に失敗しました。");
-      }
-    }
-
     if (msg.type === "mute" && msg.user === userID /*|| msg.user.includes(userID)*/ ) {
       wasmuted = true;
       localStorage.setItem("muted", "1");
@@ -857,18 +840,6 @@ document.getElementById("logout").addEventListener("click", ()=>{
   }, 500);
 });
 
-document.getElementById("gotoRegist").addEventListener("click", ()=>{
-  localStorage.setItem("logout", true);
-  loginUI.style.display = "none";
-  usernameSetup.style.display = "block";
-});
-
-document.getElementById("gotoLogin").addEventListener("click", ()=>{
-  localStorage.setItem("logout", true);
-  loginUI.style.display = "block";
-  usernameSetup.style.display = "none";
-});
-
 async function init(){
   console.log("init()が呼び出されました！");
 
@@ -897,49 +868,6 @@ async function init(){
 }
 
 init();
-
-// ------------------- 初回ニックネーム登録 -------------------
-saveUsername.addEventListener("click", async() => {
-  const name = usernameInput.value.trim();
-  if (!name) return alert("ニックネームを入力してください");
-  localStorage.setItem("nickname", name);
-  nickname = name;
-  PASSWORD = document.getElementById("passwordInput").value.trim();
-  if(!PASSWORD) return alert("パスワードを入力してください。");
-  localStorage.setItem("PASSWORD", PASSWORD);
-
-  function generateUserID(key=5) {
-    const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    let id = "";
-    for (let i = 0; i < key; i++) id += chars[Math.floor(Math.random() * chars.length)];
-    return id;
-  }
-  localStorage.setItem("AlrRgt", true);
-  localStorage.setItem("logout", false);
-  if (!userID) {
-    userID = generateUserID();
-    localStorage.setItem("userID", userID);
-  }
-
-  connectWebSocket();
-  await waitwscon(ws);
-  localStorage.removeItem("muted");
-  
-  if(ws){
-    ws.send(JSON.stringify({
-      app:"webchat",
-      type:"regist",
-      userID:userID,
-      nickname:nickname,
-      pass:PASSWORD,
-      quiet: true
-    }));
-  }else{
-    alert("WebSocketに接続されていません。しばらく待ってからもう一度お試しください。");
-    return;
-  }
-  showChatUI();
-});
 
 //-------------------画像アップロード----------------
 const MAXSIZE = 1000 * 1024;
@@ -1028,8 +956,6 @@ imgUpload.addEventListener("click", (e) => {
   input.click();
   input.remove();
 });
-
-
 
 
 // ------------------- メッセージ送信 -------------------
