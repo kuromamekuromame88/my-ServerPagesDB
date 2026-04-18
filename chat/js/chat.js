@@ -841,12 +841,11 @@ function showChatUI() {
   chatUI.style.display = "block";
 }
 
-window.addEventListener("beforeunload", (e)=>{
+window.addEventListener('beforeunload', (e) => {
+  const message = '入力内容が保存されない可能性があります。ページを離れますか？';
   e.preventDefault();
-  if(comfirm("タブが閉じられます!")){
-    window.close();
-  }
-  e.returnValue="aa";
+  e.returnValue = message;
+  return message;
 });
 
 document.getElementById("logout").addEventListener("click", ()=>{
