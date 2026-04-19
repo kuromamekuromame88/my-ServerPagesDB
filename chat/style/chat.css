@@ -2,7 +2,7 @@
     /* ----------------- chat ----------------- */
 
     .chat-container {
-      min-width: 100vw;
+      min-width: 80vw;
       width: 80vw;
       margin-left: 5vw;
       padding: 10px;
