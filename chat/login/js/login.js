@@ -64,6 +64,6 @@ if(localStorage.getItem("KEEPLOGIN")=="true"){
   showlog("自動ログインします...");
   check();
   setTimeout(()=>{
-    location.href=`https://tool-webs.onrender.com/chat?login=true&keeplogin=true`;
+    location.href=`https://tool-webs.onrender.com/chat?login=true&keeplogin=true&userID=${localStorage.getItem("userID")}`;
   }, 500);
 }
