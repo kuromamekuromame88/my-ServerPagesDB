@@ -211,7 +211,7 @@ body {
   position: absolute;
   margin: auto;
   right: 50px;
-  top: calc(50px + calc(100vh / 2));
+  top: calc(-100px + calc(100vh / 2));
   height: 50vh;
   min-width: 20px;
   padding: 10px;
