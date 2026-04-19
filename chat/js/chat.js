@@ -99,6 +99,7 @@ let p = new URL(location.href);
 p = new URLSearchParams(p.search);
 const uid = p.get("userID");
 
+localStorage.setItem("userID", uid);
 let userID = uid || null;
 
 let PASSWORD;
