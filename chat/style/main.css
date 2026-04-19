@@ -52,6 +52,13 @@ body {
   background-color: #555;
 }
 
+.appbtn{
+  color: white;
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: all 0.2s ease;
+  border-radius: 10px;
+}
 
 
 .room{
