@@ -846,6 +846,11 @@ async function init(){
     const isLogin = params.get("login");
     const uid = params.get("userID");
     const sid = params.get("sid");
+    if(!uid){
+      localStorage.setItem("logout", true);
+      localStorage.setItem("KEEPLOGIN", false);
+      location.href="https://tool-webs.onrender.com/chat/login";
+    }
     if(isLogin=="true") {
       console.log("ログイン認証が済んでいるようです。ChatUIを表示します!");
       connectWebSocket();
