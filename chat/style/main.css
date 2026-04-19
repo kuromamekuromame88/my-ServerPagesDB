@@ -1,3 +1,4 @@
+
 body {
   margin: 0;
   padding-top: 60px;
@@ -130,6 +131,26 @@ body {
 
 
 /*ユーザー一覧*/
+
+#userStatusBar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 250px;
+  height: 100vh;
+  transform: translateX(100%);
+  transition: transform 0.3s ease-in-out;
+  z-index: 1000;
+  background: #fff;
+  box-shadow: -2px 0 5px rgba(0,0,0,0.2);
+  padding: 10px;
+}
+
+#userStatusBar.open {
+  transform: translateX(0);
+}
+
+
 .user-status-bar {
   position: fixed;
   top: 60px;
@@ -142,7 +163,7 @@ body {
   padding: 10px;
   overflow-y: scroll;
   box-shadow: -2px 0 6px rgba(0,0,0,0.1);
-  z-index: -1;
+  /*z-index: -1;*/
 }
 
 .user-status-bar h3 {

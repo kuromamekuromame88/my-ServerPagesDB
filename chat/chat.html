@@ -37,7 +37,7 @@
       overflow: hidden !important;
     }
 
-        /* ----------------- 🌟 モバイル向けスタイル追加 🌟 ----------------- */
+    /* ----------------- 🌟 モバイル向けスタイル追加 🌟 ----------------- */
     @media (max-width: 1000px) {
       /* top-bar: ボタンを縦に積み重ねるか、アイコン化する */
       .top-bar {
@@ -78,23 +78,23 @@
       }
       
       /* userStatusBar: モバイルでは右側から引き出す形式を想定し、初期は非表示 */
-      #userStatusBar {
+      /*#userStatusBar {
         position: fixed;
         top: 0;
         right: 0;
-        width: 250px; /* 幅を固定 */
+        width: 250px;
         height: 100vh;
-        transform: translateX(100%); /* 画面外に隠す */
+        transform: translateX(100%);
         transition: transform 0.3s ease-in-out;
         z-index: 1000;
-        background: #fff; /* 背景色を設定して見やすく */
+        background: #fff;
         box-shadow: -2px 0 5px rgba(0,0,0,0.2);
         padding: 10px;
       }
       
       #userStatusBar.open {
-        transform: translateX(0); /* 表示 */
-      }
+        transform: translateX(0);
+      }*/
 
       /* chatUI: ユーザーリスト非表示に合わせて幅を調整 */
       #chatUI {
@@ -163,7 +163,7 @@
       <button title="メッセージ読込" onclick="onReachTop();">メッセージ読込</button>
       <button id="openVoice" title="ビデオ付き通話" style="background-color: #0068a9;">📞</button>
       <button id="openYoutube" title="youtubePlayerを表示" style="background-color:#c80000;">▶</button>
-      <button id="openCookie" title="cookieclicker" style="background-color:#bec800;">🍪</button>
+      <!-- <button id="openCookie" title="cookieclicker" style="background-color:#bec800;">🍪</button> -->
       <button id="openChat" title="チャット">💬</button>
       <button id="openBoard" title="メタバース">🗺️</button>
       <button id="toggleUserList" style="display: none;">👤 ユーザー</button>
@@ -207,8 +207,6 @@
         <div id="userList"></div>
       </div>
     </div>
-
-    
 
     <!--機能拡張拡張用Canvas-->
     <div id="metacanvas"></div>

@@ -14,39 +14,29 @@
 const userStatusBar = document.getElementById('userStatusBar');
 const toggleUserListBtn = document.getElementById('toggleUserList');
 
-window.onresize = () => {
-  if (window.innerWidth <= 1000) {
-    // モバイルサイズの場合、ユーザーリストボタンを表示
-    toggleUserListBtn.style.display = 'block';
+// モバイルサイズの場合、ユーザーリストボタンを表示
+toggleUserListBtn.style.display = 'block';
 
-    // ユーザーリストの表示/非表示を切り替える関数
-    toggleUserListBtn.addEventListener('click', () => {
-      userStatusBar.classList.toggle('open');
-    });
+// ユーザーリストの表示/非表示を切り替える関数
+toggleUserListBtn.addEventListener('click', () => {
+  userStatusBar.classList.toggle('open');
+});
 
-    // 画面をタップした際にユーザーリストを閉じる（簡単な実装）
-    document.addEventListener('click', (event) => {
-      const isClickInsideBar = userStatusBar.contains(event.target);
-      const isClickOnToggleBtn = toggleUserListBtn.contains(event.target);
-        
-      if (userStatusBar.classList.contains('open') && !isClickInsideBar && !isClickOnToggleBtn) {
-        userStatusBar.classList.remove('open');
-      }
-    });
-  }else{
-    toggleUserListBtn.style.display = 'none';
+// 画面をタップした際にユーザーリストを閉じる（簡単な実装）
+document.addEventListener('click', (event) => {
+  const isClickInsideBar = userStatusBar.contains(event.target);
+  const isClickOnToggleBtn = toggleUserListBtn.contains(event.target);        
+  if (userStatusBar.classList.contains('open') && !isClickInsideBar && !isClickOnToggleBtn) {
+    userStatusBar.classList.remove('open');
   }
-}
+});
 
 const SERVER_URL = "wss://tool-webs.onrender.com/ws/chat";
 const chatContainer = document.getElementById("chatContainer");
 const messageInput = document.getElementById("messageInput");
 const sendButton = document.getElementById("sendButton");
 
-const usernameSetup = document.getElementById("usernameSetup");
 const chatUI = document.getElementById("chatUI");
-const usernameInput = document.getElementById("usernameInput");
-const saveUsername = document.getElementById("saveUsername");
 
 const openUserSettingsChange = document.getElementById("openUserSettingsChange");
 const UserSettingsChangeModal = document.getElementById("UserSettingsChangeModal");
