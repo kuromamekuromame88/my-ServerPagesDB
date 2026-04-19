@@ -159,10 +159,10 @@ body {
   height: 80vh;
   margin-bottom: 50px;
   background: #f4f4f4;
-  border-left: 1px solid #ccc;
+  border-left: 2px solid #ccc;
   padding: 10px;
   overflow-y: scroll;
-  box-shadow: -2px 0 6px rgba(0,0,0,0.1);
+  box-shadow: -2px 0 10px rgba(0,0,0,0.3);
   /*z-index: -1;*/
 }
 
