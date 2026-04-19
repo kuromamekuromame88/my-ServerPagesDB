@@ -212,6 +212,7 @@ body {
   margin: auto;
   right: 50px;
   height: 50vh;
+  min-width: 50px;
   padding: 5px;
   border-radius: 20px;
   background-color: #fff;
