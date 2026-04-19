@@ -202,6 +202,10 @@ body {
   font-size: 14px;
 }
 
+#userList{
+  margin-bottom: 100px;
+}
+
 /*ウィンドウの角を丸くする*/
 div[id^="iw"] {
   border-radius: 10px;
