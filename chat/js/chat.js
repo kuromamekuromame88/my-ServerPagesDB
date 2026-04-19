@@ -581,6 +581,7 @@ function connectWebSocket() {
 
     //{"app":"voice","type":"incoming-call","from":"xnkvr"}
     if(msg.app === "voice") {
+      console.log("voice:", msg.type);
       if(msg.type === "incoming-call"){
         alert(`voiceで${msg.from}から通話のリクエストが届いています。`);
         return;
