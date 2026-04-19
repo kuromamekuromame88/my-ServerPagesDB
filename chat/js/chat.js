@@ -980,6 +980,7 @@ function sendMessage() {
       room: room,
       text: parts[1]
     }));
+    return;
   }
 
 
