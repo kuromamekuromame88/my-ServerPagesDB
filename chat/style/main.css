@@ -206,6 +206,19 @@ body {
   margin-bottom: 100px;
 }
 
+
+.tools{
+  position: absolute;
+  margin: auto;
+  right: 50px;
+  height: 50vh;
+  padding: 5px;
+  border-radius: 20px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+
+
 /*ウィンドウの角を丸くする*/
 div[id^="iw"] {
   border-radius: 10px;
