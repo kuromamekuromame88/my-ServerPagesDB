@@ -53,6 +53,9 @@ body {
 }
 
 .appbtn{
+  width: 20px;
+  height: 20px;
+  padding: auto;
   color: white;
   cursor: pointer;
   font-size: 0.9em;
