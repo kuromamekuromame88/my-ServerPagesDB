@@ -583,6 +583,7 @@ function connectWebSocket() {
     if(msg.app === "voice") {
       if(msg.type === "incoming-call"){
         alert(`voiceで${msg.from}から通話のリクエストが届いています。`);
+        return;
       }
     }
     if(msg.app !== "webchat") return;
