@@ -95,9 +95,9 @@ openBoard.onclick = () => {
 // ------------------- ニックネーム & userID -------------------
 let nickname = localStorage.getItem("nickname");
 
-let params = new URL(location.href);
-params = new URLSearchParams(params.search);
-const uid = params.get("userID");
+let p = new URL(location.href);
+p = new URLSearchParams(p.search);
+const uid = p.get("userID");
 
 let userID = uid || null;
 
