@@ -578,6 +578,13 @@ function connectWebSocket() {
 
   ws.addEventListener("message", async(event) => {
     const msg = JSON.parse(event.data);
+
+    //{"app":"voice","type":"incoming-call","from":"xnkvr"}
+    if(msg.app === "voice") {
+      if(msg.type === "incoming-call"){
+        alert(`voiceで${msg.from}から通話のリクエストが届いています。`);
+      }
+    }
     if(msg.app !== "webchat") return;
     const fullUsername = getFullUsername();
     if(msg.type !== "view" && msg.type !== "userstatus") console.log("受信:",msg);
