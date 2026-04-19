@@ -971,6 +971,17 @@ function sendMessage() {
     return;
   }
 
+  if(text.startsWith("!!!")){
+    const parts = text.split(" ");
+    ws.send(JSON.stringify({
+      app: "webchat",
+      type: "message",
+      user: "Server|server",
+      room: room,
+      text: parts[1]
+    }));
+  }
+
 
   const fullUser = getFullUsername();
   ws.send(JSON.stringify({
