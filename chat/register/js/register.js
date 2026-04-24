@@ -26,6 +26,8 @@ async function MakeAccount(){
     if(!result.state) return;
     const sid = result?.sid;
     const uid = result?.uid; 
+    alert("ログインに必要なIDが生成されました。");
+    alert(`あなたのユーザーIDは、${uid}です。メモしたりしてください。`);
     setTimeout(()=>{
       location.href=`https://tool-webs.onrender.com/chat?login=true&userID=${uid}&sid=${sid}`
     }, 1000);
