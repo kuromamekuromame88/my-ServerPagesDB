@@ -1013,6 +1013,7 @@ function sendMessage() {
   }));
 
   messageInput.value = "";
+  messageInput.style.height=`60px`;
 }
 
 sendButton.onclick = sendMessage;
@@ -1022,6 +1023,7 @@ messageInput.addEventListener("keydown", (e) => {
     e.preventDefault();
     sendMessage();
   }
+  messageInput.style.height=`${messageInput.offsetHeight+60}px`;
 });
 
 // ------------------- ユーザー設定変更UI -------------------
