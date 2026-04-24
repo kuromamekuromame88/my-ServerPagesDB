@@ -104,6 +104,16 @@ main{
   transform: scale(1.0);
 }
 
+.AnUserIDShadow{
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.4);
+  /*とりあえず今は隠す*/
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  
+}
 
 /*@media screen and (max-width: 959px) {
 	/* 959px以下に適用されるCSS（タブレット用） */
