@@ -382,6 +382,7 @@
       <div class="accordion_contents">
         <button onclick="open_nw()">履歴の残らないタブを開く</button>
         <button onclick="embedcopy()">埋め込みコードをコピー</button>
+        <button id="testBlock">フィルタリングのテスト</button>
         <br>
         プレイヤーの大きさをデフォルトで大きくする:<input type="checkbox" class="slide" id="bigplayer">
       </div>
@@ -685,6 +686,17 @@
         irm.height = "200px";
       }
       //console.log(e);
+    });
+
+    document.getElementById("testBlock").addEventListener("click", async(e)=>{
+      alert("フィルタリングのテストを行います。");
+      try {
+        const r = await fetch("www.youtube-nocookie.com");
+        let res = r.status;
+        alert("レスポンスコード",res);
+      }catch(e){
+        alert("エラー:", e);
+      }
     });
   </script>
 </body>
