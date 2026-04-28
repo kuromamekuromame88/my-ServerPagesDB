@@ -693,6 +693,7 @@
       try {
         const r = await fetch("www.youtube-nocookie.com");
         let res = r.code;
+        console.log(r);
         alert("レスポンスコード",res);
       }catch(e){
         alert("エラー:", e);
