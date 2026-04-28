@@ -692,7 +692,7 @@
       alert("フィルタリングのテストを行います。");
       try {
         const r = await fetch("www.youtube-nocookie.com");
-        let res = r.status;
+        let res = r.code;
         alert("レスポンスコード",res);
       }catch(e){
         alert("エラー:", e);
