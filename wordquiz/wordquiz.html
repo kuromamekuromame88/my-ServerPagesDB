@@ -120,8 +120,33 @@
 <section>
   <h2>④ ファイル操作</h2>
 
-  <button onclick="saveToFile()">問題を保存</button>
+  <button onclick="saveToFile()">問題をjsonでダウンロード</button>
+  <!-- ここのボタンの関数も後で作ること -->
+  <button onclick="uploadFileToCloud()">問題ファイルをアップロード</button>
+  <br>
   <input type="file" accept=".json" onchange="loadFromFile(event)">
+</section>
+
+<section>
+  <h2>⑤ クラウドに保存済みの問題</h2>
+
+  <button onclick="loadCloudFilesList">アップデート</button>
+  
+  <br>
+  <label>
+    ファイルリストから選択
+  </label>
+  <select name="pets" id="pet-select">
+    <option value="">--1 つ選択してください--</option>
+    <!-- 以下の項目をJSで動的に作成する -->
+    <option value="memo">あとでサーバーにアップロードできるようにする</option>
+    <option value="dog">犬</option>
+    <option value="cat">猫</option>
+    <option value="hamster">ハムスター</option>
+    <option value="parrot">オウム</option>
+    <option value="spider">クモ</option>
+    <option value="goldfish">金魚</option>
+  </select>
 </section>
 
 <script>
