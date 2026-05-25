@@ -106,12 +106,13 @@
   <h2>③ クイズ</h2>
 
   <div class="quiz-box" id="quizMeaning">
-    「次の問題」を押してください
+    「次の問題」ボタンを押してください
   </div>
 
   <input id="answerInput" type="text" placeholder="語句を入力">
 
   <button onclick="checkAnswer()">答える</button>
+  <br>
   <button onclick="nextQuiz()">次の問題</button>
 
   <div class="result" id="result"></div>
@@ -120,11 +121,21 @@
 <section>
   <h2>④ ファイル操作</h2>
 
+  <label>
+    JSONファイルを読み込む
+    <input type="file" accept=".json" onchange="loadFromFile(event)">
+    <!-- このボタンを押したときにJSからファイル選択の画面を表示させる -->
+    <button></button>
+  
+    <label><label id="nowFileName"></label></label>
+  </label>
+  <br>
+
   <button onclick="saveToFile()">問題をjsonでダウンロード</button>
+  <br>
+
   <!-- ここのボタンの関数も後で作ること -->
   <button onclick="uploadFileToCloud()">問題ファイルをアップロード</button>
-  <br>
-  <input type="file" accept=".json" onchange="loadFromFile(event)">
 </section>
 
 <section>
