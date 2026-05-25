@@ -122,20 +122,21 @@
   <h2>④ ファイル操作</h2>
 
   <label>
-    JSONファイルを読み込む
-    <input type="file" accept=".json" onchange="loadFromFile(event)">
-    <!-- このボタンを押したときにJSからファイル選択の画面を表示させる -->
-    <button></button>
-  
-    <label><label id="nowFileName"></label></label>
+    現在のファイル：<label id="filev"></label>
   </label>
-  <br>
+
+  <button onclick="loadFromFile()">JSONファイルの読み込み</button>
 
   <button onclick="saveToFile()">問題をjsonでダウンロード</button>
   <br>
 
   <!-- ここのボタンの関数も後で作ること -->
-  <button onclick="uploadFileToCloud()">問題ファイルをアップロード</button>
+  <label>
+    問題のクラウドへのアップロード
+  </label>
+  
+  <button onclick="uproadQuizesToCloud()">現在の問題をサーバーにアップロード</button>
+  <button onclick="uploadFileToCloud()">JSONファイルをサーバーにアップロード</button>
 </section>
 
 <section>
@@ -259,23 +260,48 @@
     URL.revokeObjectURL(a.href);
   }
 
-  function loadFromFile(event) {
-    const file = event.target.files[0];
-    if (!file) return;
+  async function loadFromFile() {
+    try{
+      const [handle] = await window.showOpenFilePicker({
+        types: [
+          {
+            description: '画像ファイル',
+            accept: {
+              'image/*': ['.json', '.JSON']
+            }
+          }
+        ],
+        multiple: false
+      });
+      const file = await handle.getFile();
+      if(!file) return;
+      
+      document.getElementById("filev").value = file.name
+      console.log("file:", file.name);
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      try {
-        items = JSON.parse(reader.result);
-        renderList();
-        resetForm();
-        alert("読み込み完了");
-      } catch {
-        alert("ファイル形式が正しくありません");
-      }
-    };
-    reader.readAsText(file);
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          items = JSON.parse(reader.result);
+          renderList();
+          resetForm();
+          alert("読み込み完了");
+        } catch {
+          alert("ファイル形式が正しくありません");
+        }
+      };
+      reader.readAsText(file);
+    }catch(e){alert(e);console.logu(e);}
   }
+
+  function uploadQuizesToCloud(){
+    const Quizes = JSON.stringify(items, null, 2);
+  }
+
+  function uploadFileToCloud(){
+    
+  }
+
 </script>
 
 </body>
