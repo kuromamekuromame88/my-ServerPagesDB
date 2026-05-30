@@ -249,6 +249,11 @@
   document.addEventListener("keydown", (e)=>{
     if (e.key === "Enter") {
       if (document.activeElement === answerInput) {
+        setTimeout(()=>{
+          if(document.getElementById("result").textContent.startsWith("正解")) {
+            nextQuiz();
+          }
+        }, 100);
         checkAnswer();
       } else {
         saveItem();
