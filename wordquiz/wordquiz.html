@@ -257,6 +257,8 @@
         setTimeout(()=>{}, 1000);
         checkAnswer();
       } else {
+        //Shift + Enterで改行できるようにする
+        if(e.shiftKey) return;
         saveItem();
       }
     }
