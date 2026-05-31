@@ -259,6 +259,7 @@
       } else {
         //Shift + Enterで改行できるようにする
         if(e.shiftKey) return;
+        e.preventDefault();
         saveItem();
       }
     }
