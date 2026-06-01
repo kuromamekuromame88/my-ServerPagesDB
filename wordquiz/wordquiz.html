@@ -122,11 +122,9 @@
   <h2>④ ファイル操作</h2>
 
   <label>
-    JSONファイルを読み込む
     <input type="file" accept=".json" onchange="loadFromFile(event)" style="display:none">
-
     <button onclick="document.querySelector('input[type=file]').click()">ファイルを選択</button>
-    <label><label id="nowFileName"></label></label>
+    <label id="nowFileName">ファイルを選択してください</label>
   </label>
   <br>
 
