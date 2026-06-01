@@ -123,10 +123,9 @@
 
   <label>
     JSONファイルを読み込む
-    <input type="file" accept=".json" onchange="loadFromFile(event)">
-    <!-- このボタンを押したときにJSからファイル選択の画面を表示させる -->
-    <button></button>
-  
+    <input type="file" accept=".json" onchange="loadFromFile(event)" style="display:none">
+
+    <button onclick="document.querySelector('input[type=file]').click()">ファイルを選択</button>
     <label><label id="nowFileName"></label></label>
   </label>
   <br>
@@ -141,7 +140,7 @@
 <section>
   <h2>⑤ クラウドに保存済みの問題</h2>
 
-  <button onclick="loadCloudFilesList">アップデート</button>
+  <button onclick="loadCloudFilesList">リストをアップデート</button>
   
   <br>
   <label>
@@ -158,11 +157,14 @@
     <option value="spider">クモ</option>
     <option value="goldfish">金魚</option>
   </select>
+  <button onclick="loadSelectedCloudFile()">読み込む</button>
 </section>
 
 <script>
   let items = [];
   let currentIndex = -1;
+
+  const SERVER_DOMAIN = location.hostname;
 
   function saveItem() {
     const word = wordInput.value.trim();
@@ -285,6 +287,9 @@
     const reader = new FileReader();
     reader.onload = () => {
       try {
+        //ファイル名をlabelに表示
+        document.getElementById("nowFileName").textContent = file.name;
+
         items = JSON.parse(reader.result);
         renderList();
         resetForm();
@@ -294,6 +299,49 @@
       }
     };
     reader.readAsText(file);
+  }
+
+  //ファイルリスト取得関数
+  async function loadCloudFilesList() {
+    const res = await fetch(`https://${SERVER_DOMAIN}/wordquiz/filesname`, {
+      method: "GET",
+    });
+    const data = await res.json();
+    return data;
+  }
+
+  async function uploadFileToCloud() {
+    const blob = new Blob(
+      [JSON.stringify(items, null, 2)],
+      { type: "application/json" }
+    );
+
+    const formData = new FormData();
+    const fileName = prompt("ファイル名を入力してください", "quiz-data.json");
+    formData.append("file", blob, fileName);
+
+    await fetch(`https://${SERVER_DOMAIN}/wordquiz/upload`, {
+      method: "POST",
+      body: formData
+    });
+
+    alert("アップロード完了");
+  }
+
+  async function loadSelectedCloudFile() {
+    //APIをたたいてjson取得
+    fileName = document.getElementById("pet-select").value;
+
+    //ファイルが存在するかのチェック
+    const fileList = await loadCloudFilesList();
+    if(!fileList.includes(fileName)) {
+      alert("そのファイルは存在しませんでした。");
+      return;
+    }
+    const res = await fetch(`https://${SERVER_DOMAIN}/wordquiz/files?file=${fileName}`, {
+      method: "GET",
+    });
+    const data = await res.json();
   }
 </script>
 
