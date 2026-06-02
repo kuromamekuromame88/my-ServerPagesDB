@@ -129,10 +129,6 @@
   <br>
 
   <button onclick="saveToFile()">問題をjsonでダウンロード</button>
-  <br>
-
-  <!-- ここのボタンの関数も後で作ること -->
-  <button onclick="uploadFileToCloud()">問題ファイルをアップロード</button>
 </section>
 
 <section>
@@ -156,6 +152,8 @@
     <option value="goldfish">金魚</option>
   </select>
   <button onclick="loadSelectedCloudFile()">読み込む</button>
+  <!-- ここのボタンの関数も後で作ること -->
+  <button onclick="uploadFileToCloud()">クイズのファイルをサーバーにアップロード</button>
 </section>
 
 <script>
@@ -299,7 +297,22 @@
     reader.readAsText(file);
   }
 
-  //ファイルリスト取得関数
+  async function uploadFileToCloud() {
+    //現在の問題のjsonをサーバーのAPIに投げる
+    const fileName = prompt("クイズ名を入力してください", "quiz-data");
+    formData.append("file", blob, fileName);
+
+    const r = await fetch(`https://${SERVER_DOMAIN}/wordquiz/upload`, {
+      method: "POST",
+      type: "appcation/json",
+      body: items
+    });
+    const res = await r.json();
+
+    alert(res.ok?"アップロード成功しました":"アップロードに失敗しました");
+  }
+
+  //クイズリスト取得関数
   async function loadCloudFilesList() {
     const res = await fetch(`https://${SERVER_DOMAIN}/wordquiz/filesname`, {
       method: "GET",
@@ -308,32 +321,14 @@
     return data;
   }
 
-  async function uploadFileToCloud() {
-    const blob = new Blob(
-      [JSON.stringify(items, null, 2)],
-      { type: "application/json" }
-    );
-
-    const formData = new FormData();
-    const fileName = prompt("ファイル名を入力してください", "quiz-data.json");
-    formData.append("file", blob, fileName);
-
-    await fetch(`https://${SERVER_DOMAIN}/wordquiz/upload`, {
-      method: "POST",
-      body: formData
-    });
-
-    alert("アップロード完了");
-  }
-
   async function loadSelectedCloudFile() {
     //APIをたたいてjson取得
     fileName = document.getElementById("pet-select").value;
 
-    //ファイルが存在するかのチェック
+    //指定されたクイズ名が存在するかのチェック
     const fileList = await loadCloudFilesList();
     if(!fileList.includes(fileName)) {
-      alert("そのファイルは存在しませんでした。");
+      alert("そのクイズは存在しませんでした。");
       return;
     }
     const res = await fetch(`https://${SERVER_DOMAIN}/wordquiz/files?file=${fileName}`, {
