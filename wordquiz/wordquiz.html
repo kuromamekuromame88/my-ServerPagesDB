@@ -310,7 +310,7 @@
       }
     });
     console.log(r);
-    const res = await r.toJSON();
+    const res = await r.json();
 
     alert(res.ok?"アップロード成功しました":"アップロードに失敗しました");
   }
