@@ -134,11 +134,11 @@
 <section>
   <h2>⑤ クラウドに保存済みの問題</h2>
 
-  <button onclick="loadCloudFilesList">リストをアップデート</button>
+  <button onclick="renderQuizList()">リストをアップデート</button>
   
   <br>
   <label>
-    ファイルリストから選択
+    ファイルリストから選択https://tool-webs.onrender.com/wordquiz/quezesname
   </label>
   <select name="pets" id="pet-select">
     <option value="">--1 つ選択してください--</option>
@@ -321,6 +321,11 @@
     });
     const data = await res.json();
     return data;
+  }
+
+  async function renderQuizList(){
+    const a = await loadCloudFilesList();
+    console.log(a);
   }
 
   async function loadSelectedCloudFile() {
