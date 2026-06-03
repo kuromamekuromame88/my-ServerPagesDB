@@ -299,13 +299,15 @@
 
   async function uploadFileToCloud() {
     //現在の問題のjsonをサーバーのAPIに投げる
-    const fileName = prompt("クイズ名を入力してください", "quiz-data");
-    formData.append("file", blob, fileName);
+    const quizname = prompt("クイズ名を入力してください", "quiz-data");
 
     const r = await fetch(`https://${SERVER_DOMAIN}/wordquiz/upload`, {
       method: "POST",
       type: "appcation/json",
-      body: items
+      body: {
+        quizname: quizname,
+        quizdata: items,
+      }
     });
     const res = await r.json();
 
@@ -314,7 +316,7 @@
 
   //クイズリスト取得関数
   async function loadCloudFilesList() {
-    const res = await fetch(`https://${SERVER_DOMAIN}/wordquiz/filesname`, {
+    const res = await fetch(`https://${SERVER_DOMAIN}/wordquiz/quizesname`, {
       method: "GET",
     });
     const data = await res.json();
@@ -323,15 +325,15 @@
 
   async function loadSelectedCloudFile() {
     //APIをたたいてjson取得
-    fileName = document.getElementById("pet-select").value;
+    quizName = document.getElementById("pet-select").value;
 
     //指定されたクイズ名が存在するかのチェック
-    const fileList = await loadCloudFilesList();
-    if(!fileList.includes(fileName)) {
+    const quizList = await loadCloudFilesList();
+    if(!quizList.includes(quizName)) {
       alert("そのクイズは存在しませんでした。");
       return;
     }
-    const res = await fetch(`https://${SERVER_DOMAIN}/wordquiz/files?file=${fileName}`, {
+    const res = await fetch(`https://${SERVER_DOMAIN}/wordquiz/quizes?quiz=${quizName}`, {
       method: "GET",
     });
     const data = await res.json();
