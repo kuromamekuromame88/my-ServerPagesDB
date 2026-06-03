@@ -309,7 +309,8 @@
         quizdata: items,
       }
     });
-    const res = await r.json();
+    console.log(r);
+    const res = await r.toJSON();
 
     alert(res.ok?"アップロード成功しました":"アップロードに失敗しました");
   }
