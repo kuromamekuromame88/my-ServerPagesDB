@@ -304,10 +304,10 @@
     const r = await fetch(`https://${SERVER_DOMAIN}/wordquiz/upload`, {
       method: "POST",
       type: "appcation/json",
-      body: {
+      body: JSON.stringify({
         quizname: quizname,
         quizdata: items,
-      }
+      })
     });
     console.log(r);
     const res = await r.json();
