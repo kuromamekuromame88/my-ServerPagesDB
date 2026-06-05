@@ -135,11 +135,8 @@
   <h2>⑤ クラウドに保存済みの問題</h2>
 
   <button onclick="renderQuizList()">リストをアップデート</button>
-  
   <br>
-  <label>
-    ファイルリストから選択
-  </label>
+  <span>ファイルリストから選択</span>
   <select name="quizes" id="quiz-select">
     <option value="">--1 つ選択してください--</option>
     <!-- 以下の項目をJSで動的に作成する -->
@@ -321,12 +318,11 @@
   async function renderQuizList(){
     const a = await loadCloudFilesList();
     const list = a["quizes"];
-    let dom = "a";
-    for(var c; c>list.length; c++){
-      console.log("loop_dom:",dom);
+    let dom = "";
+    for(var c; c<list.length; c++){
       dom+=`<option value="${list[c]}">${list[c]}</option>`;
     }
-    console.log("end_dom:",dom)
+    console.log("end_dom:",dom);
     document.getElementById("quiz-select").innerHTML = dom;
   }
 
