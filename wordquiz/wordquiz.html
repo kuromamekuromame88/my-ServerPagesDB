@@ -290,9 +290,14 @@
 
   async function uploadFileToCloud() {
     //現在の問題のjsonをサーバーのAPIに投げる
-    const quizname = prompt("クイズ名を入力してください", "quiz-data");
-
-    if(!quizname) return;
+    let quizname; 
+    while(true){
+      quizname = prompt("クイズ名を入力してください", "quiz-data");
+      if(!quizname) return;
+      const l = await loadCloudQuizesList(quizname);
+      if(!l) break;
+      alert("すでに同じ名前のクイズが作成されています。別の名前を使用してください。")
+    }
 
     const r = await fetch(`https://${SERVER_DOMAIN}/wordquiz/upload`, {
       method: "POST",
@@ -307,17 +312,21 @@
     alert(res.ok?"アップロードに成功しました":"アップロードに失敗しました");
   }
 
-  //クイズリスト取得関数
-  async function loadCloudFilesList() {
+  //クイズリスト取得関数（判定機能付き）
+  async function loadCloudQuizesList(inp) {
     const res = await fetch(`https://${SERVER_DOMAIN}/wordquiz/quizesname`, {
       method: "GET",
     });
     const data = await res.json();
-    return data["quizes"];
+    if(inp){
+      return data["quizes"].includes(inp);
+    }else{
+      return data["quizes"];
+    }
   }
 
   async function renderQuizList(){
-    const list = await loadCloudFilesList();
+    const list = await loadCloudQuizesList();
     let dom = "";
     var c=0;
     while(c<list.length){
@@ -332,8 +341,8 @@
     quizName = document.getElementById("quiz-select").value;
 
     //指定されたクイズ名が存在するかのチェック
-    const quizList = await loadCloudFilesList();
-    if(!quizList.includes(quizName)||!quizList) {
+    const isQuizIncl = await loadCloudQuizesList(quizname);
+    if(!isQuizIncl) {
       alert("そのクイズは存在しませんでした。");
       return;
     }
@@ -341,7 +350,7 @@
       method: "GET",
     });
     const data = await res.json();
-    items = data;
+    items = data[0]["quizData"];
     renderList();
     resetForm();
     alert("読み込み完了");
