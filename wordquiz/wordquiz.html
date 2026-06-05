@@ -334,7 +334,7 @@
 
     //指定されたクイズ名が存在するかのチェック
     const quizList = await loadCloudFilesList();
-    if(!quizList.includes(quizName)) {
+    if(!quizList.includes(quizName)||!quizList) {
       alert("そのクイズは存在しませんでした。");
       return;
     }
