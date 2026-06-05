@@ -341,7 +341,7 @@
     quizName = document.getElementById("quiz-select").value;
 
     //指定されたクイズ名が存在するかのチェック
-    const isQuizIncl = await loadCloudQuizesList(quizname);
+    const isQuizIncl = await loadCloudQuizesList(quizName);
     if(!isQuizIncl) {
       alert("そのクイズは存在しませんでした。");
       return;
