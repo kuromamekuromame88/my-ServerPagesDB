@@ -321,11 +321,12 @@
   async function renderQuizList(){
     const a = await loadCloudFilesList();
     const list = a["quizes"];
-    let dom = "";
+    let dom = "a";
     for(var c; c>list.length; c++){
+      console.log("loop_dom:",dom);
       dom+=`<option value="${list[c]}">${list[c]}</option>`;
     }
-    console.log(dom);
+    console.log("end_dom:",dom)
     document.getElementById("quiz-select").innerHTML = dom;
   }
 
