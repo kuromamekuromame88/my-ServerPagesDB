@@ -313,7 +313,7 @@
       method: "GET",
     });
     const data = await res.json();
-    return data;
+    return data["quizes"];
   }
 
   async function renderQuizList(){
