@@ -328,8 +328,8 @@
     const a = await loadCloudFilesList();
     const list = a["quizes"];
     let dom = "";
-    for(var a; a>list.length; a++){
-      dom+=`<option value="${list[a]}">${list[a]}</option>`;
+    for(var c; c>list.length; c++){
+      dom+=`<option value="${list[c]}">${list[c]}</option>`;
     }
     document.getElementById("pet-select").innerHTML = dom;
   }
