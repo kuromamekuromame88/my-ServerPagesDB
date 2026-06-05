@@ -319,12 +319,11 @@
     const a = await loadCloudFilesList();
     const list = a["quizes"];
     let dom = "";
-    var c;
+    var c=0;
     while(c<list.length){
       dom+=`<option value="${list[c]}">${list[c]}</option>`;
       c++;
     }
-    console.log(dom);
     document.getElementById("quiz-select").innerHTML = dom;
   }
 
