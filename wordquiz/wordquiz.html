@@ -319,9 +319,12 @@
     const a = await loadCloudFilesList();
     const list = a["quizes"];
     let dom = "";
-    for(var c; c<list.length; c++){
+    var c;
+    while(c<list.length){
       dom+=`<option value="${list[c]}">${list[c]}</option>`;
+      c++;
     }
+    console.log(dom);
     document.getElementById("quiz-select").innerHTML = dom;
   }
 
