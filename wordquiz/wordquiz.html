@@ -317,8 +317,7 @@
   }
 
   async function renderQuizList(){
-    const a = await loadCloudFilesList();
-    const list = a["quizes"];
+    const list = await loadCloudFilesList();
     let dom = "";
     var c=0;
     while(c<list.length){
