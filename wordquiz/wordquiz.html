@@ -326,7 +326,12 @@
 
   async function renderQuizList(){
     const a = await loadCloudFilesList();
-    console.log(a);
+    const list = a["quizes"];
+    let dom = "";
+    for(var a; a>list.length; a++){
+      dom+=`<option value="${list[a]}">${list[a]}</option>`;
+    }
+    document.getElementById("pet-select").innerHTML = dom;
   }
 
   async function loadSelectedCloudFile() {
