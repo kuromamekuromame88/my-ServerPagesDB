@@ -338,7 +338,7 @@
 
   async function loadSelectedCloudFile() {
     //APIをたたいてjson取得
-    quizName = document.getElementById("quiz-select").value;
+    let quizName = document.getElementById("quiz-select").value;
 
     //指定されたクイズ名が存在するかのチェック
     const isQuizIncl = await loadCloudQuizesList(quizName);
@@ -354,6 +354,16 @@
     renderList();
     resetForm();
     alert("読み込み完了");
+  }
+
+  async function requestDelete(){
+    let quizId = document.getElementById("quiz-select").value;
+    if(confirm("本当に削除しますか？")){
+      const res = await fetch(`https://${SERVER_DOMAIN}/wordquiz/delete?quizid=${quizId}`);
+      alert(res.ok?"削除に成功しました。":"削除に失敗しました。");
+    }else{
+      alert("削除しませんでした。");
+    }
   }
 </script>
 
