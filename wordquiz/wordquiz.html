@@ -140,16 +140,10 @@
   <label>
     ファイルリストから選択
   </label>
-  <select name="pets" id="pet-select">
+  <select name="quizes" id="quiz-select">
     <option value="">--1 つ選択してください--</option>
     <!-- 以下の項目をJSで動的に作成する -->
     <option value="memo">あとでサーバーにアップロードできるようにする</option>
-    <option value="dog">犬</option>
-    <option value="cat">猫</option>
-    <option value="hamster">ハムスター</option>
-    <option value="parrot">オウム</option>
-    <option value="spider">クモ</option>
-    <option value="goldfish">金魚</option>
   </select>
   <button onclick="loadSelectedCloudFile()">読み込む</button>
   <!-- ここのボタンの関数も後で作ること -->
@@ -331,7 +325,8 @@
     for(var c; c>list.length; c++){
       dom+=`<option value="${list[c]}">${list[c]}</option>`;
     }
-    document.getElementById("pet-select").innerHTML = dom;
+    console.log(dom);
+    document.getElementById("quiz-select").innerHTML = dom;
   }
 
   async function loadSelectedCloudFile() {
