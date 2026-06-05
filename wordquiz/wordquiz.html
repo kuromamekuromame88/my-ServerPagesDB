@@ -318,19 +318,22 @@
       method: "GET",
     });
     const data = await res.json();
+    const names = Object.keys(data["quizes"]);
+    console.log(names);
     if(inp){
-      return data["quizes"].includes(inp);
+      return names.includes(inp);
     }else{
       return data["quizes"];
     }
   }
 
   async function renderQuizList(){
-    const list = await loadCloudQuizesList();
+    const info = await loadCloudQuizesList();
+    const list = Object.keys(info);
     let dom = "";
     var c=0;
     while(c<list.length){
-      dom+=`<option value="${list[c]}">${list[c]}</option>`;
+      dom+=`<option value="${info[list]}">${list[c]}</option>`;
       c++;
     }
     document.getElementById("quiz-select").innerHTML = dom;
