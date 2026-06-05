@@ -333,7 +333,7 @@
     let dom = "";
     var c=0;
     while(c<list.length){
-      dom+=`<option value="${info[list]}">${list[c]}</option>`;
+      dom+=`<option value="${info[list[c]]}">${list[c]}</option>`;
       c++;
     }
     document.getElementById("quiz-select").innerHTML = dom;
@@ -344,6 +344,9 @@
     let quizName = document.getElementById("quiz-select").value;
 
     //指定されたクイズ名が存在するかのチェック
+
+    //ここをuuid版に作り変える
+    
     const isQuizIncl = await loadCloudQuizesList(quizName);
     if(!isQuizIncl) {
       alert("そのクイズは存在しませんでした。");
