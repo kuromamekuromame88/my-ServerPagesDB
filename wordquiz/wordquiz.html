@@ -292,6 +292,8 @@
     //現在の問題のjsonをサーバーのAPIに投げる
     const quizname = prompt("クイズ名を入力してください", "quiz-data");
 
+    if(!quizname) return;
+
     const r = await fetch(`https://${SERVER_DOMAIN}/wordquiz/upload`, {
       method: "POST",
       type: "appcation/json",
@@ -303,7 +305,7 @@
     console.log(r);
     const res = await r.json();
 
-    alert(res.ok?"アップロード成功しました":"アップロードに失敗しました");
+    alert(res.ok?"アップロードに成功しました":"アップロードに失敗しました");
   }
 
   //クイズリスト取得関数
@@ -329,7 +331,7 @@
 
   async function loadSelectedCloudFile() {
     //APIをたたいてjson取得
-    quizName = document.getElementById("pet-select").value;
+    quizName = document.getElementById("quiz-select").value;
 
     //指定されたクイズ名が存在するかのチェック
     const quizList = await loadCloudFilesList();
