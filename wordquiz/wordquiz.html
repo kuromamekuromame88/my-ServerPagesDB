@@ -289,30 +289,6 @@
     reader.readAsText(file);
   }
 
-  async function uploadFileToCloud() {
-    //現在の問題のjsonをサーバーのAPIに投げる
-    let quizname; 
-    while(true){
-      quizname = prompt("クイズ名を入力してください", "quiz-data");
-      if(!quizname) return;
-      const l = await loadCloudQuizesList(quizname);
-      if(!l) break;
-      alert("すでに同じ名前のクイズが作成されています。別の名前を使用してください。")
-    }
-
-    const r = await fetch(`https://${SERVER_DOMAIN}/wordquiz/upload`, {
-      method: "POST",
-      type: "appcation/json",
-      body: JSON.stringify({
-        quizname: quizname,
-        quizdata: items,
-      })
-    });
-    const res = await r.json();
-
-    alert(res.ok?"アップロードに成功しました":"アップロードに失敗しました");
-  }
-
   let casheData;
   //クイズリスト取得関数（判定機能付き）
   async function loadCloudQuizesList(inp) {
@@ -353,6 +329,30 @@
     renderList();
     resetForm();
     alert("読み込み完了");
+  }
+
+  async function uploadFileToCloud() {
+    //現在の問題のjsonをサーバーのAPIに投げる
+    let quizname; 
+    while(true){
+      quizname = prompt("クイズ名を入力してください", "quiz-data");
+      if(!quizname) return;
+      const l = await loadCloudQuizesList(quizname);
+      if(!l) break;
+      alert("すでに同じ名前のクイズが作成されています。別の名前を使用してください。")
+    }
+
+    const r = await fetch(`https://${SERVER_DOMAIN}/wordquiz/upload`, {
+      method: "POST",
+      type: "appcation/json",
+      body: JSON.stringify({
+        quizname: quizname,
+        quizdata: items,
+      })
+    });
+    const res = await r.json();
+
+    alert(res.ok?"アップロードに成功しました":"アップロードに失敗しました");
   }
 
   async function requestDelete(){
