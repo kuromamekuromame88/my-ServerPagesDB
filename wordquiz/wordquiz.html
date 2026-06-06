@@ -330,7 +330,7 @@
   loadCloudQuizesList();
 
   async function loadCloudQuizesUUID(quizid){
-    if(!cacheData) await loadCloudQuizesList();
+    if(!casheData) await loadCloudQuizesList();
     const data = casheData;
     const keys= Object.keys(data["quizes"]);
     let count;
