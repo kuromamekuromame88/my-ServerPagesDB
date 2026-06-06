@@ -329,20 +329,6 @@
   }
   loadCloudQuizesList();
 
-  async function loadCloudQuizesUUID(quizid){
-    if(!casheData) await loadCloudQuizesList();
-    const data = casheData;
-    const keys= Object.keys(data["quizes"]);
-    let count;
-    const arr=[];
-    while(count<keys.length){
-      arr.push(data[keys[count]]);
-      count++;
-    };
-
-    return arr.includes(quizid);
-  }
-
   async function renderQuizList(){
     const info = await loadCloudQuizesList();
     const list = Object.keys(info);
@@ -357,18 +343,8 @@
   renderQuizList();
 
   async function loadSelectedCloudFile() {
-    //APIをたたいてjson取得
     const quizid = document.getElementById("quiz-select").value;
 
-    //指定されたクイズ名が存在するかのチェック
-
-    //ここをuuid版に作り変える
-    
-    const isQuizIncl = await loadCloudQuizesUUID(quizid);
-    if(!isQuizIncl) {
-      alert("そのクイズは存在しませんでした。");
-      return;
-    }
     const res = await fetch(`https://${SERVER_DOMAIN}/wordquiz/quizes?quiz=${quizid}`, {
       method: "GET",
     });
