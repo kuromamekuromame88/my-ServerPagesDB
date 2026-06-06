@@ -334,6 +334,7 @@
   async function uploadFileToCloud() {
     //現在の問題のjsonをサーバーのAPIに投げる
     let quizname; 
+    if(!items) return;
     while(true){
       quizname = prompt("クイズ名を入力してください", "quiz-data");
       if(!quizname) return;
@@ -352,7 +353,7 @@
     });
     const res = await r.json();
     console.log(res);
-    alert(res.ok?"アップロードに成功しました":"アップロードに失敗しました");
+    alert(res.status=="ok"?"アップロードに成功しました":"アップロードに失敗しました");
     renderQuizList();
   }
 
