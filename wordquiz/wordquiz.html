@@ -351,8 +351,9 @@
       })
     });
     const res = await r.json();
-
+    console.log(res);
     alert(res.ok?"アップロードに成功しました":"アップロードに失敗しました");
+    renderQuizList();
   }
 
   async function requestDelete(){
