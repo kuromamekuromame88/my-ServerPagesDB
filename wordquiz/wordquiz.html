@@ -312,19 +312,35 @@
     alert(res.ok?"アップロードに成功しました":"アップロードに失敗しました");
   }
 
+  let casheData;
   //クイズリスト取得関数（判定機能付き）
   async function loadCloudQuizesList(inp) {
     const res = await fetch(`https://${SERVER_DOMAIN}/wordquiz/quizesname`, {
       method: "GET",
     });
     const data = await res.json();
+    casheData=data;
     const names = Object.keys(data["quizes"]);
-    console.log(names);
     if(inp){
       return names.includes(inp);
     }else{
       return data["quizes"];
     }
+  }
+  loadCloudQuizesList();
+
+  async function loadCloudQuizesUUID(quizid){
+    if(!cacheData) await loadCloudQuizesList();
+    const data = casheData;
+    const keys= Object.keys(data["quizes"]);
+    let count;
+    const arr=[];
+    while(count<keys.length){
+      arr.push(data[keys[count]]);
+      count++;
+    };
+
+    return arr.includes(quizid);
   }
 
   async function renderQuizList(){
@@ -341,18 +357,18 @@
 
   async function loadSelectedCloudFile() {
     //APIをたたいてjson取得
-    let quizName = document.getElementById("quiz-select").value;
+    const quizid = document.getElementById("quiz-select").value;
 
     //指定されたクイズ名が存在するかのチェック
 
     //ここをuuid版に作り変える
     
-    const isQuizIncl = await loadCloudQuizesList(quizName);
+    const isQuizIncl = await loadCloudQuizesUUID(quizid);
     if(!isQuizIncl) {
       alert("そのクイズは存在しませんでした。");
       return;
     }
-    const res = await fetch(`https://${SERVER_DOMAIN}/wordquiz/quizes?quiz=${quizName}`, {
+    const res = await fetch(`https://${SERVER_DOMAIN}/wordquiz/quizes?quiz=${quizid}`, {
       method: "GET",
     });
     const data = await res.json();
