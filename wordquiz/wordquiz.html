@@ -334,7 +334,10 @@
   async function uploadFileToCloud() {
     //現在の問題のjsonをサーバーのAPIに投げる
     let quizname; 
-    if(!items.length) return;
+    if(!items.length){
+      alert("問題が登録されていません。");
+      return;
+    }
     while(true){
       quizname = prompt("クイズ名を入力してください", "quiz-data");
       if(!quizname) return;
