@@ -328,7 +328,6 @@
       return data["quizes"];
     }
   }
-  loadCloudQuizesList();
 
   async function renderQuizList(){
     const info = await loadCloudQuizesList();
@@ -360,6 +359,7 @@
     let quizId = document.getElementById("quiz-select").value;
     if(confirm("本当に削除しますか？")){
       const res = await fetch(`https://${SERVER_DOMAIN}/wordquiz/delete?quizid=${quizId}`);
+      renderQuizList();
       alert(res.ok?"削除に成功しました。":"削除に失敗しました。");
     }else{
       alert("削除しませんでした。");
