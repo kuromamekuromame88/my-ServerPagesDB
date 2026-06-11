@@ -145,6 +145,11 @@
       text-align:center;
       padding: 10px;
     }
+
+    .panel_title{
+      font-weight: bold;
+      font-size: 20px;
+    }
   </style>
 </head>
 <body>
@@ -153,20 +158,28 @@
   </div>
   
   <div class="tit">
-    <h2>ドット絵メーカー</h2>
+    <h2 class="panel_title">ドット絵メーカー</h2>
   </div>
   <div class="tools">
-    <b>ツール</b>
+    <span>ツール</span>
     <br>
 
-    <h2>ファイル・書き出し設定</h2>
+    <span class="panel_title">ファイル・書き出し設定</span>
     <br>
       1ピクセルの縦横の大きさ:<input id="tile_size">px
       <button id="save">PNG保存</button>
     <br>
+
+    <span class="panel_title">
+      エディタの設定
+    </span>
+    <br>
+      サイズ: <input type="number" id="sizeInput" value="16" min="1" max="64">
+      <button id="applySize">サイズ更新</button>
+    <br>
+
+    <span class="panel_title">その他</span>
     色: <input type="color" id="colorPicker" value="#000000">
-    サイズ: <input type="number" id="sizeInput" value="16" min="1" max="64">
-    <button id="applySize">サイズ更新</button>
     <br>
     <button id="clear">クリア</button>
     <button id="eraser">消しゴム</button>
