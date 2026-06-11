@@ -158,6 +158,12 @@
   <div class="tools">
     <b>ツール</b>
     <br>
+
+    <h2>ファイル・書き出し設定</h2>
+    <br>
+      1ピクセルの縦横の大きさ:<input id="tile_size">px
+      <button id="save">PNG保存</button>
+    <br>
     色: <input type="color" id="colorPicker" value="#000000">
     サイズ: <input type="number" id="sizeInput" value="16" min="1" max="64">
     <button id="applySize">サイズ更新</button>
@@ -169,7 +175,6 @@
     <button id="fillRandom">ランダム塗り</button>
     <button id="undo">戻る</button>
     <button id="redo">進む</button>
-    <button id="save">PNG保存</button>
     <button id="addPalette">+ パレット追加</button>
     <button id="addTransparent">+ 透明色</button>
     <button id="eyedropper">スポイト</button>
@@ -481,7 +486,7 @@
     };
 
     save.onclick = () => {
-      const scale = 20;
+      const scale = document.getElementById("tile_size").value;//20
       const exportCanvas = document.createElement('canvas');
       exportCanvas.width = size * scale;
       exportCanvas.height = size * scale;
