@@ -104,8 +104,6 @@ let userID = uid || null;
 
 let PASSWORD;
 
-
-
 if (!userID || userID == "null" && localStorage.getItem("AlrRgt") !== "true") {
   /*console.log("nullユーザーを検知! 新しいuserIDを発行します。");
   function generateUserID() {
@@ -1034,7 +1032,7 @@ UserSettingsChangeModal.onclick = (e) => {
 openUserSettingsChange.onclick = () => {
   newNicknameInput.value = nickname;
   UserSettingsChangeModal.style.display = "flex";
-  currentPasswordInput.value = PASSWORD;
+  //currentPasswordInput.value = PASSWORD;
 };
 
 cancelNicknameChange.onclick = () => {
