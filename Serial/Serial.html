@@ -62,11 +62,13 @@ textarea{
 <textarea id="tx" placeholder="送信する文字列"></textarea>
 
 <br>
+<label>行間待ち時間(ms)</label>
+<input id="lineDelay" type="number" value="20" min="0" style="width:80px;">
+
+<br><br>
 
 <button id="send">そのまま送信</button>
-
 <button id="sendLines">1行ずつ送信</button>
-
 <h3>受信</h3>
 
 <textarea id="rx" readonly></textarea>
@@ -166,15 +168,19 @@ document.getElementById("send").onclick=async()=>{
 
 };
 
-document.getElementById("sendLines").onclick=async()=>{
+document.getElementById("sendLines").onclick = async () => {
 
-    let lines=document.getElementById("tx").value.split(/\r?\n/);
+    const lines = document.getElementById("tx").value.split(/\r?\n/);
 
-    for(let line of lines){
+    const delay = Number(document.getElementById("lineDelay").value);
 
-        await sendString(line+"\r\n");
+    for (const line of lines) {
 
-        await new Promise(r=>setTimeout(r,20));
+        await sendString(line + "\r\n");
+
+        if (delay > 0) {
+            await new Promise(resolve => setTimeout(resolve, delay));
+        }
 
     }
 
