@@ -39,9 +39,10 @@ async function login(){
 
     check();
 
+    const nick = result?.nick;
     const sid = result?.sid;
     setTimeout(()=>{
-      location.href=`https://tool-webs.onrender.com/chat?login=true&userID=${un}&sid=${sid}`;
+      location.href=`https://tool-webs.onrender.com/chat?login=true&userID=${un}&nick=${nick}&sid=${sid}`;
     }, 1000);
     localStorage.setItem("logout", true);
   }catch(e){
