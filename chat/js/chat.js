@@ -100,6 +100,7 @@ p = new URLSearchParams(p.search);
 const uid = p.get("userID");
 
 const nick = p.get("nick");
+//エンコードするならデコードを忘れずに
 let nickname = nick || localStorage.getItem("nickname");
 
 localStorage.setItem("userID", uid);
