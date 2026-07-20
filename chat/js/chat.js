@@ -93,11 +93,14 @@ openBoard.onclick = () => {
 };
 
 // ------------------- ニックネーム & userID -------------------
-let nickname = localStorage.getItem("nickname");
+//let nickname = localStorage.getItem("nickname");
 
 let p = new URL(location.href);
 p = new URLSearchParams(p.search);
 const uid = p.get("userID");
+
+const nick = p.get("nick");
+let nickname = nick || localStorage.getItem("nickname");
 
 localStorage.setItem("userID", uid);
 let userID = uid || null;
