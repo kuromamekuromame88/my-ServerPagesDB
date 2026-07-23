@@ -110,11 +110,13 @@ let userID = uid || null;
 let PASSWORD;
 
 //保持してそれ以外を消去
-localStorage.setItem("sid", p.get("sid"));
-const url = new URL(location);
-url.searchParams.delete("sid");
-url.searchParams.delete("userID");
-history.pushState({}, "", url);
+setTimeout(()=>{
+  localStorage.setItem("sid", p.get("sid"));
+  const url = new URL(location);
+  url.searchParams.delete("sid");
+  url.searchParams.delete("userID");
+  history.pushState({}, "", url);
+}, 100);
 
 if (!userID || userID == "null" && localStorage.getItem("AlrRgt") !== "true") {
   /*console.log("nullユーザーを検知! 新しいuserIDを発行します。");
