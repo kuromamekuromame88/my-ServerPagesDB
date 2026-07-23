@@ -42,7 +42,7 @@ async function login(){
 
     check();
 
-    d=result[0];
+    d=result;
     const nick = result[0];
     
     console.log(nick);
