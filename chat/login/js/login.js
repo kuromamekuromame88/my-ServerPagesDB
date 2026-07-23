@@ -15,7 +15,6 @@ function check(){
 }
 
 let ischeck= false;
-let d;
 
 async function login(){
   const un=document.getElementById("user").value;
@@ -42,8 +41,7 @@ async function login(){
 
     check();
 
-    d=result;
-    const nick = result[0];
+    const nick = result.nick;
     
     console.log(nick);
     if(ischeck) return;
