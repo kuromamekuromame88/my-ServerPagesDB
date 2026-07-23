@@ -109,6 +109,13 @@ let userID = uid || null;
 
 let PASSWORD;
 
+//保持してそれ以外を消去
+localStorage.setItem("sid", p.get("sid"));
+const url = new URL(location);
+url.searchParams.delete("sid");
+url.searchParams.delete("userID");
+history.pushState({}, "", url);
+
 if (!userID || userID == "null" && localStorage.getItem("AlrRgt") !== "true") {
   /*console.log("nullユーザーを検知! 新しいuserIDを発行します。");
   function generateUserID() {
