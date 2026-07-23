@@ -115,6 +115,7 @@ setTimeout(()=>{
   const url = new URL(location);
   url.searchParams.delete("sid");
   url.searchParams.delete("userID");
+  url.searchParams.delete("nick");
   history.pushState({}, "", url);
 }, 100);
 
