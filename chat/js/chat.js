@@ -1053,7 +1053,6 @@ changeNickname.onclick = () => {
   if (!newName) return alert("ニックネームを入力してください");
   localStorage.setItem("nickname", newName);
   nickname = newName;
-  UserSettingsChangeModal.style.display = "none";
   if(!ws){
     alert("websocketの接続が切断されています。ページを再リロードてください。");
     return;
@@ -1065,6 +1064,7 @@ changeNickname.onclick = () => {
     nick: newName,
   }));
   alert("ニックネーム変更リクエストを送信しました。");
+  UserSettingsChangeModal.style.display = "none";
 };
 
 
