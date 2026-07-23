@@ -14,7 +14,7 @@ function check(){
   }
 }
 
-let check= false;
+let ischeck= false;
 
 async function login(){
   const un=document.getElementById("user").value;
@@ -43,7 +43,7 @@ async function login(){
 
     const nick = result?.nick;
     console.log(nick);
-    if(check) return;
+    if(ischeck) return;
     const sid = result?.sid;
     setTimeout(()=>{
       location.href=`https://tool-webs.onrender.com/chat?login=true&userID=${un}&nick=${nick}&sid=${sid}`;
