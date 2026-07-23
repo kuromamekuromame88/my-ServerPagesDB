@@ -1054,6 +1054,17 @@ changeNickname.onclick = () => {
   localStorage.setItem("nickname", newName);
   nickname = newName;
   UserSettingsChangeModal.style.display = "none";
+  if(!ws){
+    alert("websocketの接続が切断されています。ページを再リロードてください。");
+    return;
+  }
+  ws.send(JSON.stringify({
+    app: "webchat",
+    type: "changenick",
+    userID: userID,
+    nick: newName,
+  }));
+  alert("パスワード変更リクエストを送信しました。");
 };
 
 
