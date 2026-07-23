@@ -40,7 +40,6 @@ async function login(){
     if(!result.state) return;
 
     check();
-
     const nick = result.nick;
     
     console.log(nick);
