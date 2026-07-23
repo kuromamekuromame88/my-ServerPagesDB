@@ -41,7 +41,7 @@ async function login(){
 
     check();
 
-    const nick = result?.nick;
+    const nick = result?.[0]["nickname"];
     console.log(nick);
     if(ischeck) return;
     const sid = result?.sid;
