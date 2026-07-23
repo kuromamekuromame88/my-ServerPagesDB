@@ -1064,7 +1064,7 @@ changeNickname.onclick = () => {
     userID: userID,
     nick: newName,
   }));
-  alert("パスワード変更リクエストを送信しました。");
+  alert("ニックネーム変更リクエストを送信しました。");
 };
 
 
