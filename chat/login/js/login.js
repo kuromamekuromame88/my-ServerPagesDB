@@ -14,8 +14,6 @@ function check(){
   }
 }
 
-let ischeck= false;
-
 async function login(){
   const un=document.getElementById("user").value;
   const pw=document.getElementById("pass").value;
@@ -41,9 +39,7 @@ async function login(){
 
     check();
     const nick = result.nick;
-    
-    console.log(nick);
-    if(ischeck) return;
+    localStorage.setItem("logout", "false");
     const sid = result?.sid;
     setTimeout(()=>{
       location.href=`https://tool-webs.onrender.com/chat?login=true&userID=${un}&nick=${nick}&sid=${sid}`;
@@ -65,6 +61,7 @@ document.addEventListener("keydown", e=>{
 
 
 if(localStorage.getItem("KEEPLOGIN")=="true"){
+  localStorage.setItem("logout", "false");
   document.getElementById("keeplogin").checked = true;
   showlog("自動ログインします...");
   check();
