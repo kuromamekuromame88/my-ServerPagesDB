@@ -109,15 +109,7 @@ let userID = uid || null;
 
 let PASSWORD;
 
-//保持してそれ以外を消去
-setTimeout(()=>{
-  localStorage.setItem("sid", p.get("sid"));
-  const url = new URL(location);
-  url.searchParams.delete("sid");
-  url.searchParams.delete("userID");
-  url.searchParams.delete("nick");
-  history.pushState({}, "", url);
-}, 100);
+
 
 if (!userID || userID == "null" && localStorage.getItem("AlrRgt") !== "true") {
   /*console.log("nullユーザーを検知! 新しいuserIDを発行します。");
@@ -880,6 +872,16 @@ async function init(){
   }
 }
 init();
+
+//保持してそれ以外を消去
+setTimeout(()=>{
+  localStorage.setItem("sid", p.get("sid"));
+  const url = new URL(location);
+  url.searchParams.delete("sid");
+  url.searchParams.delete("userID");
+  url.searchParams.delete("nick");
+  history.pushState({}, "", url);
+}, 100);
 
 //-------------------画像アップロード----------------
 const MAXSIZE = 1000 * 1024;
