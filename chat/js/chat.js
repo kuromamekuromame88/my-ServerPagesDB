@@ -1,5 +1,6 @@
 /*
 * やるべきことリスト
+* iframeのsrcDoc内の悪意のある要素のブロック(無限アラートなど)
 * すべて再構築
 * fetchAPIをwebsocketに統一
 * ログインの強化、分離
@@ -642,7 +643,7 @@ function connectWebSocket() {
 
       const html = DOMPurify.sanitize(marked.parse(markdown, { breaks: true }), {
         ADD_TAGS: ["iframe"],
-        ADD_ATTR: ["src", "width", "height", "frameborder", "allow", "allowfullscreen"],
+        ADD_ATTR: ["src", "srcDoc",  "width", "height", "frameborder", "allow", "allowfullscreen"],
         // デフォルトではすべてのsrcに適用する正規表現を無効化
         ALLOWED_URI_REGEXP: /.*/, 
         // beforeSanitizeAttributesフックで個別制御
@@ -715,7 +716,7 @@ function connectWebSocket() {
 
       const html = DOMPurify.sanitize(marked.parse(markdown, { breaks: true }), {
         ADD_TAGS: ["iframe"],
-        ADD_ATTR: ["src", "width", "height", "frameborder", "allow", "allowfullscreen"],
+        ADD_ATTR: ["src", "srcDoc", "width", "height", "frameborder", "allow", "allowfullscreen"],
         // デフォルトではすべてのsrcに適用する正規表現を無効化
         ALLOWED_URI_REGEXP: /.*/, 
         // beforeSanitizeAttributesフックで個別制御
