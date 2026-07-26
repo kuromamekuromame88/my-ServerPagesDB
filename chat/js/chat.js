@@ -852,8 +852,8 @@ async function init(){
     const uid = params.get("userID");
     const sid = params.get("sid");
     if(!uid){
-      localStorage.setItem("logout", true);
-      localStorage.setItem("KEEPLOGIN", false);
+      localStorage.setItem("logout", "true");
+      localStorage.setItem("KEEPLOGIN", "false");
       location.href="https://tool-webs.onrender.com/chat/login";
     }
     if(isLogin=="true") {
