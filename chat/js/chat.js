@@ -853,6 +853,7 @@ async function init(){
     const uid = params.get("userID");
     const sid = params.get("sid");
     if(!uid){
+      console.log("uid failure");
       localStorage.setItem("logout", "true");
       localStorage.setItem("KEEPLOGIN", "false");
       location.href="https://tool-webs.onrender.com/chat/login";
@@ -866,6 +867,7 @@ async function init(){
       return;
     }
   }else{
+    console.log("logout failure");
     localStorage.setItem("logout", "true");
     localStorage.setItem("KEEPLOGIN", "false");
     console.log("ログアウトを検知しました。ログインページに還移します!");
