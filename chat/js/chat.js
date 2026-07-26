@@ -846,14 +846,15 @@ document.getElementById("logout").addEventListener("click", ()=>{
 async function init(){
   console.log("init()が呼び出されました！");
 
-  if(localStorage.getItem("logout") === "true"){
+  alert(localStorage.getItem("logout"));
+
+  if(localStorage.getItem("logout") == "true"){
     const u = new URL(location.href);
     const params = new URLSearchParams(u.search);
     const isLogin = params.get("login");
     const uid = params.get("userID");
     const sid = params.get("sid");
     if(!uid){
-      console.log("uid failure");
       localStorage.setItem("logout", "true");
       localStorage.setItem("KEEPLOGIN", "false");
       location.href="https://tool-webs.onrender.com/chat/login";
