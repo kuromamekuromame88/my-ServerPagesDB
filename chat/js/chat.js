@@ -846,8 +846,6 @@ document.getElementById("logout").addEventListener("click", ()=>{
 async function init(){
   console.log("init()が呼び出されました！");
 
-  //alert(localStorage.getItem("logout"));
-
   if(localStorage.getItem("logout") == "false"){
     const u = new URL(location.href);
     const params = new URLSearchParams(u.search);
