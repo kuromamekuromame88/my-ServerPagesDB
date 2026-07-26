@@ -865,10 +865,11 @@ async function init(){
       return;
     }
   }else{
+    localStorage.setItem("logout", "true");
+    localStorage.setItem("KEEPLOGIN", "false");
     console.log("ログアウトを検知しました。ログインページに還移します!");
     location.href="https://tool-webs.onrender.com/chat/login";
     return;
-
   }
 }
 init();
