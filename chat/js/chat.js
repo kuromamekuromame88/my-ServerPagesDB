@@ -122,6 +122,7 @@ if (!userID || userID == "null" && localStorage.getItem("AlrRgt") !== "true") {
   userID = generateUserID();
   localStorage.setItem("userID", userID);
   localStorage.setItem("AlrRgt", true);*/
+  console.log("debug");
   localStorage.setItem("logout", true);
 }else{
   console.log("nullユーザーを検知しませんでした。");
