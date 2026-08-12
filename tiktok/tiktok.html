@@ -19,7 +19,42 @@ tiktok埋め込みコードの基礎コード
 <html lang="ja">
   <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" src="tiktok/main.css">
+    <!--<link rel="stylesheet" src="tiktok/main.css">-->
+    <style>
+
+body {
+  margin: 0;
+  padding-top: 60px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background-color: #f8f8f8;
+  overflow:hidden;
+}
+
+/* ----------------- top-bar ----------------- */
+
+.top-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background-color: #222;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+  z-index: 1000;
+}
+
+.top-bar .logo {
+  font-size: 1.2em;
+  font-weight: bold;
+  text-decoration: none;
+  color: white;
+}
+    </style>
   </head>
   <body>
     <header class="top-bar">
