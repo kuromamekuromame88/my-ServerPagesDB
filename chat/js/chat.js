@@ -583,8 +583,8 @@ function patchImgEvent(e){
 //ニックネームをuserIDと照合させる関数
 function showIDtoNick(userID){
   var count=0;
-  while(count<userNick.length){
-    var nick=userNick[count][userID];
+  while(count<usersNick.length){
+    var nick=usersNick[count][userID];
     if(nick) return nick;
     count++;
   }
