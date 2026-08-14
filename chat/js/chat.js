@@ -582,7 +582,7 @@ function patchImgEvent(e){
 
 //ニックネームをuserIDと照合させる関数
 function showIDtoNick(userID){
-  console.log(`userID: ${userID}: ${typeof userID}`);
+  console.log(`userID: ${userID}: ${typeof userID} : ${usersNick.length}`);
   var count=0;
   while(count<usersNick.length){
     var nick=usersNick[count][userID];
@@ -719,7 +719,6 @@ function connectWebSocket() {
     if (msg.type === "chat" && msg.data ) {
       const data = msg.data;
       const rawUser = data.user;
-      console.log("data.user", rawUser);
       let displayName = showIDtoNick(rawUser);
       let displayID = rawUser;
 
