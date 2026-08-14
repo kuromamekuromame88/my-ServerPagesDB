@@ -588,6 +588,7 @@ async function getnick(){
 }
 getnick();
 
+
 //ニックネームをuserIDと照合させる関数
 function showIDtoNick(userID){
   console.log(`userID: ${userID}: ${typeof userID} : ${usersNick.length}`);
@@ -900,6 +901,10 @@ async function init(){
     }
     if(isLogin=="true") {
       console.log("ログイン認証が済んでいるようです。ChatUIを表示します!");
+      
+      //ここで取得しておく
+      await getnick();
+      
       connectWebSocket();
       await waitwscon(ws);
       //if(!(localStorage.getItem("logout") === "true")) localStorage.setItem("logout", false);
