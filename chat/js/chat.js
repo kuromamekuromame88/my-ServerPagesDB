@@ -372,7 +372,6 @@ document.getElementById("create-room-btn").addEventListener("click", () => {
 async function loadMuteState() {
   const res = await fetch("https://tool-webs.onrender.com/webchat/mute");
   const json = await res.json();
-  const json = await res.json();
   const muteList = json.mute;
 
   if (muteList.includes(userID)) {
