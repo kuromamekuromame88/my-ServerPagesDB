@@ -718,9 +718,9 @@ function connectWebSocket() {
     if (msg.type === "chat" && msg.data ) {
       const data = msg.data;
       const rawUser = data.user;
-      let displayName, displayID;
-        displayName = showIDtoNick(data.user);;
-        displayID = data.user;
+      console.log("data.user", data.user);
+      let displayName = showIDtoNick(data.user);
+      let displayID = data.user;
 
       var cr = data.data.room ? data.data.room : "Main";
       
