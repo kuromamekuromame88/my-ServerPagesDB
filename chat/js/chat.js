@@ -580,6 +580,14 @@ function patchImgEvent(e){
   document.querySelector("body").appendChild(imgcon);
 }
 
+async function getnick(){
+  const r = await fetch("/webchat/nick");
+  const res = await r.json();
+  //console.log(res);
+  usersNick = res;
+}
+getnick();
+
 //ニックネームをuserIDと照合させる関数
 function showIDtoNick(userID){
   console.log(`userID: ${userID}: ${typeof userID} : ${usersNick.length}`);
@@ -1256,13 +1264,7 @@ async function newUserStatus(data) {
   });
 }
 
-async function getnick(){
-  const r = await fetch("/webchat/nick");
-  const res = await r.json();
-  //console.log(res);
-  usersNick = res;
-}
-getnick();
+//getnickの定義は宣言のタイミングの関係上websocket関連の上においてます
 
 //全部まとめて繰り返し
 async function repeatprocess(){
