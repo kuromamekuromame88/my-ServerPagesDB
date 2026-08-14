@@ -1069,7 +1069,7 @@ function sendMessage() {
   ws.send(JSON.stringify({
     app: "webchat",
     type: "message",
-    user: userID//fullUser,
+    user: userID,//fullUser,
     room: room,
     text: text
   }));
