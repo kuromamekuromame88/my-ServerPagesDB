@@ -98,7 +98,7 @@ openBoard.onclick = () => {
 
 let p = new URL(location.href);
 p = new URLSearchParams(p.search);
-const uid = p.get("userID");
+const uid = p.get("userID") || localStorage.getItem("userID");
 
 const nick = p.get("nick");
 //エンコードするならデコードを忘れずに
@@ -108,7 +108,6 @@ localStorage.setItem("userID", uid);
 let userID = uid || null;
 
 let PASSWORD;
-
 
 
 if (!userID || userID == "null" && localStorage.getItem("AlrRgt") !== "true") {
@@ -836,7 +835,11 @@ function showChatUI() {
 });*/
 
 document.getElementById("logout").addEventListener("click", ()=>{
+  //ローカルストレージ内に残っているユーザーデータの消去と自動ログインフラグの無効化
+  
   localStorage.setItem("logout", true);
+  localStorage.removeItem("userID");
+  localStorage.removeItem("pass");
   localStorage.setItem("KEEPLOGIN", false);
   setTimeout(()=>{
     location.href="https://tool-webs.onrender.com/chat/login";
