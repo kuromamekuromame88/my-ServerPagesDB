@@ -717,10 +717,10 @@ function connectWebSocket() {
 
     if (msg.type === "chat" && msg.data ) {
       const data = msg.data;
-      const rawUser = data.user;
-      console.log("data.user", data.user);
-      let displayName = showIDtoNick(data.user);
-      let displayID = data.user;
+      const rawUser = data.user_name;
+      console.log("data.user_name", rawUser);
+      let displayName = showIDtoNick(rawUser);
+      let displayID = rawUser;
 
       var cr = data.data.room ? data.data.room : "Main";
       
