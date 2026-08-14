@@ -675,7 +675,7 @@ function connectWebSocket() {
       let message = chatContainer.querySelector(`[id="${data.id}"]`);
       if(!message) return;
           
-      const rawUser = data.user_name;
+      const rawUser = data.user_name || data.user;
       let displayName, displayID;
       if (rawUser.includes("|")) {
         const s = rawUser.split("|");
@@ -727,7 +727,7 @@ function connectWebSocket() {
 
     if (msg.type === "chat" && msg.data ) {
       const data = msg.data;
-      const rawUser = data.user;
+      const rawUser = data.user || data.user_name;
       let displayName = showIDtoNick(rawUser);
       let displayID = rawUser;
 
