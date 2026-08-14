@@ -991,7 +991,7 @@ imgUpload.addEventListener("click", (e) => {
       if (data.url) {
         console.log("画像のURL",data.url);
         // WebSocket で送信
-        const fullUser = getFullUsername();
+        const fullUser = userID;
         ws.send(JSON.stringify({
           app: "webchat",
           type: "message",
