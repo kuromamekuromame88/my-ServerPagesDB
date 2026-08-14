@@ -738,7 +738,7 @@ function connectWebSocket() {
 
       //
       if (displayID === localStorage.getItem("userID")) div.classList.add("mine");
-      if (displayID === "server") div.classList.add("server");
+      if (displayID === "Server") div.classList.add("server");
       if (displayID === "other") div.classList.add("other");
 
       div.id = id;
@@ -1064,7 +1064,7 @@ function sendMessage() {
     ws.send(JSON.stringify({
       app: "webchat",
       type: "message",
-      user: "Server|server",
+      user: "Server",
       room: room,
       text: parts[1]
     }));
