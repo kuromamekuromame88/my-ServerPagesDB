@@ -1,12 +1,28 @@
 /*
 * やるべきことリスト
-* iframeのsrcDoc内の悪意のある要素のブロック(無限アラートなど)
+* コメント内iframeのsrcDoc内の悪意のある要素のブロック(無限アラートなど)
+* ローカルストレージのセーブデータに関する問題の解決
+* コメントにニックネームを残さず、userIDから参照させる設計に変更する
+* コメントに投稿できるファイルの種類とサイズを改善
 * すべて再構築
-* fetchAPIをwebsocketに統一
 * ログインの強化、分離
 * UIの改善
 * 不明ユーザーへの即時対処
 * メタバースの完成
+*/
+
+/*
+* 現在の進行中タスク
+* コメントに紐付けられているニックネーを削除してuserIDから参照させる設計に変更する
+* 
+* 必要とされる作業(完了したら末尾に印をつけること)
+* 
+* サーバーのセーブロジックの修正
+* supabaseに残っている既存データの修正
+* サーバーのコメント取得処理の修正
+* クライアントページのニックネーム取得・表示処理の追加
+* サーバーにuserIDに対応するニックネームのセットを返すAPIの作成 完了
+* 
 */
 
 /*チャットのJS*/
@@ -48,6 +64,8 @@ const cancelNicknameChange = document.getElementById("cancelNicknameChange");
 const currentPasswordInput = document.getElementById("currentPasswordInput");
 const newPasswordInput = document.getElementById("newPasswordInput");
 const changePassword = document.getElementById("changePassword");
+
+let usersNick;//ユーザーのニックネームをこの変数に随時ロードする
 
 let wr = new URL(window.location.href);
 const params = new URLSearchParams(wr.search);
@@ -119,7 +137,8 @@ if (!userID || userID == "null" && localStorage.getItem("AlrRgt") !== "true") {
     return id;
   }
   userID = generateUserID();
-  localStorage.setItem("userID", userID);
+  localStorage.setItem("userID", userID);ログインの強化、分離
+* 
   localStorage.setItem("AlrRgt", true);*/
   console.log("debug");
   localStorage.setItem("logout", true);
@@ -353,6 +372,7 @@ document.getElementById("create-room-btn").addEventListener("click", () => {
 async function loadMuteState() {
   const res = await fetch("https://tool-webs.onrender.com/webchat/mute");
   const json = await res.json();
+  const json = await res.json();
   const muteList = json.mute;
 
   if (muteList.includes(userID)) {
@@ -561,6 +581,17 @@ function patchImgEvent(e){
   document.querySelector("body").appendChild(imgcon);
 }
 
+//ニックネームをuserIDと照合させる関数
+function showIDtoNick(userID){
+  var count=0;
+  while(count<userNick.length){
+    var nick=userNick[count][userID];
+    if(nick) return nick;
+    count++;
+  }
+  return false;
+}
+
 
 // 重要------------------- WebSocket接続 -------------------
 function connectWebSocket() {
@@ -593,6 +624,11 @@ function connectWebSocket() {
       }
     }
     if(msg.app !== "webchat") return;
+    if(msg.type === "error"){
+      console.error(`Server error: ${msg.error}`);
+      return;
+    }
+
     const fullUsername = getFullUsername();
     if(msg.type !== "view" && msg.type !== "userstatus") console.log("受信:",msg);
 
@@ -631,8 +667,7 @@ function connectWebSocket() {
       if(!message) return;
           
       const rawUser = data.user_name;
-      let displayName = rawUser;
-      let displayID = rawUser;
+      let displayName, displayID;
       if (rawUser.includes("|")) {
         const s = rawUser.split("|");
         displayName = s[0];
@@ -683,14 +718,10 @@ function connectWebSocket() {
 
     if (msg.type === "chat" && msg.data ) {
       const data = msg.data;
-      const rawUser = data.user_name || data.user;
-      let displayName = rawUser;
-      let displayID = rawUser;
-      if (rawUser.includes("|")) {
-        const s = rawUser.split("|");
-        displayName = s[0];
-        displayID = s[1];
-      }
+      const rawUser = data.user;
+      let displayName, displayID;
+        displayName = showIDtoNick(data.user);;
+        displayID = data.user;
 
       var cr = data.data.room ? data.data.room : "Main";
       
@@ -976,6 +1007,16 @@ imgUpload.addEventListener("click", (e) => {
   input.remove();
 });
 
+//暴言チェッカー
+function bougencheck(text){
+  const bougen = ["しね", "シネ", "死ね", "4545", "４５４５", "デブ"];
+  var count =0;
+  while(count<bougen.length){
+    if(text.includes(bougen[count])) return true;
+    count++;
+  }
+  return false;
+}
 
 // ------------------- メッセージ送信 -------------------
 function sendMessage() {
@@ -986,7 +1027,8 @@ function sendMessage() {
     return;
   }
 
-  if(text.includes("しね") || text.includes("シネ") || text.includes("死ね") || text.includes("4545") || text.includes("４５４５") || text.includes("デブ") ){
+  
+  if(bougencheck(text)){
     alert("言葉遣いは丁寧に");
     return;
   }
@@ -1028,7 +1070,7 @@ function sendMessage() {
   ws.send(JSON.stringify({
     app: "webchat",
     type: "message",
-    user: fullUser,
+    user: userID//fullUser,
     room: room,
     text: text
   }));
@@ -1215,15 +1257,23 @@ async function newUserStatus(data) {
   });
 }
 
+async function getnick(){
+  const r = await fetch("/webchat/nick");
+  const res = await r.json();
+  console.log(res);
+  usersNick = res;
+}
 
 //全部まとめて繰り返し
 async function repeatprocess(){
   if(navigator.onLine){
     await sendRegistPing();
     await updateChannelListUI();
+    await getnick();
   }
 }
 
+//とりあえず実行
 setTimeout(repeatprocess, 1000);
 
 // 5秒ごとに実行
