@@ -21,6 +21,7 @@ async function login(){
     showlog("ユーザーID、パスワードを入力してください。",true);
     return;
   }
+  
   const payload = {
     user: un,
     pass: pw,
