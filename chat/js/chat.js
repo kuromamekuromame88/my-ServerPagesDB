@@ -65,7 +65,7 @@ const currentPasswordInput = document.getElementById("currentPasswordInput");
 const newPasswordInput = document.getElementById("newPasswordInput");
 const changePassword = document.getElementById("changePassword");
 
-let usersNick;//ユーザーのニックネームをこの変数に随時ロードする
+let usersNick = [];//ユーザーのニックネームをこの変数に随時ロードする
 
 let wr = new URL(window.location.href);
 const params = new URLSearchParams(wr.search);
@@ -1259,9 +1259,10 @@ async function newUserStatus(data) {
 async function getnick(){
   const r = await fetch("/webchat/nick");
   const res = await r.json();
-  console.log(res);
+  //console.log(res);
   usersNick = res;
 }
+getnick();
 
 //全部まとめて繰り返し
 async function repeatprocess(){
