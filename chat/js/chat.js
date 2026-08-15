@@ -669,13 +669,9 @@ function connectWebSocket() {
       let message = chatContainer.querySelector(`[id="${data.id}"]`);
       if(!message) return;
           
-      const rawUser = data.user_name || data.user;
-      let displayName, displayID;
-      if (rawUser.includes("|")) {
-        const s = rawUser.split("|");
-        displayName = s[0];
-        displayID = s[1];
-      }
+      const rawUser = data.user || data.user_name;
+      let displayName = showIDtoNick(rawUser);
+      let displayID = rawUser;
           
       const markdown = data.content;
       const createdAt = data.created_at ? new Date(data.created_at).toLocaleString() : "";
