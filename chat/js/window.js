@@ -36,7 +36,7 @@ document.getElementById("openCookieClicker").onclick = () => {
 };
 
 document.getElementById("openAnuraOS").onclick = () => {
-  createWindow("Cookieclicker(v2.031,広告なし)",
+  createWindow("anuraOS(ChromeOSのエミュレーター)",
     "https://anura.pro",
     50, 100, window.innerWidth*0.7, window.innerHeight*0.6
   );
