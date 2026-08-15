@@ -585,7 +585,7 @@ getnick();
 
 //ニックネームをuserIDと照合させる関数
 function showIDtoNick(userID){
-  console.log(`userID: ${userID}: ${typeof userID} : ${usersNick.length}`);
+  //console.log(`userID: ${userID}: ${typeof userID} : ${usersNick.length}`);
   var count=0;
   while(count<usersNick.length){
     var nick=usersNick[count][userID];
