@@ -1,137 +1,234 @@
 <!DOCTYPE html>
 <html lang="ja">
-  <head>
-    <meta charset="UTF-8">
-    <title>Web Serial Terminal</title>
+<head>
+  <meta charset="UTF-8">
+  <title>Web Serial Terminal</title>
 
-    <style>
-      body{
-        font-family:sans-serif;
-        background:#222;
-        color:white;
-        margin:20px;
-      }
+  <style>
+    body{
+      font-family:sans-serif;
+      background:#222;
+      color:white;
+      margin:20px;
+    }
 
-      button,input{
-        font-size:16px;
-        margin:5px;
-      }
+    button,input{
+      font-size:16px;
+      margin:5px;
+    }
 
-      textarea{
-        width:100%;
-        height:180px;
-        background:#111;
-        color:#0f0;
-        border:1px solid #666;
-        padding:8px;
-        resize:vertical;
-        box-sizing:border-box;
-      }
+    textarea{
+      width:100%;
+      height:180px;
+      background:#111;
+      color:#0f0;
+      border:1px solid #666;
+      padding:8px;
+      resize:vertical;
+      box-sizing:border-box;
+    }
 
-      #rx{
-        height:300px;
-        white-space:pre-wrap;
-      }
+    #rx{
+      height:300px;
+      white-space:pre-wrap;
+    }
 
-      .row{
-        margin-bottom:10px;
-      }
-    </style>
-  </head>
-  <body>
-    <h2>Web Serial Terminal</h2>
-    <div class="row">
-      <label>BaudRate</label>
-      <input id="baud" value="115200">
-      <button id="connect">接続</button>
-      <button id="disconnect">切断</button>
-    </div>
-    <h3>送信</h3>
-    <textarea id="tx" placeholder="送信する文字列"></textarea>
-    <br>
-    <label>行間待ち時間(ms)</label>
-    <input id="lineDelay" type="number" value="100" min="0" style="width:80px;">
-    <br><br>
-    <button id="send">そのまま送信</button>
-    <button id="sendLines">1行ずつ送信</button>
-    <h3>受信</h3>
-    <textarea id="rx" readonly></textarea>
+    .row{
+      margin-bottom:10px;
+    }
+  </style>
+</head>
 
-    <script>
-      let port;
-      let reader;
-      let writer;
-      let keepReading=false;
-      const rx=document.getElementById("rx");
+<body>
+  <h2>Web Serial Terminal</h2>
 
-      function log(text){
-        rx.value+=text;
-        rx.scrollTop=rx.scrollHeight;
-      }
+  <div class="row">
+    <label>BaudRate</label>
+    <input id="baud" value="115200">
 
-      async function connect(){
-        port=await navigator.serial.requestPort();
+    <button id="connect">接続</button>
+    <button id="disconnect">切断</button>
+  </div>
+
+  <h3>送信</h3>
+
+  <textarea
+    id="tx"
+    placeholder="送信する文字列"
+  ></textarea>
+
+  <br>
+
+  <label>行間待ち時間(ms)</label>
+  <input
+    id="lineDelay"
+    type="number"
+    value="100"
+    min="0"
+    style="width:80px;"
+  >
+
+  <br>
+
+  <label>字間待ち時間(ms)</label>
+  <input
+    id="charDelay"
+    type="number"
+    value="0"
+    min="0"
+    style="width:80px;"
+  >
+
+  <br><br>
+
+  <button id="send">そのまま送信</button>
+  <button id="sendLines">1行ずつ送信</button>
+
+  <h3>受信</h3>
+
+  <textarea
+    id="rx"
+    readonly
+  ></textarea>
+
+  <script>
+    let port;
+    let reader;
+    let writer;
+    let keepReading = false;
+
+    const rx = document.getElementById("rx");
+
+    function log(text){
+      rx.value += text;
+      rx.scrollTop = rx.scrollHeight;
+    }
+
+    function sleep(ms){
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function connect(){
+      try{
+        port = await navigator.serial.requestPort();
+
         await port.open({
-          baudRate:Number(document.getElementById("baud").value)
+          baudRate: Number(
+            document.getElementById("baud").value
+          )
         });
-        writer=port.writable.getWriter();
-        keepReading=true;
+
+        writer = port.writable.getWriter();
+
+        keepReading = true;
+
         readLoop();
-      }
 
-      async function disconnect(){
-        keepReading=false;
-        try{
-          reader.releaseLock();
-        }catch{}
-        try{
-          writer.releaseLock();
-        }catch{}
-        try{
-          await port.close();
-        }catch{}
+      }catch(e){
+        console.error(e);
       }
+    }
 
-      async function readLoop(){
-        const decoder=new TextDecoder();
-        reader=port.readable.getReader();
-        while(keepReading){
-          try{
-            const {value,done}=await reader.read();
-            if(done)break;
-            if(value){
-                log(decoder.decode(value));
-            }
-          }catch(e){
-            console.log(e);
+    async function disconnect(){
+      keepReading = false;
+
+      try{
+        reader.releaseLock();
+      }catch{}
+
+      try{
+        writer.releaseLock();
+      }catch{}
+
+      try{
+        await port.close();
+      }catch{}
+    }
+
+    async function readLoop(){
+      const decoder = new TextDecoder();
+
+      reader = port.readable.getReader();
+
+      while(keepReading){
+        try{
+          const {value, done} = await reader.read();
+
+          if(done){
             break;
           }
+
+          if(value){
+            log(decoder.decode(value));
+          }
+
+        }catch(e){
+          console.log(e);
+          break;
         }
       }
+    }
 
-      async function sendString(text){
-        const encoder=new TextEncoder();
-        await writer.write(encoder.encode(text));
-      }
+    async function sendString(text){
+      const encoder = new TextEncoder();
 
-      document.getElementById("send").onclick=async()=>{
-        let text=document.getElementById("tx").value;
-        await sendString(text);
-      };
+      await writer.write(
+        encoder.encode(text)
+      );
+    }
 
-      document.getElementById("sendLines").onclick = async () => {
-        const lines = document.getElementById("tx").value.split(/\r?\n/);
-        const delay = Number(document.getElementById("lineDelay").value);
-        for (const line of lines) {
-          await sendString(line + "\r\n");
-          if (delay > 0) {
-            await new Promise(resolve => setTimeout(resolve, delay));
+    // そのまま送信
+    document.getElementById("send").onclick = async () => {
+      const text =
+        document.getElementById("tx").value;
+
+      await sendString(text);
+    };
+
+    // 1行ずつ、さらに1文字ずつ送信
+    document.getElementById("sendLines").onclick = async () => {
+
+      const lines =
+        document
+          .getElementById("tx")
+          .value
+          .split(/\r?\n/);
+
+      const lineDelay =
+        Number(
+          document.getElementById("lineDelay").value
+        );
+
+      const charDelay =
+        Number(
+          document.getElementById("charDelay").value
+        );
+
+      for(const line of lines){
+
+        // 1文字ずつ送信
+        for(const char of line){
+
+          await sendString(char);
+
+          // 字間待ち時間
+          if(charDelay > 0){
+            await sleep(charDelay);
           }
         }
-      };
 
-      document.getElementById("connect").onclick=connect;
-      document.getElementById("disconnect").onclick=disconnect;
-    </script>
-  </body>
+        // 行末の改行
+        await sendString("\r\n");
+
+        // 行間待ち時間
+        if(lineDelay > 0){
+          await sleep(lineDelay);
+        }
+      }
+    };
+
+    document.getElementById("connect").onclick = connect;
+    document.getElementById("disconnect").onclick = disconnect;
+  </script>
+</body>
 </html>
